@@ -1,219 +1,185 @@
-# Cipher — ComplianceX 4.0
+# 🌱 TerraGuard AI — Digital Twin Climate Decision Support & Ecological Agriculture Platform
 
-> **5 AI Doctors monitoring your company's compliance health.**  
-> AI-powered compliance intelligence platform for Indian corporates — built at a 24-hour hackathon.
-
----
-
-## 🏥 The Problem
-
-India has **1.5M+ registered companies**. Every single one needs MCA, SEBI, GST, and Income Tax compliance. Companies pay ₹10,000–25,000/month to CA firms just for compliance monitoring — done manually, via spreadsheets and WhatsApp reminders.
-
-**ComplianceX** replaces that with **5 specialist AI agents**.
+> **A Spatial AI-Powered Decision Support Engine for Precision Agroforestry, Satellite Drought Diagnostics, Wildfire Propagation Modeling, and Live Crop Disease Forecasting across Karnataka.**
 
 ---
 
-## 🤖 The 5 AI Doctors
+## 📌 Executive Summary
 
-| Doctor | Role | What it does |
-| :--- | :--- | :--- |
-| 📡 **Doctor 1** | **The News & Auditor** | Monitors 40+ regulations across MCA/SEBI/GST and cross-references them against your CA's filings to detect outdated work |
-| ⚖️ **Doctor 2** | **The Rule Checker** | Checks your company against every active compliance rule |
-| 🧮 **Doctor 3** | **The Tax Expert** | Calculates advance tax, TDS, MAT liability, and identifies Section-based savings opportunities |
-| 📊 **Doctor 4** | **The Risk Detector** | Scores your company 0–100 and explains every risk factor |
-| 🏛️ **Doctor 5** | **The Secretary** | Manages your compliance calendar and never misses a deadline |
+**TerraGuard AI** is an end-to-end Geo-Spatial & Ecological Decision Support Platform tailored specifically to the diverse agro-climatic zones of **Karnataka, India** (Coastal Karavali, Western Ghats / Malenadu, Northern Dry Maidan, and Southern Transition Zone). 
+
+By integrating **live satellite telemetry, real-time meteorological feeds (Open-Meteo), SoilGrids ISRIC global soil databases, and multi-criteria Analytic Hierarchy Process (AHP) algorithms**, TerraGuard empowers farmers, agronomists, and disaster response teams to make climate-resilient decisions.
 
 ---
 
-## 🏗️ Architecture
+## 🏛️ Platform Architecture
 
 ```text
-User Input (CIN)
-       ↓
-Master Orchestrator (LangGraph State Machine)
-       ↓
-┌──────────────────────────────────────────────────┐
-│  Rule Engine   →   Risk Scorer   →   ChromaDB    │
-│  Regulation Search  →  Gemini Remediation        │
-└──────────────────────────────────────────────────┘
-       ↓
-ComplianceStatus JSON → React Dashboard
+ ┌────────────────────────────────────────────────────────────────────────────────────────┐
+ │                                   USER INTERFACE                                       │
+ │     Interactive Map (Leaflet.js)  │  Bilingual Panel (EN/KN)  │  Voice Audio Readout   │
+ └───────────────────────────────────────────┬────────────────────────────────────────────┘
+                                             │ REST API (JSON)
+                                             ▼
+ ┌────────────────────────────────────────────────────────────────────────────────────────┐
+ │                             TERRAGUARD DJANGO REST SUITE                               │
+ ├──────────────────────────┬──────────────────────────┬──────────────────────────────────┤
+ │  🌾 RecommendationAPI    │   🛰️ DiagnosticsAPI     │   🔥 FireRiskAPI                 │
+ │  • AHP Species Ranking   │   • 9-Mo NDVI Tracking   │   • Canadian FWI Index           │
+ │  • 4-Tier Agroforestry   │   • Soil Moisture Index  │   • Huygens Elliptic Dispersion  │
+ │  • Carbon Sink Credit    │   • Emergency Water Svc  │   • KFD & KSFES Direct Dispatch  │
+ ├──────────────────────────┴──────────────────────────┴──────────────────────────────────┤
+ │  🔬 PestDiseaseAPI: 42-Disease Live Agro-Ecological Diagnostic Engine                  │
+ └───────────────────────────────────────────┬────────────────────────────────────────────┘
+                                             │
+                                             ▼
+ ┌────────────────────────────────────────────────────────────────────────────────────────┐
+ │                              EXTERNAL TELEMETRY & DATA                                 │
+ │   Open-Meteo Live API  │  SoilGrids ISRIC  │  OSM Overpass  │  Karnataka GIS Polygons  │
+ └────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-### Background Automation (APScheduler — 60s loops):
-* `job_deadline_scanner` → auto-alerts + filing requests for overdue companies
-* `job_regulation_detector` → maps live news → affected sectors → company alerts
-* `job_filing_escalator` → PENDING → HIGH alert (24h) → EMERGENCY (48h)
-* `activity_log` → `GET /activity-log` → ActivityFeed UI (5s polling)
+---
 
-### News Feed:
-Live scrapers (PIB / SEBI / Income Tax / MCA) + 40-item curated synthetic dataset → merged, deduped, sorted by date → `POST /news/analyze` → Gemini 2.5 Flash → Structured breakdown modal (Rule, Impact, Actions, Deadline, Penalty).
+## 🚀 The 4 Core Intelligence Modules
 
-### Tech Stack:
-* **Backend:** Python, FastAPI, LangGraph, ChromaDB, Sentence Transformers, APScheduler
-* **AI:** Google Gemini 2.5 Flash (chat, remediation, news analysis)
-* **Vector DB:** ChromaDB with `all-MiniLM-L6-v2` embeddings
-* **Frontend:** React, Vite, Tailwind CSS, Framer Motion
-* **Data:** 12-company MCA dataset + 40-item curated regulatory news dataset
+### 1. 🌾 Precision Agroforestry & Multi-Tier Crop Decision Support
+* **Multi-Criteria AHP Optimization**: Evaluates live rainfall ($40\%$), altitude/elevation ($30\%$), soil pH ($20\%$), and carbon sequestration capacity ($10\%$) against an authentic database of **167 Karnataka crops, fruit orchards, spices, floriculture, and timber species**.
+* **4-Tier Vertical Canopy Synergy**: Synthesizes 4-layer polyculture designs (*Emergent Timber $\rightarrow$ Fruit Trees $\rightarrow$ Climbing Spice Vines $\rightarrow$ Ground Rhizomes/Millets*) yielding up to **+2.8x farm revenue** (₹3,40,000/acre/yr) while saving $38\%$ water through canopy shading.
+* **Crop Sowing Calendar**: Live month-by-month phenological tracking (*Sowing Window Active*, *Vegetative Growth*, *Harvest Ready*).
+* **Government Subsidies & Schemes**: Automated matching with **KMSDS** (Spices), **MIDH** (Horticulture), **KAPY** (Tree Plantation DBT), **Raitha Siri** (Millets), and **PMKSY** (Micro-Drip $90\%$ Aid).
+
+### 2. 🛰️ Satellite Drought Monitoring & Early-Warning Diagnostics
+* **Live NDVI & Vegetation Health**: Computes 9-month historical and forecasted NDVI trends to detect systemic vegetation degradation.
+* **Volumetric Soil Moisture**: Evaluates root-zone moisture anomalies and consecutive dry-day stress levels.
+* **Emergency Water Resources**: Queries OpenStreetMap Overpass live to locate and navigate to the nearest surface water reservoir or irrigation canal.
+* **Regional Monitoring Stations**: 26 real-time monitoring beacons covering all Karnataka districts (Kalaburagi, Vijayapura, Ballari, Haveri, Shivamogga, Kodagu, Udupi, etc.).
+
+### 3. 🔥 Wildfire Susceptibility & 24h Downwind Dispersion Simulator
+* **Dual-Phase Fire Weather Index (FWI)**: Evaluates live ambient temperature, relative humidity, wind speed, and fuel dryness over **20 Protected Forest Reserves & Tiger Reserves** (Bandipur, Nagarahole, Kali, Bhadra, Kudremukh, BRT, Pushpagiri, etc.).
+* **Elliptic Huygens Spread Modeling**: Simulates 24-hour fire spread polygons oriented along live wind vector azimuths.
+* **First-Responder Integration**: Computes real-time Haversine distance, compass bearing, and travel ETA to the nearest **Karnataka Forest Department (KFD) Range Forest Officer (RFO)** and **KSFES Fire Station** with one-tap emergency calling.
+
+### 4. 🔬 42-Disease Live Crop Diagnostic & Bio-Control Advisor
+* **100% Live Meteorological Triggers**: Continuously tests live weather parameters ($T, RH, R_{7d}, W, T_{dew}$) against authentic Karnataka pathology rules:
+  * **Plantation & Spices**: Arecanut Koleroga (*Phytophthora meadii*), Yellow Leaf Disease, Anabe Roga (*Ganoderma*), Coconut Bud Rot, Coffee Rust (*Hemileia*), Coffee White Stem Borer, Pepper Quick Wilt, Cardamom Azhukal.
+  * **Spices & Condiments**: Ginger/Turmeric Rhizome Soft Rot, Ginger Bacterial Wilt, Cashew Tea Mosquito Bug, Betelvine Foot Rot.
+  * **Cereals & Millets**: Rice/Ragi Blast (*Magnaporthe*), Paddy Brown Spot, Stem Borer & BPH, Fall Armyworm (*Spodoptera frugiperda*), Maize Turcicum Blight, Jowar Grain Mold.
+  * **Cash Crops**: Bt Cotton Pink Bollworm, Cotton Black Arm, Cotton Grey Mildew (Dahiya), Sugarcane Red Rot, Sugarcane Woolly Aphid.
+  * **Pulses & Oilseeds**: Groundnut Tikka & Rust, Soybean Asian Rust, Tur Fusarium Wilt, Tur SMD Mite, Bengal Gram Wilt, Sunflower Alternaria Blight.
+  * **Fruits & Vegetables**: Pomegranate Telya Blight (*Xanthomonas*), Grape Downy Mildew (*Plasmopara 3-10 rule*), Mango Blossom Blight, Banana Sigatoka, Citrus Canker, Tomato Early/Late Blight, Chilli Anthracnose, Onion Purple Blotch, Brinjal Shoot Borer.
+* **Integrated Pest Management (IPM)**: Provides biological controls (Trichoderma, Pseudomonas, Neem formulations, Beauveria) alongside exact chemical molecules and dilution dosages.
+* **🔊 Voice Speech Readout (Kannada & English)**: Built-in text-to-speech advisory for rural accessibility.
+* **Emergency Agricultural Centers**: Instant lookup of nearest **Karnataka State Department of Agriculture (KSDA)** Plant Health Clinics and **KSSC Seed Depots**.
 
 ---
 
-## 💻 Portals
+## 🗂️ Project Structure
 
-The platform is split into two distinct, synchronised React applications:
-
-1. **CA Portal (Port 5173):** A professional workstation for Chartered Accountants. Features a dark-themed, glassmorphic grid layout, risk dashboard, tax analysis tools, action-oriented calendar, and filing request management.
-2. **Executive Portal (Port 5174):** A refined, secure dashboard for company executives. Includes real-time KPI tracking, signature/action requirements, company-scoped regulatory impact feeds, and a dedicated AI Chat assistant powered by Gemini 2.5 Flash for contextual compliance advice.
-
----
-
-## 🚀 Setup & Running
-
-### Prerequisites
-* Python 3.10+
-* Node.js 18+
-* Google Gemini API key (free at [aistudio.google.com](https://aistudio.google.com/))
-
-### Backend
 ```bash
-cd backend
-pip install -r requirements.txt
-cp .env.example .env # Add your GEMINI_API_KEY to .env
-uvicorn main:app --reload
+MAJORPROJ/
+├── terraguard/
+│   ├── manage.py                          # Django management CLI
+│   ├── db.sqlite3                         # Seeded SQLite database (167 species)
+│   ├── populate_species.py                # Database population script
+│   ├── terraguard/
+│   │   ├── settings.py                    # Django configuration & API keys
+│   │   ├── urls.py                        # Root URL routing
+│   │   └── wsgi.py
+│   ├── decision_support/
+│   │   ├── models.py                      # KarnatakaAgroZone & SpeciesConstraint models
+│   │   ├── views.py                       # Recommendation, Diag, Fire, & Pest APIs
+│   │   ├── urls.py                        # API route declarations
+│   │   ├── ml_utils/
+│   │   │   ├── ahp_engine.py              # AHP multi-criteria scoring
+│   │   │   └── data_fetcher.py            # Live Open-Meteo & SoilGrids integration
+│   │   ├── templates/decision_support/
+│   │   │   └── dashboard.html             # Glassmorphism UI, Leaflet map, & speech engine
+│   │   └── static/
+│   │       ├── css/                       # Leaflet & FontAwesome stylesheets
+│   │       ├── js/                        # Turf.js, Chart.js, & Leaflet Draw
+│   │       └── geojson/                   # Karnataka state & forest GeoJSON polygons
+├── requirements.txt                       # Python dependencies
+├── .gitignore                             # Git ignore rules
+└── README.md                              # Project documentation
 ```
-*Backend runs at `http://localhost:8000`*
-
-### Frontend
-```bash
-cd frontend
-npm install
-npm run dev
-```
-*Frontend runs at `http://localhost:5173`*
 
 ---
 
-## 📡 API Endpoints
+## 🛠️ Tech Stack
 
-| Method | Endpoint | Description |
-| :--- | :--- | :--- |
-| `GET` | `/companies` | List all companies |
-| `GET` | `/company/{cin}` | Get full company details |
-| `POST` | `/analyze/{cin}` | Run full AI compliance analysis |
-| `GET` | `/search-regulation?q={}` | Semantic regulation search |
-| `GET` | `/news` | Live + curated regulatory news (merged, sorted by date) |
-| `POST` | `/news/analyze` | AI-powered structured analysis of a regulatory news item |
-| `GET` | `/tax/{cin}` | Tax Expert full analysis (Advance tax, TDS, MAT, savings) |
-| `GET` | `/ca-verify/{cin}` | CA filing verification against regulation changes |
-| `GET` | `/executive/{cin}` | Executive dashboard view (exposure, signatures, impact) |
-| `POST` | `/alerts/{cin}` | Create Executive → CA alert |
-| `GET` | `/alerts/{cin}` | Get all alerts for a company |
-| `PUT` | `/alerts/{id}/acknowledge` | CA acknowledges + replies to an alert |
-| `PUT` | `/alerts/{id}/read` | Mark alert as read |
-| `POST` | `/filing-requests/{cin}` | Create a filing request |
-| `GET` | `/filing-requests/{cin}` | Get all filing requests for a company |
-| `PUT` | `/filing-requests/{id}/file` | Mark a filing as FILED (triggers risk recalculation) |
-| `PUT` | `/filing-requests/{id}/progress` | Mark a filing as IN_PROGRESS |
-| `GET` | `/activity-log` | Last 20 automation engine activity entries |
-| `POST` | `/demo/trigger-regulation` | Inject a regulation + run impact detector immediately |
-| `GET` | `/score-update/{cin}` | Latest risk score delta after a filing was marked FILED |
-| `POST` | `/chat` | Gemini 2.5 Flash compliance chat with company context |
-| `GET` | `/docs` | Interactive API documentation (Swagger UI) |
-
-### `POST /news/analyze` — Request Body:
-```json
-{
-  "title": "string",
-  "link": "string",
-  "source": "string",
-  "category": "GST | Corporate | Tax | Securities | General"
-}
-```
-*Returns a structured JSON with `rule_name`, `what_changed`, `who_it_hits`, `what_to_do[]`, `deadline`, `penalty`, `severity`, `compared_to_before`.*
-
-**Lookup order:**
-1. Exact title / `rule_name` match in curated dataset → instant pre-baked response
-2. Scrape page + Gemini 2.5 Flash → AI-generated response
-
----
-
-## ⚡ Automation Engine
-
-Running as background jobs (60-second intervals) from server startup:
-
-| Job | Trigger | Action |
-| :--- | :--- | :--- |
-| `job_deadline_scanner` | Every 60s | Scans all 12 companies; creates alerts + filing requests for overdue GST/MCA/Tax |
-| `job_regulation_detector` | Every 60s | Fetches live news → maps sector → affected companies → creates alerts |
-| `job_filing_escalator` | Every 60s | Escalates PENDING requests: HIGH alert at 24h, EMERGENCY at 48h |
-
-*All events are written to `activity_log` (in-memory, max 50 entries) and exposed via `GET /activity-log`.*
-
-The `ActivityFeed.jsx` component polls this endpoint every 5 seconds and renders live entries with slide-in animations, severity-coloured left borders, and a per-second countdown to the next scan.
-
----
-
-## 📊 Risk Scoring Model
-
-$$\text{Score} = \sum(\text{violation severity points}) + \text{overdue filings} \times 5 \text{ (max 20)} + \text{sector risk index} \times 10 + \text{disqualified dirs} \times 15 + \text{violations last 12m} \times 3 + \text{chronic delay bonus } +8 \text{ (if avg } > 60\text{ days)}$$
-
-*(Capped at 100)*
-
-**Risk Buckets:**
-* `0–25`: **LOW**
-* `26–50`: **MEDIUM**
-* `51–75`: **HIGH**
-* `76–100`: **CRITICAL**
-
----
-
-## 📰 Regulatory News System
-
-40 curated items across 4 categories (10 each), all with pre-baked AI analysis:
-
-| Category | Coverage |
+| Layer | Technology |
 | :--- | :--- |
-| **GST** | E-invoicing, ITC reversal, GSTR-1/3B/9 rules, composition scheme, audit, QRMP, HSN codes, refunds |
-| **Corporate** | DIR-3 KYC, MGT-7A, CSR threshold, board meetings, XBRL, share demat, ESG, auditor rotation, OPC |
-| **Tax** | TDS/TCS rules, advance tax, ITR-B, Form 26AS, Section 43B(h), PAN-Aadhaar, standard deduction |
-| **Securities** | LODR, RPT, T+0 settlement, insider trading, SCORES 2.0, ESG disclosure, TER cap, IPO, FPI KYC |
-
-### Features:
-* **Company-Scoped Live Updates** — Executive dashboard filters news explicitly to the company's mapped sector, providing relevant signal-over-noise.
-* **Graceful Fallbacks** — Handles empty sector-specific updates gracefully by providing the unfiltered latest news.
-* **Always-visible synthetic data** — Curated items are always merged with any live-scraped news.
-* **Stale category fallback** — If a category tab has no recent live news, shows the last-ever item in that category with a muted dashed card and ⚠️ warning banner.
-* **Detail modal** — Clicking any card opens a full-screen structured breakdown instead of navigating away.
-* **Per-card analysis cache** — Re-opening the same card is instant (no re-fetch).
-* **VS BEFORE diff** — Side-by-side red/green comparison of old vs new rule when an amendment is detected.
+| **Backend Framework** | Python 3.11, Django 5.x, Django REST Framework (DRF) |
+| **Frontend & UI** | Vanilla JS (ES6+), Glassmorphism Design System, CSS3 Variables, Google Fonts (Plus Jakarta Sans) |
+| **Mapping & GIS** | Leaflet.js 1.9.4, Turf.js (geospatial analysis), Leaflet Draw, GeoJSON |
+| **Charts & Visuals** | Chart.js 4.4 |
+| **Live Telemetry APIs** | Open-Meteo Weather API, SoilGrids (ISRIC), OpenStreetMap Overpass API |
+| **Voice & Accessibility**| HTML5 Web Speech Synthesis API (`kn-IN` & `en-IN`) |
+| **Database** | SQLite (Production-ready with Django ORM) |
 
 ---
 
-## 💰 Business Model
+## ⚡ Quickstart & Installation
 
-| Plan | Price | For |
-| :--- | :--- | :--- |
-| **Starter** | ₹2,499/month | 1 company |
-| **Growth** | ₹7,999/month | Up to 5 companies |
-| **Enterprise** | ₹24,999/month | Unlimited |
+### 1. Clone the Repository
+```bash
+git clone https://github.com/rohansaijagann/TerraGuard.git
+cd TerraGuard
+```
 
-*Unit economics: ~₹700 cost to serve per customer → ~72% gross margin.*
+### 2. Set Up Python Environment
+```bash
+# Create virtual environment
+python -m venv venv
+
+# Activate virtual environment
+# On Windows:
+.\venv\Scripts\activate
+# On macOS/Linux:
+source venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
+```
+
+### 3. Initialize Database & Seed Species
+```bash
+cd terraguard
+python manage.py migrate
+python populate_species.py
+```
+
+### 4. Run the Development Server
+```bash
+python manage.py runserver
+```
+
+Open your browser and navigate to: **`http://127.0.0.1:8000/`**
 
 ---
 
-## 🎯 Why Now
+## 📡 REST API Reference
 
-* MCA21 V3 just launched
-* SEBI tightened disclosure norms in 2024
-* GST return complexity tripled since 2017
-* Regulatory surface area is expanding faster than human CS capacity
-
----
-
-## ⚠️ Disclaimer
-
-*ComplianceX is a decision-support tool, not a decision-making tool. All outputs are AI-generated analysis for informational purposes only. All compliance actions must be reviewed and executed by a qualified Company Secretary or Chartered Accountant. "We're the co-pilot. The licensed CS is always the pilot."*
+| Method | Endpoint | Description | Payload Example |
+| :--- | :--- | :--- | :--- |
+| `POST` | `/api/recommend/` | Returns top 50 ranked crops/trees, 4-tier agroforestry, & subsidies for coordinates. | `{"latitude": 13.3153, "longitude": 75.7754}` |
+| `POST` | `/api/diagnostics/` | Runs satellite drought, NDVI trend, soil moisture, & emergency water scan. | `{"latitude": 17.3297, "longitude": 76.8343}` |
+| `POST` | `/api/fire-risk/` | Computes Canadian FWI score, 24h spread ellipse, & nearest KFD/KSFES dispatch stations. | `{"latitude": 11.6664, "longitude": 76.6293}` |
+| `POST` | `/api/pest-disease/` | Live 42-disease meteorological diagnostic & nearest KSDA clinic lookup. | `{"latitude": 14.7946, "longitude": 75.4011}` |
 
 ---
 
-### Built by Rohan
+## 🌐 Bilingual Support (ಕನ್ನಡ & English)
+
+TerraGuard features zero-latency dynamic translation between **English** and **Kannada (ಕನ್ನಡ)** covering all technical metrics, crop names, agroforestry explanations, biological mechanisms, and government schemes.
+
+---
+
+## 📄 License
+
+This project is developed as an academic and open-source initiative for climate-smart agriculture and environmental preservation in Karnataka.
+
+---
+
+**Built with ❤️ for Karnataka Farmers & Forest Protectors.**
