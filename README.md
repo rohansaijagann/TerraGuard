@@ -182,4 +182,4 @@ This project is developed as an academic and open-source initiative for climate-
 
 ---
 
-**Built by Rohan**
+**Built with ❤️ for Karnataka Farmers & Forest Protectors by Rohan**
