@@ -1,0 +1,219 @@
+# Cipher — ComplianceX 4.0
+
+> **5 AI Doctors monitoring your company's compliance health.**  
+> AI-powered compliance intelligence platform for Indian corporates — built at a 24-hour hackathon.
+
+---
+
+## 🏥 The Problem
+
+India has **1.5M+ registered companies**. Every single one needs MCA, SEBI, GST, and Income Tax compliance. Companies pay ₹10,000–25,000/month to CA firms just for compliance monitoring — done manually, via spreadsheets and WhatsApp reminders.
+
+**ComplianceX** replaces that with **5 specialist AI agents**.
+
+---
+
+## 🤖 The 5 AI Doctors
+
+| Doctor | Role | What it does |
+| :--- | :--- | :--- |
+| 📡 **Doctor 1** | **The News & Auditor** | Monitors 40+ regulations across MCA/SEBI/GST and cross-references them against your CA's filings to detect outdated work |
+| ⚖️ **Doctor 2** | **The Rule Checker** | Checks your company against every active compliance rule |
+| 🧮 **Doctor 3** | **The Tax Expert** | Calculates advance tax, TDS, MAT liability, and identifies Section-based savings opportunities |
+| 📊 **Doctor 4** | **The Risk Detector** | Scores your company 0–100 and explains every risk factor |
+| 🏛️ **Doctor 5** | **The Secretary** | Manages your compliance calendar and never misses a deadline |
+
+---
+
+## 🏗️ Architecture
+
+```text
+User Input (CIN)
+       ↓
+Master Orchestrator (LangGraph State Machine)
+       ↓
+┌──────────────────────────────────────────────────┐
+│  Rule Engine   →   Risk Scorer   →   ChromaDB    │
+│  Regulation Search  →  Gemini Remediation        │
+└──────────────────────────────────────────────────┘
+       ↓
+ComplianceStatus JSON → React Dashboard
+```
+
+### Background Automation (APScheduler — 60s loops):
+* `job_deadline_scanner` → auto-alerts + filing requests for overdue companies
+* `job_regulation_detector` → maps live news → affected sectors → company alerts
+* `job_filing_escalator` → PENDING → HIGH alert (24h) → EMERGENCY (48h)
+* `activity_log` → `GET /activity-log` → ActivityFeed UI (5s polling)
+
+### News Feed:
+Live scrapers (PIB / SEBI / Income Tax / MCA) + 40-item curated synthetic dataset → merged, deduped, sorted by date → `POST /news/analyze` → Gemini 2.5 Flash → Structured breakdown modal (Rule, Impact, Actions, Deadline, Penalty).
+
+### Tech Stack:
+* **Backend:** Python, FastAPI, LangGraph, ChromaDB, Sentence Transformers, APScheduler
+* **AI:** Google Gemini 2.5 Flash (chat, remediation, news analysis)
+* **Vector DB:** ChromaDB with `all-MiniLM-L6-v2` embeddings
+* **Frontend:** React, Vite, Tailwind CSS, Framer Motion
+* **Data:** 12-company MCA dataset + 40-item curated regulatory news dataset
+
+---
+
+## 💻 Portals
+
+The platform is split into two distinct, synchronised React applications:
+
+1. **CA Portal (Port 5173):** A professional workstation for Chartered Accountants. Features a dark-themed, glassmorphic grid layout, risk dashboard, tax analysis tools, action-oriented calendar, and filing request management.
+2. **Executive Portal (Port 5174):** A refined, secure dashboard for company executives. Includes real-time KPI tracking, signature/action requirements, company-scoped regulatory impact feeds, and a dedicated AI Chat assistant powered by Gemini 2.5 Flash for contextual compliance advice.
+
+---
+
+## 🚀 Setup & Running
+
+### Prerequisites
+* Python 3.10+
+* Node.js 18+
+* Google Gemini API key (free at [aistudio.google.com](https://aistudio.google.com/))
+
+### Backend
+```bash
+cd backend
+pip install -r requirements.txt
+cp .env.example .env # Add your GEMINI_API_KEY to .env
+uvicorn main:app --reload
+```
+*Backend runs at `http://localhost:8000`*
+
+### Frontend
+```bash
+cd frontend
+npm install
+npm run dev
+```
+*Frontend runs at `http://localhost:5173`*
+
+---
+
+## 📡 API Endpoints
+
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `GET` | `/companies` | List all companies |
+| `GET` | `/company/{cin}` | Get full company details |
+| `POST` | `/analyze/{cin}` | Run full AI compliance analysis |
+| `GET` | `/search-regulation?q={}` | Semantic regulation search |
+| `GET` | `/news` | Live + curated regulatory news (merged, sorted by date) |
+| `POST` | `/news/analyze` | AI-powered structured analysis of a regulatory news item |
+| `GET` | `/tax/{cin}` | Tax Expert full analysis (Advance tax, TDS, MAT, savings) |
+| `GET` | `/ca-verify/{cin}` | CA filing verification against regulation changes |
+| `GET` | `/executive/{cin}` | Executive dashboard view (exposure, signatures, impact) |
+| `POST` | `/alerts/{cin}` | Create Executive → CA alert |
+| `GET` | `/alerts/{cin}` | Get all alerts for a company |
+| `PUT` | `/alerts/{id}/acknowledge` | CA acknowledges + replies to an alert |
+| `PUT` | `/alerts/{id}/read` | Mark alert as read |
+| `POST` | `/filing-requests/{cin}` | Create a filing request |
+| `GET` | `/filing-requests/{cin}` | Get all filing requests for a company |
+| `PUT` | `/filing-requests/{id}/file` | Mark a filing as FILED (triggers risk recalculation) |
+| `PUT` | `/filing-requests/{id}/progress` | Mark a filing as IN_PROGRESS |
+| `GET` | `/activity-log` | Last 20 automation engine activity entries |
+| `POST` | `/demo/trigger-regulation` | Inject a regulation + run impact detector immediately |
+| `GET` | `/score-update/{cin}` | Latest risk score delta after a filing was marked FILED |
+| `POST` | `/chat` | Gemini 2.5 Flash compliance chat with company context |
+| `GET` | `/docs` | Interactive API documentation (Swagger UI) |
+
+### `POST /news/analyze` — Request Body:
+```json
+{
+  "title": "string",
+  "link": "string",
+  "source": "string",
+  "category": "GST | Corporate | Tax | Securities | General"
+}
+```
+*Returns a structured JSON with `rule_name`, `what_changed`, `who_it_hits`, `what_to_do[]`, `deadline`, `penalty`, `severity`, `compared_to_before`.*
+
+**Lookup order:**
+1. Exact title / `rule_name` match in curated dataset → instant pre-baked response
+2. Scrape page + Gemini 2.5 Flash → AI-generated response
+
+---
+
+## ⚡ Automation Engine
+
+Running as background jobs (60-second intervals) from server startup:
+
+| Job | Trigger | Action |
+| :--- | :--- | :--- |
+| `job_deadline_scanner` | Every 60s | Scans all 12 companies; creates alerts + filing requests for overdue GST/MCA/Tax |
+| `job_regulation_detector` | Every 60s | Fetches live news → maps sector → affected companies → creates alerts |
+| `job_filing_escalator` | Every 60s | Escalates PENDING requests: HIGH alert at 24h, EMERGENCY at 48h |
+
+*All events are written to `activity_log` (in-memory, max 50 entries) and exposed via `GET /activity-log`.*
+
+The `ActivityFeed.jsx` component polls this endpoint every 5 seconds and renders live entries with slide-in animations, severity-coloured left borders, and a per-second countdown to the next scan.
+
+---
+
+## 📊 Risk Scoring Model
+
+$$\text{Score} = \sum(\text{violation severity points}) + \text{overdue filings} \times 5 \text{ (max 20)} + \text{sector risk index} \times 10 + \text{disqualified dirs} \times 15 + \text{violations last 12m} \times 3 + \text{chronic delay bonus } +8 \text{ (if avg } > 60\text{ days)}$$
+
+*(Capped at 100)*
+
+**Risk Buckets:**
+* `0–25`: **LOW**
+* `26–50`: **MEDIUM**
+* `51–75`: **HIGH**
+* `76–100`: **CRITICAL**
+
+---
+
+## 📰 Regulatory News System
+
+40 curated items across 4 categories (10 each), all with pre-baked AI analysis:
+
+| Category | Coverage |
+| :--- | :--- |
+| **GST** | E-invoicing, ITC reversal, GSTR-1/3B/9 rules, composition scheme, audit, QRMP, HSN codes, refunds |
+| **Corporate** | DIR-3 KYC, MGT-7A, CSR threshold, board meetings, XBRL, share demat, ESG, auditor rotation, OPC |
+| **Tax** | TDS/TCS rules, advance tax, ITR-B, Form 26AS, Section 43B(h), PAN-Aadhaar, standard deduction |
+| **Securities** | LODR, RPT, T+0 settlement, insider trading, SCORES 2.0, ESG disclosure, TER cap, IPO, FPI KYC |
+
+### Features:
+* **Company-Scoped Live Updates** — Executive dashboard filters news explicitly to the company's mapped sector, providing relevant signal-over-noise.
+* **Graceful Fallbacks** — Handles empty sector-specific updates gracefully by providing the unfiltered latest news.
+* **Always-visible synthetic data** — Curated items are always merged with any live-scraped news.
+* **Stale category fallback** — If a category tab has no recent live news, shows the last-ever item in that category with a muted dashed card and ⚠️ warning banner.
+* **Detail modal** — Clicking any card opens a full-screen structured breakdown instead of navigating away.
+* **Per-card analysis cache** — Re-opening the same card is instant (no re-fetch).
+* **VS BEFORE diff** — Side-by-side red/green comparison of old vs new rule when an amendment is detected.
+
+---
+
+## 💰 Business Model
+
+| Plan | Price | For |
+| :--- | :--- | :--- |
+| **Starter** | ₹2,499/month | 1 company |
+| **Growth** | ₹7,999/month | Up to 5 companies |
+| **Enterprise** | ₹24,999/month | Unlimited |
+
+*Unit economics: ~₹700 cost to serve per customer → ~72% gross margin.*
+
+---
+
+## 🎯 Why Now
+
+* MCA21 V3 just launched
+* SEBI tightened disclosure norms in 2024
+* GST return complexity tripled since 2017
+* Regulatory surface area is expanding faster than human CS capacity
+
+---
+
+## ⚠️ Disclaimer
+
+*ComplianceX is a decision-support tool, not a decision-making tool. All outputs are AI-generated analysis for informational purposes only. All compliance actions must be reviewed and executed by a qualified Company Secretary or Chartered Accountant. "We're the co-pilot. The licensed CS is always the pilot."*
+
+---
+
+### Built by Rohan
