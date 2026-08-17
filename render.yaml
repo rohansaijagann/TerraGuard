@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: terraguard
+    env: python
+    buildCommand: "pip install -r requirements.txt && python terraguard/manage.py collectstatic --no-input && python terraguard/manage.py migrate && python terraguard/populate_species.py"
+    startCommand: "cd terraguard && gunicorn terraguard.wsgi:application --bind 0.0.0.0:$PORT"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
