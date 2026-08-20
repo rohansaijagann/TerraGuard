@@ -1453,6 +1453,23 @@
             }
         });
 
+        // ── Dynamic Universal Water Keywords Scanner ─────────────────
+        const WATER_KEYWORDS = [
+            'lake', 'tank', 'reservoir', 'dam', 'sea', 'ocean', 'river', 'canal', 'creek', 
+            'stream', 'backwater', 'barrage', 'pond', 'falls', 'water', 'dock', 
+            'bay', 'marsh', 'wetland', 'lagoon', 'coast', 'gulf', 'estuary', 'beach',
+            'kere', 'katte', 'kunte', 'sagara', 'sagar', 'jalashaya', 'anekattu', 'halla', 
+            'hole', 'nadi', 'talab', 'bawdi', 'bawli', 'teerth', 'teertha', 'sarovara',
+            'ಕೆರೆ', 'ಜಲಾಶಯ', 'ಹಳ್ಳ', 'ಹೊಳೆ', 'ನದಿ', 'ಸಮುದ್ರ', 'ತಲಾಬ್', 'ತೀರ್ಥ', 'ಅಣೆಕಟ್ಟು', 
+            'ಡ್ಯಾಂ', 'ಬ್ಯಾರೇಜ್', 'ಕೊಳ್ಳ', 'ಸಾಗರ', 'ಕುಂಟೆ', 'ಕಟ್ಟೆ', 'ಸರೋವರ'
+        ];
+
+        function scanTextForWater(text) {
+            if (!text || typeof text !== 'string') return false;
+            const t = text.toLowerCase();
+            return WATER_KEYWORDS.some(kw => t.includes(kw));
+        }
+
         function searchLocation(overrideQuery = null) {
             const query = overrideQuery || document.getElementById('location-search').value;
             if (!query) return;
@@ -1460,7 +1477,9 @@
                 .then(res => res.json())
                 .then(data => {
                     if (data && data.length > 0) {
-                        executeSearch(data[0].lat, data[0].lon);
+                        const hit = data[0];
+                        const isWaterSearch = scanTextForWater(query) || scanTextForWater(hit.display_name) || ['water', 'reservoir', 'lake', 'river', 'canal'].includes(hit.type);
+                        executeSearch(hit.lat, hit.lon, null, isWaterSearch ? `🌊 ${hit.name || query}` : null);
                     } else {
                         alert(currentLang === 'kn' ? "ಸ್ಥಳ ಕಂಡುಬಂದಿಲ್ಲ" : "Location not found");
                     }
@@ -1677,11 +1696,11 @@
             currentMarker = L.marker([lat, lon], { icon: customIcon }).addTo(map);
         }
 
-        function executeSearch(latStr, lonStr, prefetchedData = null) {
+        function executeSearch(latStr, lonStr, prefetchedData = null, overridePlaceName = null) {
             const lat = parseFloat(latStr).toFixed(4);
             const lon = parseFloat(lonStr).toFixed(4);
             map.flyTo([lat, lon], 13, { duration: 1.2 });
-            selectLocation(lat, lon, null, prefetchedData);
+            selectLocation(lat, lon, overridePlaceName, prefetchedData);
         }
 
         function locateMe() {

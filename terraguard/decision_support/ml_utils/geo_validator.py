@@ -350,6 +350,27 @@ KARNATAKA_TOWNS = [
     {"name": "Chitguppa", "name_kn": "ಚಿಟಗುಪ್ಪ", "district": "Bidar", "lat": 17.6900, "lon": 77.2200}
 ]
 
+# ══ 3. DYNAMIC WATER KEYWORDS SCANNER ══
+WATER_KEYWORDS = [
+    'lake', 'tank', 'reservoir', 'dam', 'sea', 'ocean', 'river', 'canal', 'creek', 
+    'stream', 'backwater', 'barrage', 'pond', 'falls', 'water', 'dock', 
+    'bay', 'marsh', 'wetland', 'lagoon', 'coast', 'gulf', 'estuary', 'beach',
+    'kere', 'katte', 'kunte', 'sagara', 'sagar', 'jalashaya', 'anekattu', 'halla', 
+    'hole', 'nadi', 'talab', 'bawdi', 'bawli', 'teerth', 'teertha', 'sarovara',
+    'ಕೆರೆ', 'ಜಲಾಶಯ', 'ಹಳ್ಳ', 'ಹೊಳೆ', 'ನದಿ', 'ಸಮುದ್ರ', 'ತಲಾಬ್', 'ತೀರ್ಥ', 'ಅಣೆಕಟ್ಟು', 
+    'ಡ್ಯಾಂ', 'ಬ್ಯಾರೇಜ್', 'ಕೊಳ್ಳ', 'ಸಾಗರ', 'ಕುಂಟೆ', 'ಕಟ್ಟೆ', 'ಸರೋವರ'
+]
+
+def scan_text_for_water(text):
+    """Detects any water-related keyword in English, Kannada, or transliteration."""
+    if not text:
+        return False
+    t_lower = text.lower()
+    for kw in WATER_KEYWORDS:
+        if kw in t_lower:
+            return True
+    return False
+
 def haversine_km(lat1, lon1, lat2, lon2):
     """Calculates distance between 2 coordinates in kilometers."""
     R = 6371.0
@@ -380,16 +401,11 @@ def is_arabian_sea(lat, lon):
 def check_karnataka_location(lat, lon):
     """
     Exhaustive validation:
-    Returns dict: {
-        'is_valid': bool,
-        'is_water': bool,
-        'is_outside': bool,
-        'location_name': str,
-        'location_name_kn': str,
-        'district': str,
-        'error_message': str,
-        'error_message_kn': str
-    }
+    Combines:
+    1. Arabian Sea coastal geometry
+    2. 85+ Pre-compiled Dams, Reservoirs, and City Lakes
+    3. Dynamic Real-Time Reverse-Geocoding Water Keyword Scanner (catches ANY lake/tank in any village)
+    4. Karnataka Bounding & Offline 200+ Taluks place namer
     """
     # 1. Arabian Sea Check
     if is_arabian_sea(lat, lon):
@@ -419,7 +435,46 @@ def check_karnataka_location(lat, lon):
                 "error_message_kn": f"ಜಲಮೂಲ ಪತ್ತೆಯಾಗಿದೆ ({res['name_kn']}). ಜಲಾಶಯ ಅಥವಾ ಕೆರೆಯ ಮೇಲೆ ಕೃಷಿ ವಿಶ್ಲೇಷಣೆ ಅನ್ವಯಿಸುವುದಿಲ್ಲ."
             }
 
-    # 3. Check Karnataka Outer Bounding Box (Lat: 11.4°N - 18.6°N, Lon: 74.05°E - 78.65°E)
+    # 3. Dynamic Live Reverse-Geocode Water Keyword Scanner (for unlisted lakes, canals, village ponds)
+    import requests
+    try:
+        url_bdc = f"https://api.bigdatacloud.net/data/reverse-geocode-client?latitude={lat}&longitude={lon}&localityLanguage=en"
+        r_bdc = requests.get(url_bdc, timeout=2.5)
+        if r_bdc.status_code == 200:
+            d = r_bdc.json()
+            if not d.get('countryCode'):
+                return {
+                    "is_valid": False,
+                    "is_water": True,
+                    "is_outside": False,
+                    "location_name": "🌊 Water Body / Ocean",
+                    "location_name_kn": "🌊 ಜಲಮೂಲ / ಸಮುದ್ರ",
+                    "district": "Water Body",
+                    "error_message": "Water body detected. Please select a solid land coordinate within Karnataka.",
+                    "error_message_kn": "ಜಲಮೂಲ ಪತ್ತೆಯಾಗಿದೆ. ದಯವಿಟ್ಟು ಕರ್ನಾಟಕದ ಭೂಪ್ರದೇಶದ ಜಮೀನನ್ನು ಆಯ್ಕೆಮಾಡಿ."
+                }
+            
+            # Scan informative & administrative items for any lake / tank / dam keyword
+            items = d.get('localityInfo', {}).get('informative', []) + d.get('localityInfo', {}).get('administrative', [])
+            for item in items:
+                n = item.get('name', '')
+                if scan_text_for_water(n):
+                    if n.lower() in ['karnataka', 'india', 'kaveri river basin', 'krishna river basin', 'pennar basin', 'godavari basin']:
+                        continue
+                    return {
+                        "is_valid": False,
+                        "is_water": True,
+                        "is_outside": False,
+                        "location_name": f"🌊 {n}",
+                        "location_name_kn": f"🌊 {n}",
+                        "district": "Inland Water",
+                        "error_message": f"Inland water body detected ({n}). Agricultural suitability, drought telemetry, and fire risk are not applicable over water.",
+                        "error_message_kn": f"ಜಲಮೂಲ ಪತ್ತೆಯಾಗಿದೆ ({n}). ಜಲಾಶಯ ಅಥವಾ ಕೆರೆಯ ಮೇಲೆ ಕೃಷಿ ವಿಶ್ಲೇಷಣೆ ಅನ್ವಯಿಸುವುದಿಲ್ಲ."
+                    }
+    except Exception:
+        pass
+
+    # 4. Check Karnataka Outer Bounding Box (Lat: 11.4°N - 18.6°N, Lon: 74.05°E - 78.65°E)
     if not (11.4 <= lat <= 18.6 and 74.05 <= lon <= 78.65):
         return {
             "is_valid": False,
@@ -432,7 +487,7 @@ def check_karnataka_location(lat, lon):
             "error_message_kn": "ಕರ್ನಾಟಕದ ಹೊರಗಿನ ಸ್ಥಳ ಪತ್ತೆಯಾಗಿದೆ. ಟೆರಾಗಾರ್ಡ್ ಕರ್ನಾಟಕ ಪ್ರದೇಶಕ್ಕೆ ಮಾತ್ರ ಕಾರ್ಯನಿರ್ವಹಿಸುತ್ತದೆ."
         }
 
-    # 4. Valid Land Location — Match Nearest Karnataka Taluk & District (Never returns Unknown!)
+    # 5. Valid Land Location — Match Nearest Karnataka Taluk & District (Never returns Unknown!)
     closest_town = KARNATAKA_TOWNS[0]
     min_distance = 999999.0
     for town in KARNATAKA_TOWNS:
