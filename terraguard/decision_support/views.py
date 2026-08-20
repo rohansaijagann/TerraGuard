@@ -19,47 +19,21 @@ class RecommendationAPI(APIView):
         lon = float(request.data.get('longitude', 77.0))
 
         # Check if the coordinate is over land or water / outside Karnataka
-        import requests
-        location_name = "Unknown Location"
-        try:
-            geo_response = requests.get(
-                f"https://api.bigdatacloud.net/data/reverse-geocode-client?latitude={lat}&longitude={lon}&localityLanguage=en",
-                timeout=5
-            )
-            if geo_response.status_code == 200:
-                geo_data = geo_response.json()
-                if not geo_data.get('countryCode'):
-                    return Response({
-                        "invalid_location": True,
-                        "message": "Water body detected. Please select a land coordinate to calculate agricultural suitability."
-                    })
-                
-                # Detect inland lakes and reservoirs using locality info
-                info_list = geo_data.get('localityInfo', {}).get('informative', []) + geo_data.get('localityInfo', {}).get('administrative', [])
-                for item in info_list:
-                    name = item.get('name', '').lower()
-                    if 'basin' in name or 'valley' in name:
-                        continue
-                    if 'reservoir' in name or ' dam' in name or 'lake ' in name or 'basava sagara' in name or 'krishnaraja sagara' in name:
-                        return Response({
-                            "invalid_location": True,
-                            "message": f"Inland water body detected ({item.get('name')}). Please select a solid land coordinate."
-                        })
-                
-                state = geo_data.get('principalSubdivision')
-                if state != 'Karnataka':
-                    return Response({
-                        "invalid_location": True,
-                        "message": f"Location outside Karnataka detected ({state or 'Unknown'}). TerraGuard is currently optimized exclusively for the Karnataka region."
-                    })
-                    
-                locality = geo_data.get('locality') or geo_data.get('city') or geo_data.get('county')
-                if locality:
-                    location_name = f"{locality}, Karnataka"
-                else:
-                    location_name = "Karnataka, India"
-        except Exception:
-            pass # Fallback to continue if the API fails
+        from .ml_utils.geo_validator import check_karnataka_location
+        geo_check = check_karnataka_location(lat, lon)
+        
+        if not geo_check['is_valid']:
+            return Response({
+                "invalid_location": True,
+                "is_water": geo_check['is_water'],
+                "location_name": geo_check['location_name'],
+                "location_name_kn": geo_check['location_name_kn'],
+                "message": geo_check['error_message'],
+                "message_kn": geo_check['error_message_kn']
+            })
+
+        location_name = geo_check['location_name']
+        location_name_kn = geo_check['location_name_kn']
 
         # Fetch Live Environmental Data
         env_data = get_environmental_data(lat, lon)
@@ -67,7 +41,10 @@ class RecommendationAPI(APIView):
         if env_data.get('is_water'):
             return Response({
                 "invalid_location": True,
-                "message": "Inland water body detected. Please select a solid land coordinate for agricultural analysis."
+                "is_water": True,
+                "location_name": geo_check['location_name'],
+                "location_name_kn": geo_check['location_name_kn'],
+                "message": "Water body detected. Please select a solid land coordinate for agricultural analysis."
             })
             
         local_rainfall = env_data['annual_rainfall_mm']
@@ -198,20 +175,22 @@ class DiagnosticsAPI(APIView):
         lat = float(request.data.get('latitude', 13.0))
         lon = float(request.data.get('longitude', 77.0))
         
-        import requests
-        location_name = "Karnataka, India"
-        try:
-            geo_response = requests.get(
-                f"https://api.bigdatacloud.net/data/reverse-geocode-client?latitude={lat}&longitude={lon}&localityLanguage=en",
-                timeout=4
-            )
-            if geo_response.status_code == 200:
-                geo_data = geo_response.json()
-                locality = geo_data.get('locality') or geo_data.get('city') or geo_data.get('county')
-                if locality:
-                    location_name = f"{locality}, Karnataka"
-        except Exception:
-            pass
+        # Check if the coordinate is over land or water / outside Karnataka
+        from .ml_utils.geo_validator import check_karnataka_location
+        geo_check = check_karnataka_location(lat, lon)
+        
+        if not geo_check['is_valid']:
+            return Response({
+                "invalid_location": True,
+                "is_water": geo_check['is_water'],
+                "location_name": geo_check['location_name'],
+                "location_name_kn": geo_check['location_name_kn'],
+                "message": geo_check['error_message'],
+                "message_kn": geo_check['error_message_kn']
+            })
+
+        location_name = geo_check['location_name']
+        location_name_kn = geo_check['location_name_kn']
             
         from .ml_utils.data_fetcher import get_environmental_data, get_live_forecast
         env_data = get_environmental_data(lat, lon)
@@ -378,6 +357,20 @@ class FireRiskAPI(APIView):
         lat = float(request.data.get('latitude', 12.0))
         lon = float(request.data.get('longitude', 76.0))
         
+        # Check if the coordinate is over land or water / outside Karnataka
+        from .ml_utils.geo_validator import check_karnataka_location
+        geo_check = check_karnataka_location(lat, lon)
+        
+        if not geo_check['is_valid']:
+            return Response({
+                "invalid_location": True,
+                "is_water": geo_check['is_water'],
+                "location_name": geo_check['location_name'],
+                "location_name_kn": geo_check['location_name_kn'],
+                "message": geo_check['error_message'],
+                "message_kn": geo_check['error_message_kn']
+            })
+
         from .ml_utils.data_fetcher import get_environmental_data
         env_data = get_environmental_data(lat, lon)
         
@@ -389,7 +382,10 @@ class FireRiskAPI(APIView):
         if env_data.get('is_water'):
             return Response({
                 "invalid_location": True,
-                "message": "Water body detected. Fire risk is negligible."
+                "is_water": True,
+                "location_name": geo_check['location_name'],
+                "location_name_kn": geo_check['location_name_kn'],
+                "message": "Water body detected. Fire risk is not applicable over water bodies."
             })
             
         # Dual-Phase Rothermel FWI Calculation
@@ -1952,6 +1948,26 @@ class PestDiseaseAPI(APIView):
 
         lat = float(request.data.get('latitude', 13.0))
         lon = float(request.data.get('longitude', 77.0))
+
+        # Check if the coordinate is over land or water / outside Karnataka
+        from .ml_utils.geo_validator import check_karnataka_location
+        geo_check = check_karnataka_location(lat, lon)
+        
+        if not geo_check['is_valid']:
+            return Response({
+                "invalid_location": True,
+                "is_water": geo_check['is_water'],
+                "location_name": geo_check['location_name'],
+                "location_name_kn": geo_check['location_name_kn'],
+                "message": geo_check['error_message'],
+                "message_kn": geo_check['error_message_kn'],
+                "temp": 25.0,
+                "humidity": 65,
+                "rain_7d": 0.0,
+                "detected_risks": [],
+                "all_clear": True,
+                "nearest_shops": []
+            })
 
         cache_key = f'pest_{round(lat,2)}_{round(lon,2)}'
         cached = _cache_get(cache_key)
