@@ -49,6 +49,17 @@ KARNATAKA_WATER_BODIES = [
     {"name": "Chulki Nala Dam", "name_kn": "ಚುಳಕಿ ನಾಲಾ ಜಲಾಶಯ", "district": "Bidar", "lat": 17.8200, "lon": 77.3000, "radius_km": 2.5},
     {"name": "Hippargi Barrage (Krishna River)", "name_kn": "ಹಿಪ್ಪರಗಿ ಬ್ಯಾರೇಜ್", "district": "Bagalkot", "lat": 16.5300, "lon": 75.1800, "radius_km": 3.5},
     {"name": "Galagali Barrage", "name_kn": "ಗಲಗಲಿ ಬ್ಯಾರೇಜ್", "district": "Bagalkot", "lat": 16.4200, "lon": 75.4500, "radius_km": 2.5},
+    {"name": "Krishna-Malaprabha River Confluence (Kudalasangama) & Narayanpur Backwaters", "name_kn": "ಕೂಡಲಸಂಗಮ ಕೃಷ್ಣಾ-ಮಲಪ್ರಭಾ ನದಿ ಸಂಗಮ & ನಾರಾಯಣಪುರ ಹಿನ್ನೀರು", "district": "Bagalkot / Vijayapura", "lat": 16.2000, "lon": 76.2000, "radius_km": 8.5},
+    {"name": "Cauvery (Kaveri) River & Srirangapatna Island Basin", "name_kn": "ಕಾವೇರಿ ನದಿ & ಶ್ರೀರಂಗಪಟ್ಟಣ ಜಲಪ್ರದೇಶ", "district": "Mandya", "lat": 12.4200, "lon": 76.7000, "radius_km": 4.5},
+    {"name": "Shivanasamudra Falls & Cauvery River Basin", "name_kn": "ಶಿವನಸಮುದ್ರ ಜಲಪಾತ & ಕಾವೇರಿ ಜಲಪ್ರದೇಶ", "district": "Chamarajanagar / Mandya", "lat": 12.2950, "lon": 77.1700, "radius_km": 4.0},
+    {"name": "Mekedatu & Sangama (Cauvery-Arkavathi Confluence)", "name_kn": "ಮೇಕೆದಾಟು & ಸಂಗಮ", "district": "Ramanagara", "lat": 12.2700, "lon": 77.4400, "radius_km": 4.0},
+    {"name": "Tungabhadra River Basin (Hampi-Anegundi)", "name_kn": "ತುಂಗಭದ್ರಾ ನದಿ ಜಲಪ್ರದೇಶ (ಹಂಪಿ)", "district": "Vijayanagara / Koppal", "lat": 15.3400, "lon": 76.4600, "radius_km": 5.0},
+    {"name": "Gokak Falls & Ghataprabha River Gorge", "name_kn": "ಗೋಕಾಕ್ ಜಲಪಾತ & ಘಟಪ್ರಭಾ ಜಲಪ್ರದೇಶ", "district": "Belagavi", "lat": 16.1850, "lon": 74.7800, "radius_km": 3.5},
+    {"name": "Jog Falls & Sharavathi River Gorge", "name_kn": "ಜೋಗ ಜಲಪಾತ & ಶರಾವತಿ ಕಣಿವೆ", "district": "Shivamogga / Uttara Kannada", "lat": 14.2280, "lon": 74.8120, "radius_km": 4.0},
+    {"name": "Kudli (Tunga-Bhadra River Confluence)", "name_kn": "ಕೂಡ್ಲಿ (ತುಂಗಾ-ಭದ್ರಾ ನದಿ ಸಂಗಮ)", "district": "Shivamogga", "lat": 14.0050, "lon": 75.6750, "radius_km": 3.5},
+    {"name": "Triveni Sangama (Bhagamandala)", "name_kn": "ತ್ರಿವೇಣಿ ಸಂಗಮ (ಭಾಗಮಂಡಲ)", "district": "Kodagu", "lat": 12.3880, "lon": 75.5300, "radius_km": 2.5},
+    {"name": "T. Narasipura Triveni Sangama (Cauvery-Kapila Confluence)", "name_kn": "ಟಿ. ನರಸೀಪುರ ತ್ರಿವೇಣಿ ಸಂಗಮ", "district": "Mysuru", "lat": 12.2150, "lon": 76.9050, "radius_km": 3.0},
+    {"name": "Chunchanakatte Falls & Cauvery Basin", "name_kn": "ಚುಂಚನಕಟ್ಟೆ ಜಲಪಾತ & ಕಾವೇರಿ ಜಲಪ್ರದೇಶ", "district": "Mysuru", "lat": 12.5100, "lon": 76.2800, "radius_km": 2.5},
 
     # ── B. BENGALURU CITY & URBAN LAKES ──
     {"name": "Bellandur Lake", "name_kn": "ಬೆಳ್ಳಂದೂರು ಕೆರೆ", "district": "Bengaluru Urban", "lat": 12.9360, "lon": 77.6750, "radius_km": 1.6},
