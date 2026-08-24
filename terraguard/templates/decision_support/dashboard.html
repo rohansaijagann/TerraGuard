@@ -553,10 +553,245 @@ body.dark-theme .ai-window-header{background:rgba(0,0,0,0.15)}
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-4px); }
         }
+
+        /* -- SMOOTH THEME & ELEMENT TRANSITIONS -- */
+        body, #agent-sidebar, .agent-header, .sticky-header-container, .recommendation-card, .stat-card, .v-tab-btn, .filter-pill, .alert-banner-inner, .scanner-card, .suggestion-item {
+            transition: background-color 0.28s ease, color 0.28s ease, border-color 0.28s ease, box-shadow 0.28s ease !important;
+        }
+
+        /* -- AMBIENT GRADIENT MESH -- */
+        #ambient-glow-mesh {
+            position: absolute;
+            top: -120px;
+            right: -80px;
+            width: 700px;
+            height: 700px;
+            background: radial-gradient(circle, rgba(16,185,129,0.15) 0%, rgba(56,189,248,0.09) 35%, rgba(245,158,11,0.04) 65%, transparent 75%);
+            filter: blur(55px);
+            pointer-events: none;
+            z-index: 999;
+            animation: ambientShift 18s ease-in-out infinite alternate;
+        }
+        @keyframes ambientShift {
+            0% { transform: translate(0, 0) scale(1); opacity: 0.7; }
+            50% { transform: translate(-35px, 45px) scale(1.08); opacity: 0.95; }
+            100% { transform: translate(25px, -30px) scale(0.94); opacity: 0.65; }
+        }
+
+        /* -- STAGGERED ENTRANCE ANIMATION -- */
+        @keyframes cardSlideFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(18px) scale(0.97);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        .recommendation-card {
+            animation: cardSlideFadeIn 0.42s cubic-bezier(0.16, 1, 0.3, 1) both;
+            animation-delay: calc(var(--card-index, 0) * 0.048s);
+        }
+
+        /* -- CONTEXTUAL SCORE TIER ACCENTS -- */
+        .recommendation-card[data-score-tier="high"]::before {
+            background: linear-gradient(180deg, #10b981, #059669);
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.6);
+        }
+        .recommendation-card[data-score-tier="medium"]::before {
+            background: linear-gradient(180deg, #f59e0b, #d97706);
+            box-shadow: 0 0 10px rgba(245, 158, 11, 0.6);
+        }
+        .recommendation-card[data-score-tier="low"]::before {
+            background: linear-gradient(180deg, #ef4444, #dc2626);
+            box-shadow: 0 0 10px rgba(239, 68, 68, 0.6);
+        }
+
+        /* -- CIRCULAR PROGRESS RING FOR SCORE BADGES -- */
+        .score-progress-wrap {
+            position: relative;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .score-ring-svg {
+            transform: rotate(-90deg);
+            width: 44px;
+            height: 44px;
+        }
+        .score-ring-bg {
+            fill: none;
+            stroke: var(--bg-filter);
+            stroke-width: 3.5;
+        }
+        .score-ring-fill {
+            fill: none;
+            stroke-width: 3.5;
+            stroke-linecap: round;
+            stroke-dasharray: 100.53;
+            stroke-dashoffset: 100.53;
+            animation: ringFillAnim 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            animation-delay: 0.12s;
+        }
+        @keyframes ringFillAnim {
+            to {
+                stroke-dashoffset: var(--ring-target-offset, 0);
+            }
+        }
+        .score-ring-fill.high { stroke: #10b981; filter: drop-shadow(0 0 4px rgba(16,185,129,0.5)); }
+        .score-ring-fill.medium { stroke: #f59e0b; filter: drop-shadow(0 0 4px rgba(245,158,11,0.5)); }
+        .score-ring-fill.low { stroke: #ef4444; filter: drop-shadow(0 0 4px rgba(239,68,68,0.5)); }
+        .score-ring-text {
+            position: absolute;
+            display: flex;
+            align-items: baseline;
+            justify-content: center;
+            font-size: 0.72rem;
+            font-weight: 800;
+            color: var(--text-main);
+            letter-spacing: -0.02em;
+        }
+        .score-ring-text .score-pct {
+            font-size: 0.5rem;
+            font-weight: 700;
+            color: var(--text-muted);
+        }
+
+        /* -- SMOOTH ACCORDION EXPANSION -- */
+        .details-container {
+            display: grid !important;
+            grid-template-rows: 0fr;
+            transition: grid-template-rows 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease, margin-top 0.3s ease, padding-top 0.3s ease;
+            opacity: 0;
+            margin-top: 0;
+            padding-top: 0;
+            border-top: 1px solid transparent;
+            overflow: hidden;
+        }
+        .details-container-inner {
+            min-height: 0;
+        }
+        .recommendation-card.expanded .details-container {
+            grid-template-rows: 1fr;
+            opacity: 1;
+            margin-top: 11px;
+            padding-top: 11px;
+            border-top-color: var(--border-light);
+        }
+
+        /* -- SHIMMER SWEEP GRADIENT FOR SKELETON LOADERS -- */
+        @keyframes shimmerSweep {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        .skel-line, .skel-box {
+            background: linear-gradient(90deg, var(--border-light) 25%, rgba(255,255,255,0.16) 50%, var(--border-light) 75%) !important;
+            background-size: 200% 100% !important;
+            animation: shimmerSweep 1.8s infinite linear !important;
+        }
+
+        /* -- GLASSMORPHIC MAP POPUPS & TOOLTIPS -- */
+        .leaflet-popup-content-wrapper, .leaflet-tooltip {
+            background: var(--glass-gradient) !important;
+            backdrop-filter: blur(24px) saturate(180%) !important;
+            -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+            border: 1px solid var(--glass-border) !important;
+            border-radius: var(--radius-md) !important;
+            box-shadow: var(--shadow-glass) !important;
+            color: var(--text-main) !important;
+        }
+        .leaflet-popup-tip {
+            background: var(--card-bg) !important;
+        }
+
+        /* -- TOAST NOTIFICATION PROGRESS SYSTEM -- */
+        #toast-container {
+            position: fixed;
+            bottom: 24px;
+            left: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 10000;
+            pointer-events: none;
+        }
+        .tg-toast {
+            background: var(--glass-gradient);
+            backdrop-filter: blur(28px) saturate(180%);
+            -webkit-backdrop-filter: blur(28px) saturate(180%);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-glass);
+            color: var(--text-main);
+            padding: 10px 16px 12px;
+            font-size: var(--text-sm);
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            position: relative;
+            overflow: hidden;
+            pointer-events: auto;
+            animation: toastSlideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            min-width: 220px;
+            max-width: 360px;
+        }
+        .tg-toast.hide {
+            animation: toastSlideOut 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        .tg-toast-progress {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), #38bdf8);
+            width: 100%;
+            animation: toastProgress linear forwards;
+        }
+        @keyframes toastSlideIn {
+            from { opacity: 0; transform: translateY(20px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        @keyframes toastSlideOut {
+            from { opacity: 1; transform: translateY(0) scale(1); }
+            to { opacity: 0; transform: translateY(20px) scale(0.95); }
+        }
+        @keyframes toastProgress {
+            from { width: 100%; }
+            to { width: 0%; }
+        }
+
+        /* -- SCROLL-AWARE STICKY HEADER BADGE -- */
+        #sticky-location-chip {
+            display: none;
+            align-items: center;
+            gap: 5px;
+            background: var(--primary-light);
+            border: 1px solid rgba(16,185,129,0.3);
+            color: var(--primary);
+            font-size: 0.68rem;
+            font-weight: 800;
+            padding: 3px 8px;
+            border-radius: var(--radius-pill);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 160px;
+        }
+
 </style>
 
 </head>
 <body class="dark-theme">
+    <!-- Ambient Gradient Glow -->
+    <div id="ambient-glow-mesh"></div>
+    <!-- Toast Notification Container -->
+    <div id="toast-container"></div>
+
 
         <div id="map-container">
         <div id="map"></div>
@@ -599,6 +834,7 @@ body.dark-theme .ai-window-header{background:rgba(0,0,0,0.15)}
         <div id="feed-container">
             <!-- Sticky Search + Filter Header -->
             <div class="sticky-header-container">
+                <div id="sticky-location-chip" style="margin-bottom:6px;"><i class="fa-solid fa-location-dot"></i> <span id="sticky-location-name"></span></div>
                 <div style="position:relative;">
                     <i class="fa-solid fa-magnifying-glass" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:0.82rem;pointer-events:none;"></i>
                     <input type="text" id="location-search" data-i18n-placeholder="search_ph" placeholder="Search village, city..."
@@ -878,6 +1114,7 @@ body.dark-theme .ai-window-header{background:rgba(0,0,0,0.15)}
             const name = placeName || getKarnatakaPlaceName(latStr, lonStr);
             
             setLocationMarker(latStr, lonStr, name);
+            if (typeof updatePageLocationTitle === 'function') updatePageLocationTitle(name);
             const searchInput = document.getElementById('location-search');
             if (searchInput) searchInput.value = name;
             
@@ -1031,7 +1268,29 @@ body.dark-theme .ai-window-header{background:rgba(0,0,0,0.15)}
             outputElem.textContent = formatted;
         }
 
-        // Fix 9: Copy share link
+        // ── Advanced Toast Notification System with Progress Bar ──
+        function showToast(message, icon = 'fa-check', type = 'success', duration = 2800) {
+            const container = document.getElementById('toast-container');
+            if (!container) return;
+            
+            const toast = document.createElement('div');
+            toast.className = 'tg-toast';
+            
+            const iconColor = type === 'error' ? '#ef4444' : type === 'warning' ? '#f59e0b' : '#10b981';
+            toast.innerHTML = `
+                <i class="fa-solid ${icon}" style="color:${iconColor};font-size:1.05rem;flex-shrink:0;"></i>
+                <span style="flex:1;">${message}</span>
+                <div class="tg-toast-progress" style="animation-duration:${duration}ms;"></div>
+            `;
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.classList.add('hide');
+                setTimeout(() => toast.remove(), 320);
+            }, duration);
+        }
+
+        // Updated copy share link with toast
         function copyShareLink() {
             if (typeof updateShareUrl === 'function' && currentMarker) {
                 const lat = currentMarker.getLatLng().lat;
@@ -1039,9 +1298,9 @@ body.dark-theme .ai-window-header{background:rgba(0,0,0,0.15)}
                 updateShareUrl(lat, lon);
             }
             navigator.clipboard.writeText(window.location.href).then(() => {
-                const toast = document.getElementById('copy-toast');
-                toast.classList.add('show');
-                setTimeout(() => toast.classList.remove('show'), 2200);
+                showToast(currentLang === 'kn' ? 'ಜಮೀನಿನ ಲಿಂಕ್ ನಕಲಿಸಲಾಗಿದೆ!' : 'Location link copied to clipboard!', 'fa-link');
+            }).catch(() => {
+                showToast('Failed to copy link', 'fa-triangle-exclamation', 'error');
             });
         }
 
@@ -1283,24 +1542,20 @@ body.dark-theme .ai-window-header{background:rgba(0,0,0,0.15)}
         }
 
         function toggleDetails(cardElement) {
-            const detailsContainer = cardElement.querySelector('.details-container');
-            const isOpen = detailsContainer.style.display === 'block';
+            const isCurrentlyExpanded = cardElement.classList.contains('expanded');
             // Collapse all other open cards first (accordion)
             document.querySelectorAll('.recommendation-card.expanded').forEach(card => {
                 if (card !== cardElement) {
-                    card.querySelector('.details-container').style.display = 'none';
                     card.classList.remove('expanded');
                 }
             });
-            if (isOpen) {
-                detailsContainer.style.display = 'none';
+            if (isCurrentlyExpanded) {
                 cardElement.classList.remove('expanded');
             } else {
-                detailsContainer.style.display = 'block';
                 cardElement.classList.add('expanded');
-                setTimeout(() => cardElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50);
-                const roiInput = detailsContainer.querySelector('.roi-acre-input');
-                const roiVal = detailsContainer.querySelector('.roi-val');
+                setTimeout(() => cardElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 60);
+                const roiInput = cardElement.querySelector('.roi-acre-input');
+                const roiVal = cardElement.querySelector('.roi-val');
                 if (roiInput && roiVal && roiVal.textContent === '₹--') roiInput.dispatchEvent(new Event('input'));
             }
         }
@@ -2058,16 +2313,18 @@ body.dark-theme .ai-window-header{background:rgba(0,0,0,0.15)}
 
         function locateMe() {
             if (navigator.geolocation) {
+                showToast(currentLang === 'kn' ? 'GPS ಮೂಲಕ ಸ್ಥಳ ಹುಡುಕಲಾಗುತ್ತಿದೆ...' : 'Acquiring GPS location...', 'fa-location-crosshairs', 'success', 2000);
                 navigator.geolocation.getCurrentPosition(position => {
                     const lat = position.coords.latitude.toFixed(4);
                     const lon = position.coords.longitude.toFixed(4);
                     map.flyTo([lat, lon], 14);
                     selectLocation(lat, lon);
+                    showToast(currentLang === 'kn' ? 'ಸ್ಥಳ ಗುರುತಿಸಲಾಗಿದೆ!' : 'GPS Location Locked!', 'fa-location-dot', 'success', 2500);
                 }, () => {
-                    alert(currentLang === 'kn' ? "ಸ್ಥಳ ಪಡೆಯಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ" : "Could not fetch location");
+                    showToast(currentLang === 'kn' ? "ಸ್ಥಳ ಪಡೆಯಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ" : "Could not fetch GPS location", 'fa-triangle-exclamation', 'error');
                 });
             } else {
-                alert("Geolocation not supported");
+                showToast("Geolocation not supported by browser", 'fa-triangle-exclamation', 'error');
             }
         }
 
@@ -2241,22 +2498,22 @@ body.dark-theme .ai-window-header{background:rgba(0,0,0,0.15)}
                 <div class="env-metrics">
                     <div class="metric-card">
                         <i class="fa-solid fa-cloud-rain"></i>
-                        <div class="metric-val">${data.environmental_context.rainfall}mm</div>
+                        <div class="metric-val" data-count="${data.environmental_context.rainfall}" data-suffix="mm">${data.environmental_context.rainfall}mm</div>
                         <div class="metric-label">Rain</div>
                     </div>
                     <div class="metric-card">
                         <i class="fa-solid fa-mountain"></i>
-                        <div class="metric-val">${data.environmental_context.elevation}m</div>
+                        <div class="metric-val" data-count="${data.environmental_context.elevation}" data-suffix="m">${data.environmental_context.elevation}m</div>
                         <div class="metric-label">Elev.</div>
                     </div>
                     <div class="metric-card">
                         <i class="fa-solid fa-flask"></i>
-                        <div class="metric-val">${data.environmental_context.ph}</div>
+                        <div class="metric-val" data-count="${data.environmental_context.ph}">${data.environmental_context.ph}</div>
                         <div class="metric-label">Soil pH</div>
                     </div>
                     <div class="metric-card">
                         <i class="fa-solid fa-leaf"></i>
-                        <div class="metric-val">${data.environmental_context.nitrogen > 0 ? data.environmental_context.nitrogen : 'N/A'}</div>
+                        <div class="metric-val" ${data.environmental_context.nitrogen > 0 ? `data-count="${data.environmental_context.nitrogen}"` : ''}>${data.environmental_context.nitrogen > 0 ? data.environmental_context.nitrogen : 'N/A'}</div>
                         <div class="metric-label">N (cg/kg)</div>
                     </div>
                 </div>
@@ -2516,8 +2773,9 @@ body.dark-theme .ai-window-header{background:rgba(0,0,0,0.15)}
                         // Crown on first visible card in current filter
                         const isVisibleBest = index === 0 && (currentFilter === 'all' || rec.type === currentFilter || horizon === currentFilter);
 
+                        const scoreTier = rec.score >= 85 ? 'high' : rec.score >= 65 ? 'medium' : 'low';
                         html += `
-                        <div class="recommendation-card${isVisibleBest?' best-pick':''}" data-type="${rec.type}" data-horizon="${horizon}" style="display: ${displayStyle}" onclick="toggleDetails(this)">
+                        <div class="recommendation-card${isVisibleBest?' best-pick':''}" data-type="${rec.type}" data-horizon="${horizon}" data-score-tier="${scoreTier}" style="--card-index: ${index}; display: ${displayStyle}" onclick="toggleDetails(this)">
                             ${isVisibleBest ? `<div class="rec-best-badge">BEST</div>` : ''}
                             <div class="rec-header">
                                 <div class="species-title">
@@ -2527,8 +2785,14 @@ body.dark-theme .ai-window-header{background:rgba(0,0,0,0.15)}
                                         <span class="species-type">${rec.type === 'Tree' ? i18n[currentLang]['filter_trees'] : i18n[currentLang]['filter_crops']}</span>
                                     </div>
                                 </div>
-                                <div class="score-circle ${rec.score >= 85 ? 'score-high' : rec.score >= 65 ? 'score-medium' : 'score-low'}">
-                                    <i class="fa-solid fa-check-circle"></i> <span class="score-num" data-target="${rec.score}">0</span>% <span class="trend-arrow ${trendCls}" title="${trendTip}">${trendIcon}</span>
+                                <div class="score-progress-wrap" title="${rec.score}% match">
+                                    <svg class="score-ring-svg" width="44" height="44" viewBox="0 0 44 44">
+                                        <circle class="score-ring-bg" cx="22" cy="22" r="16"/>
+                                        <circle class="score-ring-fill ${scoreTier}" cx="22" cy="22" r="16" style="--ring-target-offset: calc(100.53px - (100.53px * ${rec.score} / 100));"/>
+                                    </svg>
+                                    <div class="score-ring-text">
+                                        <span class="score-num" data-target="${rec.score}">0</span><span class="score-pct">%</span>
+                                    </div>
                                 </div>
                             </div>
 
@@ -2543,6 +2807,7 @@ body.dark-theme .ai-window-header{background:rgba(0,0,0,0.15)}
                             </div>
                             
                             <div class="details-container" onclick="event.stopPropagation();">
+                                <div class="details-container-inner">
                                 <div class="detail-row">
                                     <div class="detail-label"><i class="fa-solid fa-cloud-rain"></i> <span data-i18n="rain_label">${i18n[currentLang]['rain_label']}</span></div>
                                     <div class="detail-values">
@@ -2867,6 +3132,7 @@ body.dark-theme .ai-window-header{background:rgba(0,0,0,0.15)}
                                         </div>
                                     </div>
                                 </div>` : ''}
+                                </div>
                                 </div>
                             </div>
                         </div>`;
@@ -4252,8 +4518,10 @@ multiCropModels.forEach((model, mIdx) => {
             
             if(exists >= 0) {
                 savedLocations.splice(exists, 1);
+                showToast(currentLang === 'kn' ? 'ಉಳಿಸಿದ ಸ್ಥಳಗಳಿಂದ ತೆಗೆದುಹಾಕಲಾಗಿದೆ' : 'Location removed from bookmarks', 'fa-bookmark', 'warning');
             } else {
                 savedLocations.push({ id, lat, lon, name, date: new Date().toLocaleDateString() });
+                showToast(currentLang === 'kn' ? 'ಸ್ಥಳವನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಉಳಿಸಲಾಗಿದೆ!' : 'Location saved to bookmarks!', 'fa-bookmark', 'success');
             }
             localStorage.setItem('terraguard_locations', JSON.stringify(savedLocations));
             
@@ -4617,6 +4885,7 @@ multiCropModels.forEach((model, mIdx) => {
 
         // 4. Export PDF Dossier
         function exportPDF() {
+            showToast(currentLang === 'kn' ? 'PDF ವರದಿ ರಚಿಸಲಾಗುತ್ತಿದೆ...' : 'Generating PDF Report...', 'fa-file-pdf', 'success', 2500);
             // Expand all cards so everything is visible in print
             document.querySelectorAll('.details-container').forEach(el => el.style.display = 'block');
             document.querySelectorAll('.recommendation-card').forEach(el => el.style.display = 'block');
@@ -4639,6 +4908,7 @@ multiCropModels.forEach((model, mIdx) => {
                 html2pdf().set(opt).from(el).save().then(() => {
                     if (exportBtn) exportBtn.innerHTML = '<i class="fa-solid fa-file-pdf"></i>';
                     document.querySelectorAll('.recommendation-card:not(.expanded) .details-container').forEach(el => el.style.display = 'none');
+                    showToast(currentLang === 'kn' ? 'PDF ಡೌನ್‌ಲೋಡ್ ಪೂರ್ಣಗೊಂಡಿದೆ!' : 'PDF Downloaded successfully!', 'fa-circle-check', 'success', 2500);
                 });
             } else {
                 // Browser print fallback — print CSS handles layout
@@ -5118,14 +5388,76 @@ multiCropModels.forEach((model, mIdx) => {
         }
 
                 // Clean load without automatic clicks
-        window.addEventListener('load', () => {
-            if (typeof map !== 'undefined' && map) {
-                map.invalidateSize();
+        // ── 1. Dynamic Page Title & Sticky Location Chip ──
+        function updatePageLocationTitle(placeName) {
+            if (!placeName) return;
+            document.title = `TerraGuard — ${placeName}`;
+            const chip = document.getElementById('sticky-location-chip');
+            const nameEl = document.getElementById('sticky-location-name');
+            if (chip && nameEl) {
+                nameEl.textContent = placeName;
             }
-        });
-        window.addEventListener('resize', () => {
-            if (typeof map !== 'undefined' && map) {
-                map.invalidateSize();
+        }
+
+        // Scroll listener for sticky header location pill
+        const feedContainer = document.getElementById('feed-container');
+        if (feedContainer) {
+            feedContainer.addEventListener('scroll', () => {
+                const chip = document.getElementById('sticky-location-chip');
+                if (!chip) return;
+                const activeName = document.getElementById('sticky-location-name')?.textContent;
+                if (feedContainer.scrollTop > 75 && activeName) {
+                    chip.style.display = 'inline-flex';
+                } else {
+                    chip.style.display = 'none';
+                }
+            }, { passive: true });
+        }
+
+        // ── 2. Global Keyboard Shortcuts ──
+        document.addEventListener('keydown', (e) => {
+            const tag = (e.target.tagName || '').toLowerCase();
+            const isInput = tag === 'input' || tag === 'textarea' || e.target.isContentEditable;
+            
+            if (e.key === 'Escape') {
+                const aiWin = document.getElementById('floating-ai-window');
+                if (aiWin && aiWin.style.display === 'flex') {
+                    toggleFloatingAiChat();
+                }
+                const sugg = document.getElementById('search-suggestions');
+                if (sugg) sugg.style.display = 'none';
+                return;
+            }
+
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+                e.preventDefault();
+                const searchInp = document.getElementById('location-search');
+                if (searchInp) {
+                    searchInp.focus();
+                    searchInp.select();
+                }
+                return;
+            }
+
+            if (!isInput) {
+                if (e.key === '/') {
+                    e.preventDefault();
+                    const searchInp = document.getElementById('location-search');
+                    if (searchInp) {
+                        searchInp.focus();
+                        searchInp.select();
+                    }
+                } else if (e.key === '1') {
+                    switchTab('agro');
+                } else if (e.key === '2') {
+                    switchTab('diag');
+                } else if (e.key === '3') {
+                    switchTab('fire');
+                } else if (e.key === '4') {
+                    switchTab('pest');
+                } else if (e.key === '5') {
+                    switchTab('saved');
+                }
             }
         });
 
