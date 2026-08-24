@@ -147,7 +147,7 @@ pip install -r requirements.txt
 ```bash
 cd terraguard
 python manage.py migrate
-python populate_species.py
+python manage.py seed_data
 ```
 
 ### 4. Run the Development Server

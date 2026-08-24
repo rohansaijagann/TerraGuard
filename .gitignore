@@ -30,3 +30,5 @@ scratch/
 *.swo
 .DS_Store
 Thumbs.db
+staticfiles/
+terraguard/staticfiles/
