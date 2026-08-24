@@ -5427,6 +5427,7 @@ multiCropModels.forEach((model, mIdx) => {
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         query: query,
+                        image_data: imageUrl,
                         chat_history: aiChatHistory,
                         farm_context: {
                             ...currentFarmContext,

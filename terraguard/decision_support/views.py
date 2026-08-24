@@ -2371,12 +2371,13 @@ class RaithaSahayakaAPI(APIView):
         from .ml_utils.ai_agronomist import generate_agronomist_reply
 
         query = request.data.get('query', '')
+        image_data = request.data.get('image_data', None)
         chat_history = request.data.get('chat_history', [])
         farm_context = request.data.get('farm_context', {})
         language = request.data.get('language', 'kn')
 
-        if not query.strip():
-            return Response({"reply": "ದಯವಿಟ್ಟು ನಿಮ್ಮ ಕೃಷಿ ಪ್ರಶ್ನೆಯನ್ನು ಕೇಳಿ... / Please ask your farming question.", "source": "Raitha Sahayaka"})
+        if not query.strip() and not image_data:
+            return Response({"reply": "ದಯವಿಟ್ಟು ನಿಮ್ಮ ಕೃಷಿ ಪ್ರಶ್ನೆಯನ್ನು ಕೇಳಿ ಅಥವಾ ಎಲೆಯ ಫೋಟೋ ಅಪ್ಲೋಡ್ ಮಾಡಿ... / Please ask a farming question or upload a crop photo.", "source": "Raitha Sahayaka"})
 
-        data = generate_agronomist_reply(query, chat_history, farm_context, language)
+        data = generate_agronomist_reply(query, chat_history, farm_context, language, image_data=image_data)
         return Response(data)
