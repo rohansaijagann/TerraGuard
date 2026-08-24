@@ -354,6 +354,58 @@
             box-shadow: 0 4px 14px rgba(0,0,0,0.15);
             word-break: break-word;
         }
+        /* ══ FLOATING RAITHA SAHAYAKA AI WIDGET ══ */
+        #floating-ai-container {
+            position: fixed;
+            bottom: 24px;
+            left: 24px;
+            z-index: 1200;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        #floating-ai-fab {
+            width: 56px; height: 56px; border-radius: 50%;
+            background: linear-gradient(135deg, #10b981, #0ea5e9);
+            border: 2px solid rgba(255,255,255,0.3);
+            color: #fff; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.45rem;
+            box-shadow: 0 12px 30px rgba(16,185,129,0.5), 0 0 0 1px rgba(255,255,255,0.2) inset;
+            transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.25s ease;
+            flex-shrink: 0;
+        }
+        #floating-ai-fab:hover {
+            transform: scale(1.08) translateY(-2px);
+            box-shadow: 0 16px 36px rgba(16,185,129,0.7);
+        }
+        #floating-ai-bubble {
+            background: var(--glass-gradient);
+            backdrop-filter: blur(24px);
+            border: 1px solid var(--glass-border);
+            border-radius: 14px;
+            padding: 7px 12px;
+            font-size: 0.76rem;
+            font-weight: 700;
+            color: var(--text-main);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            animation: floatPulse 3s infinite ease-in-out;
+            white-space: nowrap;
+            user-select: none;
+            transition: transform 0.2s;
+        }
+        #floating-ai-bubble:hover {
+            transform: translateY(-2px);
+            border-color: var(--primary);
+        }
+        @keyframes floatPulse {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-4px); }
+        }
 </style>
 
 </head>
@@ -498,64 +550,6 @@
                 </div>
             </div>
 
-            <!-- 🤖 Raitha Sahayaka AI Conversational Agronomist -->
-            <div id="ai-feed" class="tab-content" style="display:none; flex-direction:column; height:100%; padding:0; overflow:hidden;">
-                <!-- AI Chat Header -->
-                <div style="padding:12px 14px; background:rgba(0,0,0,0.15); border-bottom:1px solid var(--glass-border); display:flex; align-items:center; justify-content:space-between; flex-shrink:0;">
-                    <div style="display:flex; align-items:center; gap:9px;">
-                        <div style="width:34px; height:34px; border-radius:10px; background:linear-gradient(135deg, #10b981, #0ea5e9); display:flex; align-items:center; justify-content:center; color:#fff; font-size:1.05rem; box-shadow:0 4px 12px rgba(16,185,129,0.35);">
-                            <i class="fa-solid fa-robot"></i>
-                        </div>
-                        <div>
-                            <div style="font-weight:800; font-size:0.88rem; color:var(--text-main); display:flex; align-items:center; gap:5px;">
-                                <span data-i18n="ai_name">ರೈತ ಸಹಾಯಕ AI</span>
-                                <span style="font-size:0.56rem; background:rgba(16,185,129,0.18); color:#10b981; border:1px solid rgba(16,185,129,0.3); padding:1px 6px; border-radius:8px; font-weight:800;">LIVE</span>
-                            </div>
-                            <div id="ai-farm-badge" style="font-size:0.64rem; color:var(--text-muted); margin-top:1px;">
-                                📍 <span id="ai-farm-loc-name">Karnataka Farm</span> • Live Agronomic Grounding
-                            </div>
-                        </div>
-                    </div>
-                    <button type="button" onclick="clearAiChat()" style="background:rgba(255,255,255,0.05); border:1px solid var(--glass-border); color:var(--text-muted); padding:4px 8px; border-radius:7px; cursor:pointer; font-size:0.66rem; font-weight:700; transition:0.2s;" title="Clear Chat">
-                        <i class="fa-solid fa-trash-can"></i>
-                    </button>
-                </div>
-
-                <!-- Chat Messages Scroll Area -->
-                <div id="ai-chat-messages" style="flex:1; overflow-y:auto; padding:14px; display:flex; flex-direction:column; gap:10px;">
-                    <!-- Initial Welcome Message from Raitha Sahayaka -->
-                    <div style="display:flex; gap:9px; align-items:flex-start; max-width:92%;">
-                        <div style="width:28px; height:28px; border-radius:8px; background:linear-gradient(135deg, #10b981, #0ea5e9); display:flex; align-items:center; justify-content:center; color:#fff; font-size:0.8rem; flex-shrink:0; margin-top:2px;">
-                            <i class="fa-solid fa-robot"></i>
-                        </div>
-                        <div style="background:var(--card-bg); border:1px solid var(--glass-border); border-radius:12px 12px 12px 2px; padding:10px 12px; font-size:0.82rem; color:var(--text-main); line-height:1.55; box-shadow:0 4px 14px rgba(0,0,0,0.15);">
-                            <div style="font-weight:700; color:var(--primary); margin-bottom:4px;" data-i18n="ai_greeting_title">ನಮಸ್ಕಾರ ರೈತ ಬಾಂಧವರೇ! 🙏</div>
-                            <div id="ai-greeting-body">ನಾನು <strong>ರೈತ ಸಹಾಯಕ (Raitha Sahayaka)</strong>. ನಿಮ್ಮ ಜಮೀನಿನ ಮಣ್ಣು, ಮಳೆ ಮತ್ತು ಅಂತರ್ಜಲಕ್ಕೆ ಅನುಗುಣವಾಗಿ ರಸಗೊಬ್ಬರ ಪ್ರಮಾಣ, ನೀರಿನ ನಿರ್ವಹಣೆ, ಬೆಳೆ ವಿನ್ಯಾಸ ಹಾಗೂ ಸರ್ಕಾರಿ ಸಬ್ಸಿಡಿಗಳ ಬಗ್ಗೆ ಯಾವುದೇ ಪ್ರಶ್ನೆ ಕೇಳಿ!</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Quick Prompt Chips -->
-                <div style="padding:6px 12px; background:rgba(0,0,0,0.08); border-top:1px solid var(--border-light); display:flex; gap:5px; overflow-x:auto; white-space:nowrap; flex-shrink:0;">
-                    <button type="button" onclick="handleAiQuickPrompt(this)" data-q="ಎಕರೆಗೆ ಎಷ್ಟು ಗೊಬ್ಬರ (NPK) ಹಾಕಬೇಕು?" style="padding:4px 9px; border-radius:12px; background:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.25); color:var(--primary); font-size:0.66rem; font-weight:700; cursor:pointer; font-family:inherit; flex-shrink:0;">🌾 ರಸಗೊಬ್ಬರ ಲೆಕ್ಕ</button>
-                    <button type="button" onclick="handleAiQuickPrompt(this)" data-q="ಕಡಿಮೆ ನೀರಿಗೆ ಯಾವ ಬೆಳೆಗಳು ಸೂಕ್ತ?" style="padding:4px 9px; border-radius:12px; background:rgba(59,130,246,0.08); border:1px solid rgba(59,130,246,0.25); color:#60a5fa; font-size:0.66rem; font-weight:700; cursor:pointer; font-family:inherit; flex-shrink:0;">💧 ಕಡಿಮೆ ನೀರಿನ ಬೆಳೆ</button>
-                    <button type="button" onclick="handleAiQuickPrompt(this)" data-q="ರೈತ ಸಿರಿ & ಕೃಷಿ ಭಾಗ್ಯ ಸಬ್ಸಿಡಿ ಪಡೆಯುವುದು ಹೇಗೆ?" style="padding:4px 9px; border-radius:12px; background:rgba(245,158,11,0.08); border:1px solid rgba(245,158,11,0.25); color:#fbbf24; font-size:0.66rem; font-weight:700; cursor:pointer; font-family:inherit; flex-shrink:0;">🏛️ ಸರ್ಕಾರಿ ಸಬ್ಸಿಡಿ</button>
-                    <button type="button" onclick="handleAiQuickPrompt(this)" data-q="೪-ಹಂತದ ಕೃಷಿ ಅರಣ್ಯ ಸಾಲಿನ ಅಂತರ ತಿಳಿಸಿ" style="padding:4px 9px; border-radius:12px; background:rgba(168,85,247,0.08); border:1px solid rgba(168,85,247,0.25); color:#c084fc; font-size:0.66rem; font-weight:700; cursor:pointer; font-family:inherit; flex-shrink:0;">🌲 ಸಾಲಿನ ಅಂತರ</button>
-                    <button type="button" onclick="handleAiQuickPrompt(this)" data-q="ಸೌರ ಕೃಷಿ (Agri-PV) ದ್ವಿ-ಆದಾಯ ಎಷ್ಟು ಸಿಗುತ್ತದೆ?" style="padding:4px 9px; border-radius:12px; background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.25); color:#f87171; font-size:0.66rem; font-weight:700; cursor:pointer; font-family:inherit; flex-shrink:0;">⚡ ಸೌರ ಕೃಷಿ (Agri-PV)</button>
-                </div>
-
-                <!-- Input Box with Voice Mic & Send Button -->
-                <div style="padding:10px 12px; background:var(--glass-bg); border-top:1px solid var(--glass-border); display:flex; gap:7px; align-items:center; flex-shrink:0;">
-                    <button type="button" id="btn-ai-mic" onclick="toggleAiVoiceInput()" style="width:36px; height:36px; border-radius:10px; background:rgba(255,255,255,0.06); border:1px solid var(--border-light); color:var(--text-muted); cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:0.9rem; transition:all 0.2s;" title="Speak in Kannada / English">
-                        <i class="fa-solid fa-microphone"></i>
-                    </button>
-                    <input type="text" id="ai-chat-input" placeholder="ಕೃಷಿ ಪ್ರಶ್ನೆ ಕೇಳಿ... / Ask a question..." onkeydown="if(event.key==='Enter') sendAiChatMessage()" style="flex:1; padding:9px 12px; border-radius:10px; border:1px solid var(--border-light); background:var(--glass-bg); color:var(--text-main); font-family:inherit; font-size:0.82rem; outline:none; transition:border-color 0.2s;">
-                    <button type="button" id="btn-ai-send" onclick="sendAiChatMessage()" style="width:36px; height:36px; border-radius:10px; background:linear-gradient(135deg, #10b981, #0ea5e9); border:none; color:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:0.88rem; box-shadow:0 4px 10px rgba(16,185,129,0.3); transition:all 0.2s;">
-                        <i class="fa-solid fa-paper-plane"></i>
-                    </button>
-                </div>
-            </div>
-            
         </div>
         </div> <!-- End of panel-content -->
         
@@ -563,9 +557,6 @@
         <div class="vertical-tabs">
             <button class="v-tab-btn active" onclick="switchTab('agro')" id="tab-agro" title="Agroforestry">
                 <i class="fa-solid fa-seedling"></i><span data-i18n="tab_agro">Agro</span>
-            </button>
-            <button class="v-tab-btn" onclick="switchTab('ai')" id="tab-ai" title="Raitha Sahayaka AI Chat">
-                <i class="fa-solid fa-robot" style="color:#10b981;"></i><span data-i18n="tab_ai">AI Chat</span>
             </button>
             <button class="v-tab-btn" onclick="switchTab('diag')" id="tab-diag" title="Drought Diagnostics">
                 <i class="fa-solid fa-satellite-dish"></i><span data-i18n="tab_diag">Diag</span>
@@ -581,6 +572,79 @@
             </button>
         </div>
 
+    </div>
+
+    <!-- ══ FLOATING RAITHA SAHAYAKA AI WIDGET ══ -->
+    <div id="floating-ai-container">
+        <!-- Floating Chat Popup Window (Toggled on click) -->
+        <div id="floating-ai-window" style="display:none; width:390px; height:530px; max-width:calc(100vw - 48px); max-height:calc(100vh - 120px); background:var(--glass-gradient); backdrop-filter:blur(48px) saturate(180%); -webkit-backdrop-filter:blur(48px) saturate(180%); border:1px solid var(--glass-border); border-radius:20px; box-shadow:0 32px 64px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.06) inset; margin-bottom:12px; flex-direction:column; overflow:hidden;">
+            
+            <!-- Window Header -->
+            <div style="padding:12px 14px; background:rgba(0,0,0,0.18); border-bottom:1px solid var(--glass-border); display:flex; align-items:center; justify-content:space-between; flex-shrink:0;">
+                <div style="display:flex; align-items:center; gap:9px;">
+                    <div style="width:34px; height:34px; border-radius:10px; background:linear-gradient(135deg, #10b981, #0ea5e9); display:flex; align-items:center; justify-content:center; color:#fff; font-size:1.05rem; box-shadow:0 4px 12px rgba(16,185,129,0.35);">
+                        <i class="fa-solid fa-robot"></i>
+                    </div>
+                    <div>
+                        <div style="font-weight:800; font-size:0.88rem; color:var(--text-main); display:flex; align-items:center; gap:5px;">
+                            <span id="ai-modal-header-title">Raitha Sahayaka AI</span>
+                            <span style="font-size:0.56rem; background:rgba(16,185,129,0.18); color:#10b981; border:1px solid rgba(16,185,129,0.3); padding:1px 6px; border-radius:8px; font-weight:800;">LIVE</span>
+                        </div>
+                        <div style="font-size:0.64rem; color:var(--text-muted); margin-top:1px;">
+                            📍 <span id="ai-farm-loc-name">Karnataka Farm</span>
+                        </div>
+                    </div>
+                </div>
+                <div style="display:flex; align-items:center; gap:6px;">
+                    <button type="button" onclick="clearAiChat()" style="background:rgba(255,255,255,0.06); border:1px solid var(--glass-border); color:var(--text-muted); padding:5px 8px; border-radius:8px; cursor:pointer; font-size:0.72rem; font-weight:700; transition:0.2s;" title="Clear Chat">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                    <button type="button" onclick="toggleFloatingAiChat()" style="background:rgba(255,255,255,0.06); border:1px solid var(--glass-border); color:var(--text-muted); padding:5px 9px; border-radius:8px; cursor:pointer; font-size:0.78rem; font-weight:700; transition:0.2s;" title="Close Window">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Chat Messages Scroll Area -->
+            <div id="ai-chat-messages" style="flex:1; overflow-y:auto; padding:14px; display:flex; flex-direction:column; gap:10px;">
+                <div style="display:flex; gap:9px; align-items:flex-start; max-width:92%;">
+                    <div style="width:28px; height:28px; border-radius:8px; background:linear-gradient(135deg, #10b981, #0ea5e9); display:flex; align-items:center; justify-content:center; color:#fff; font-size:0.8rem; flex-shrink:0; margin-top:2px;">
+                        <i class="fa-solid fa-robot"></i>
+                    </div>
+                    <div style="background:var(--card-bg); border:1px solid var(--glass-border); border-radius:12px 12px 12px 2px; padding:10px 12px; font-size:0.82rem; color:var(--text-main); line-height:1.55; box-shadow:0 4px 14px rgba(0,0,0,0.15);">
+                        <div style="font-weight:700; color:var(--primary); margin-bottom:4px;" id="ai-welcome-title">Hi! How can I help you today? 🙏</div>
+                        <div id="ai-welcome-desc">I am <strong>Raitha Sahayaka</strong>, your AI Agronomist. Ask me anything about crop suitability, fertilizer dosages, water/drought management, or government subsidies!</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Prompt Chips -->
+            <div id="ai-quick-chips" style="padding:6px 12px; background:rgba(0,0,0,0.08); border-top:1px solid var(--border-light); display:flex; gap:5px; overflow-x:auto; white-space:nowrap; flex-shrink:0;">
+                <!-- Populated dynamically via renderAiQuickChips -->
+            </div>
+
+            <!-- Input Box with Voice Mic & Send Button -->
+            <div style="padding:10px 12px; background:var(--glass-bg); border-top:1px solid var(--glass-border); display:flex; gap:7px; align-items:center; flex-shrink:0;">
+                <button type="button" id="btn-ai-mic" onclick="toggleAiVoiceInput()" style="width:36px; height:36px; border-radius:10px; background:rgba(255,255,255,0.06); border:1px solid var(--border-light); color:var(--text-muted); cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:0.9rem; transition:all 0.2s;" title="Speak in Kannada / English">
+                    <i class="fa-solid fa-microphone"></i>
+                </button>
+                <input type="text" id="ai-chat-input" placeholder="Ask a farming question... / ಕೃಷಿ ಪ್ರಶ್ನೆ ಕೇಳಿ..." onkeydown="if(event.key==='Enter') sendAiChatMessage()" style="flex:1; padding:9px 12px; border-radius:10px; border:1px solid var(--border-light); background:var(--glass-bg); color:var(--text-main); font-family:inherit; font-size:0.82rem; outline:none; transition:border-color 0.2s;">
+                <button type="button" id="btn-ai-send" onclick="sendAiChatMessage()" style="width:36px; height:36px; border-radius:10px; background:linear-gradient(135deg, #10b981, #0ea5e9); border:none; color:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:0.88rem; box-shadow:0 4px 10px rgba(16,185,129,0.3); transition:all 0.2s;">
+                    <i class="fa-solid fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Floating Trigger Row (Circular Button + Greeting Bubble) -->
+        <div style="display:flex; align-items:center; gap:10px;">
+            <button id="floating-ai-fab" type="button" onclick="toggleFloatingAiChat()" title="Raitha Sahayaka AI Agronomist">
+                <i id="fab-ai-icon" class="fa-solid fa-robot"></i>
+            </button>
+            <div id="floating-ai-bubble" onclick="toggleFloatingAiChat()">
+                <span>👋 <span id="fab-bubble-text">Hi! How can I help you?</span></span>
+                <i class="fa-solid fa-sparkles" style="color:var(--accent-amber); font-size:0.7rem;"></i>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -693,7 +757,6 @@
 
             document.getElementById('agro-tab').style.display = 'none';
             document.getElementById('feed').style.display = 'none';
-            document.getElementById('ai-feed').style.display = 'none';
             document.getElementById('diag-feed').style.display = 'none';
             document.getElementById('fire-feed').style.display = 'none';
             document.getElementById('pest-feed').style.display = 'none';
@@ -719,14 +782,6 @@
                         fetchRecommendations(lat, lon);
                     }
                 }
-            } else if(tabId === 'ai') {
-                document.getElementById('ai-feed').style.display = 'flex';
-                if(map && map.hasLayer(thermalLayer)) map.removeLayer(thermalLayer);
-                if(map && map.hasLayer(ndviLayer)) map.removeLayer(ndviLayer);
-                if(map && burnRadiusLayer && map.hasLayer(burnRadiusLayer)) map.removeLayer(burnRadiusLayer);
-                if(map && burnRadiusLayer?._windArrow && map.hasLayer(burnRadiusLayer._windArrow)) map.removeLayer(burnRadiusLayer._windArrow);
-                clearDroughtMarkers();
-                clearFireMarkers();
             } else if(tabId === 'diag') {
                 document.getElementById('diag-feed').style.display = 'block';
                 if(map && !map.hasLayer(thermalLayer)) map.addLayer(thermalLayer);
@@ -1518,6 +1573,21 @@
                     el.placeholder = i18n[currentLang][key];
                 }
             });
+
+            // Update Floating AI Widget bilingual strings
+            const bubbleTxt = document.getElementById('fab-bubble-text');
+            if (bubbleTxt) bubbleTxt.textContent = currentLang === 'kn' ? 'ನಮಸ್ಕಾರ! ಸಹಾಯ ಬೇಕೆ?' : 'Hi! How can I help you?';
+            const modalTitle = document.getElementById('ai-modal-header-title');
+            if (modalTitle) modalTitle.textContent = currentLang === 'kn' ? 'ರೈತ ಸಹಾಯಕ AI' : 'Raitha Sahayaka AI';
+            const welcomeTitle = document.getElementById('ai-welcome-title');
+            if (welcomeTitle) welcomeTitle.textContent = currentLang === 'kn' ? 'ನಮಸ್ಕಾರ ರೈತ ಬಾಂಧವರೇ! 🙏' : 'Hi! How can I help you today? 🙏';
+            const welcomeDesc = document.getElementById('ai-welcome-desc');
+            if (welcomeDesc) welcomeDesc.innerHTML = currentLang === 'kn' ? 
+                'ನಾನು <strong>ರೈತ ಸಹಾಯಕ (Raitha Sahayaka)</strong>. ನಿಮ್ಮ ಜಮೀನಿನ ಮಣ್ಣು, ಮಳೆ ಮತ್ತು ಅಂತರ್ಜಲಕ್ಕೆ ಅನುಗುಣವಾಗಿ ರಸಗೊಬ್ಬರ ಪ್ರಮಾಣ, ನೀರಿನ ನಿರ್ವಹಣೆ, ಬೆಳೆ ವಿನ್ಯಾಸ ಹಾಗೂ ಸರ್ಕಾರಿ ಸಬ್ಸಿಡಿಗಳ ಬಗ್ಗೆ ಯಾವುದೇ ಪ್ರಶ್ನೆ ಕೇಳಿ!' :
+                'I am <strong>Raitha Sahayaka</strong>, your AI Agronomist. Ask me anything about crop suitability, fertilizer dosages, water/drought management, or government subsidies!';
+            const chatInput = document.getElementById('ai-chat-input');
+            if (chatInput) chatInput.placeholder = currentLang === 'kn' ? 'ಕೃಷಿ ಪ್ರಶ್ನೆ ಕೇಳಿ... (ಉದಾ: ರಸಗೊಬ್ಬರ ಎಷ್ಟು?)' : 'Ask a farming question... (e.g. fertilizer dosage)';
+            if (typeof renderAiQuickChips === 'function') renderAiQuickChips();
         }
 
         const karnatakaCities = [
@@ -4783,6 +4853,54 @@ multiCropModels.forEach((model, mIdx) => {
             };
 
             window.speechSynthesis.speak(utterance);
+        }
+
+        // ── Floating AI Chat Toggle & Chips ──────────────────────────
+        function toggleFloatingAiChat() {
+            const win = document.getElementById('floating-ai-window');
+            if (!win) return;
+            const isHidden = win.style.display === 'none' || !win.style.display;
+            win.style.display = isHidden ? 'flex' : 'none';
+            if (isHidden) {
+                renderAiQuickChips();
+                const chatContainer = document.getElementById('ai-chat-messages');
+                if (chatContainer) chatContainer.scrollTop = chatContainer.scrollHeight;
+                const inputEl = document.getElementById('ai-chat-input');
+                if (inputEl) inputEl.focus();
+                const bubble = document.getElementById('floating-ai-bubble');
+                if (bubble) bubble.style.display = 'none';
+            } else {
+                const bubble = document.getElementById('floating-ai-bubble');
+                if (bubble) bubble.style.display = 'flex';
+            }
+        }
+
+        function renderAiQuickChips() {
+            const chipsContainer = document.getElementById('ai-quick-chips');
+            if (!chipsContainer) return;
+            
+            const chipsEn = [
+                { label: "🌾 NPK Fertilizer", q: "How much fertilizer (NPK) should I apply per acre for my soil?" },
+                { label: "💧 Low Water Crops", q: "Which crops are best suited for low water and drought resilience?" },
+                { label: "🏛️ Govt Subsidies", q: "How can I apply for Raita Siri, Krishi Bhagya and PMKSY subsidies?" },
+                { label: "🌲 4-Tier Spacing", q: "What is the recommended row spacing and layout for 4-tier agroforestry?" },
+                { label: "⚡ Solar Agri-PV", q: "How much dual income can I generate with Solar Agri-PV under PM-KUSUM?" }
+            ];
+
+            const chipsKn = [
+                { label: "🌾 ರಸಗೊಬ್ಬರ ಲೆಕ್ಕ", q: "ಎಕರೆಗೆ ಎಷ್ಟು ಗೊಬ್ಬರ (NPK) ಹಾಕಬೇಕು?" },
+                { label: "💧 ಕಡಿಮೆ ನೀರಿನ ಬೆಳೆ", q: "ಕಡಿಮೆ ನೀರಿಗೆ ಯಾವ ಬೆಳೆಗಳು ಸೂಕ್ತ?" },
+                { label: "🏛️ ಸರ್ಕಾರಿ ಸಬ್ಸಿಡಿ", q: "ರೈತ ಸಿರಿ & ಕೃಷಿ ಭಾಗ್ಯ ಸಬ್ಸಿಡಿ ಪಡೆಯುವುದು ಹೇಗೆ?" },
+                { label: "🌲 ಸಾಲಿನ ಅಂತರ", q: "೪-ಹಂತದ ಕೃಷಿ ಅರಣ್ಯ ಸಾಲಿನ ಅಂತರ ತಿಳಿಸಿ" },
+                { label: "⚡ ಸೌರ ಕೃಷಿ", q: "ಸೌರ ಕೃಷಿ (Agri-PV) ದ್ವಿ-ಆದಾಯ ಎಷ್ಟು ಸಿಗುತ್ತದೆ?" }
+            ];
+
+            const chips = currentLang === 'kn' ? chipsKn : chipsEn;
+            chipsContainer.innerHTML = chips.map(c => `
+                <button type="button" onclick="handleAiQuickPrompt(this)" data-q="${c.q.replace(/"/g, '&quot;')}" style="padding:4px 9px; border-radius:12px; background:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.25); color:var(--primary); font-size:0.68rem; font-weight:700; cursor:pointer; font-family:inherit; flex-shrink:0; transition:all 0.15s;">
+                    ${c.label}
+                </button>
+            `).join('');
         }
 
         // Initialize Bookmarks on load

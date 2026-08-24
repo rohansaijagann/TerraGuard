@@ -49,12 +49,36 @@ SYSTEM_PROMPT_KN = """ನೀವು 'ರೈತ ಸಹಾಯಕ' (Raitha Sahayaka)
 3. ಗೊಬ್ಬರ ಪ್ರಮಾಣ, ನೀರಿನ ನಿರ್ವಹಣೆ, ಸಾಲಿನ ಅಂತರ ಮತ್ತು ಸರ್ಕಾರಿ ಸಹಾಯಧನದ ವಿವರಗಳನ್ನು ನಿಖರವಾಗಿ ತಿಳಿಸಿ.
 """
 
-def generate_agronomist_reply(query, chat_history=None, farm_context=None, language="kn"):
+def detect_language(query, requested_lang="en"):
+    """Accurately detects whether to reply in Kannada or English."""
+    import re
+    if not query:
+        return requested_lang or "en"
+    
+    # If query contains Kannada unicode characters
+    if re.search(r'[\u0C80-\u0CFF]', query):
+        return "kn"
+    
+    # If user explicitly requested Kannada and wrote transliterated keywords
+    kn_keywords = {'gobbara', 'neeru', 'bele', 'belayu', 'yojana', 'roga', 'adike', 'tenge', 'ragi', 'bhatta', 'kannada', 'krishi', 'salu'}
+    words = set(re.findall(r'\w+', query.lower()))
+    if kn_keywords & words and requested_lang == 'kn':
+        return "kn"
+    
+    # If requested_lang is specifically 'kn' and not explicitly English text
+    if requested_lang == 'kn' and not any(w in words for w in {'english', 'in english'}):
+        return "kn"
+        
+    return "en"
+
+def generate_agronomist_reply(query, chat_history=None, farm_context=None, language="en"):
     """
     Generates intelligent agronomist response using Gemini API or offline expert engine fallback.
     """
     if not farm_context:
         farm_context = {}
+
+    lang = detect_language(query, language)
 
     ctx = {
         "location_name": farm_context.get("location_name", "Karnataka Farm"),
@@ -78,7 +102,7 @@ def generate_agronomist_reply(query, chat_history=None, farm_context=None, langu
 
     if gemini_key:
         try:
-            sys_inst = SYSTEM_PROMPT_KN.format(**ctx) if language == "kn" else SYSTEM_PROMPT_EN.format(**ctx)
+            sys_inst = SYSTEM_PROMPT_KN.format(**ctx) if lang == "kn" else SYSTEM_PROMPT_EN.format(**ctx)
             
             # Format contents
             contents = []
@@ -111,16 +135,16 @@ def generate_agronomist_reply(query, chat_history=None, farm_context=None, langu
                 return {
                     "reply": reply,
                     "source": "Google Gemini 1.5 Flash (Live AI)",
-                    "language": language
+                    "language": lang
                 }
         except Exception as e:
             print(f"Gemini API fallback triggered: {e}")
 
     # Fallback to Built-in Karnataka Agronomic Expert Engine (100% Free, Offline, Instant)
-    return fallback_agronomic_engine(query, ctx, language)
+    return fallback_agronomic_engine(query, ctx, lang)
 
 
-def fallback_agronomic_engine(query, ctx, language="kn"):
+def fallback_agronomic_engine(query, ctx, language="en"):
     """
     Rich offline knowledge engine matching farming intents with site-specific telemetry.
     """
