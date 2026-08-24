@@ -55,8 +55,15 @@ class RecommendationAPI(APIView):
         from .ml_utils.groundwater_cgwb import get_cgwb_groundwater_status
         from .ml_utils.yield_predictor import estimate_yield_and_revenue
         from .ml_utils.subsidy_matcher import match_government_schemes
+        from .ml_utils.fertilizer_calculator import calculate_precision_fertilizer_dosage
+        from .ml_utils.agri_pv_modeler import model_agri_pv_dual_income
+        from .ml_utils.apmc_market_feed import get_apmc_market_intelligence
+        from .ml_utils.carbon_credit_engine import calculate_20yr_carbon_credits
+        from .ml_utils.krishi_machinery_chc import locate_nearest_chc_machinery
+        from .ml_utils.pmfby_insurance import calculate_pmfby_crop_insurance
 
         cgwb_data = get_cgwb_groundwater_status(geo_check.get('district', ''))
+        nearest_chc = locate_nearest_chc_machinery(lat, lon)
 
         # Fetch candidate botanical species catalog
         candidates = SpeciesConstraint.objects.all()
@@ -139,6 +146,34 @@ class RecommendationAPI(APIView):
                 # Matching Karnataka & Central Government Schemes
                 subsidies = match_government_schemes(species.name, zone.name)
 
+                # 6 Advanced Engines per Species
+                fertilizer_info = calculate_precision_fertilizer_dosage(
+                    species.name, 
+                    local_ph, 
+                    env_data.get('nitrogen', 180), 
+                    env_data.get('soc', 0.6), 
+                    1.0
+                )
+                agri_pv_info = model_agri_pv_dual_income(
+                    species.name, 
+                    lat, 
+                    yield_info['expected_gross_revenue'], 
+                    1.0
+                )
+                apmc_info = get_apmc_market_intelligence(
+                    species.name, 
+                    lat, 
+                    lon
+                )
+                carbon_info = calculate_20yr_carbon_credits(
+                    species.name, 
+                    1.0
+                )
+                pmfby_info = calculate_pmfby_crop_insurance(
+                    species.name, 
+                    1.0
+                )
+
                 recommendations.append({
                     "species": species.name,
                     "type": species.get_type_display(),
@@ -162,7 +197,12 @@ class RecommendationAPI(APIView):
                     "commercial_explanation": commercial_explanation,
                     "risk_warning": risk_warning,
                     "predicted_yield": yield_info,
-                    "matched_subsidies": subsidies
+                    "matched_subsidies": subsidies,
+                    "fertilizer_dosage": fertilizer_info,
+                    "agri_pv": agri_pv_info,
+                    "apmc_mandi": apmc_info,
+                    "carbon_credits_20yr": carbon_info,
+                    "pmfby_insurance": pmfby_info
                 })
 
         # Sort by highest suitability score
@@ -173,6 +213,7 @@ class RecommendationAPI(APIView):
             "location_name": location_name,
             "district": geo_check.get('district', ''),
             "cgwb_groundwater": cgwb_data,
+            "nearest_chc_machinery": nearest_chc,
             "environmental_context": {
                 "rainfall": local_rainfall, 
                 "monthly_rainfall": env_data.get('monthly_rainfall', []),
@@ -2217,3 +2258,105 @@ class ThermalHotspotsAPI(APIView):
         }
         _cache_set(cache_key, payload)
         return Response(payload)
+
+
+# 11. Precision NPK Fertilizer Calculator API
+class FertilizerCalcAPI(APIView):
+    authentication_classes = []
+    permission_classes = []
+
+    def post(self, request):
+        from .ml_utils.fertilizer_calculator import calculate_precision_fertilizer_dosage
+        from .ml_utils.data_fetcher import get_environmental_data
+
+        species = request.data.get('species', 'Ragi (Finger Millet)')
+        lat = float(request.data.get('latitude', 13.0))
+        lon = float(request.data.get('longitude', 77.0))
+        acres = float(request.data.get('acres', 1.0))
+
+        env_data = get_environmental_data(lat, lon)
+        soil_ph = env_data.get('soil_ph', 6.5)
+        nitrogen = env_data.get('nitrogen', 180)
+        soc = env_data.get('soc', 0.6)
+
+        data = calculate_precision_fertilizer_dosage(species, soil_ph, nitrogen, soc, acres)
+        return Response(data)
+
+
+# 12. Solar Agri-Photovoltaics (Agri-PV) Modeler API
+class AgriPVModelerAPI(APIView):
+    authentication_classes = []
+    permission_classes = []
+
+    def post(self, request):
+        from .ml_utils.agri_pv_modeler import model_agri_pv_dual_income
+
+        species = request.data.get('species', 'Turmeric')
+        lat = float(request.data.get('latitude', 13.0))
+        crop_rev = float(request.data.get('crop_revenue', 150000))
+        acres = float(request.data.get('acres', 1.0))
+
+        data = model_agri_pv_dual_income(species, lat, crop_rev, acres)
+        return Response(data)
+
+
+# 13. Live Karnataka APMC Mandi Market Intelligence API
+class APMCMarketAPI(APIView):
+    authentication_classes = []
+    permission_classes = []
+
+    def post(self, request):
+        from .ml_utils.apmc_market_feed import get_apmc_market_intelligence
+
+        species = request.data.get('species', 'Ragi')
+        lat = float(request.data.get('latitude', 13.0))
+        lon = float(request.data.get('longitude', 77.0))
+
+        data = get_apmc_market_intelligence(species, lat, lon)
+        return Response(data)
+
+
+# 14. 20-Year Tree Carbon Credit Monetization Engine API
+class CarbonCreditAPI(APIView):
+    authentication_classes = []
+    permission_classes = []
+
+    def post(self, request):
+        from .ml_utils.carbon_credit_engine import calculate_20yr_carbon_credits
+
+        species = request.data.get('species', 'Melia Dubia')
+        acres = float(request.data.get('acres', 1.0))
+        price_usd = float(request.data.get('credit_price_usd', 15.0))
+
+        data = calculate_20yr_carbon_credits(species, acres, price_usd)
+        return Response(data)
+
+
+# 15. "Krishi Yanthradhare" Farm Machinery & Drone Rental Locator API
+class MachineryRentalAPI(APIView):
+    authentication_classes = []
+    permission_classes = []
+
+    def post(self, request):
+        from .ml_utils.krishi_machinery_chc import locate_nearest_chc_machinery
+
+        lat = float(request.data.get('latitude', 13.0))
+        lon = float(request.data.get('longitude', 77.0))
+
+        data = locate_nearest_chc_machinery(lat, lon)
+        return Response(data)
+
+
+# 16. PMFBY Crop Insurance & Risk Coverage Calculator API
+class PMFBYInsuranceAPI(APIView):
+    authentication_classes = []
+    permission_classes = []
+
+    def post(self, request):
+        from .ml_utils.pmfby_insurance import calculate_pmfby_crop_insurance
+
+        species = request.data.get('species', 'Ragi (Finger Millet)')
+        acres = float(request.data.get('acres', 1.0))
+
+        data = calculate_pmfby_crop_insurance(species, acres)
+        return Response(data)

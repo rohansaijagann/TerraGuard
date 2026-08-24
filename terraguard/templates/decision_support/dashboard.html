@@ -1937,7 +1937,7 @@
 
                 <!-- 💧 CGWB Karnataka Groundwater Aquifer Telemetry Card -->
                 ${data.cgwb_groundwater ? `
-                <div style="margin-bottom:18px;padding:12px 14px;border-radius:12px;background:rgba(15,23,42,0.65);border:1px solid rgba(255,255,255,0.08);backdrop-filter:blur(16px);box-shadow:0 8px 24px rgba(0,0,0,0.25);">
+                <div style="margin-bottom:12px;padding:12px 14px;border-radius:12px;background:rgba(15,23,42,0.65);border:1px solid rgba(255,255,255,0.08);backdrop-filter:blur(16px);box-shadow:0 8px 24px rgba(0,0,0,0.25);">
                     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
                         <div style="display:flex;align-items:center;gap:7px;">
                             <i class="fa-solid fa-water" style="color:#38bdf8;font-size:0.95rem;"></i>
@@ -1953,6 +1953,30 @@
                     </div>
                     <div style="font-size:0.72rem;color:var(--text-main);line-height:1.45;">
                         <i class="fa-solid fa-circle-info" style="color:#38bdf8;margin-right:4px;"></i>${currentLang === 'kn' ? data.cgwb_groundwater.advisory_kn : data.cgwb_groundwater.advisory}
+                    </div>
+                </div>
+                ` : ''}
+
+                <!-- 🚜 Krishi Yanthradhare Farm Machinery & Drone Hub -->
+                ${data.nearest_chc_machinery ? `
+                <div style="margin-bottom:18px;padding:12px 14px;border-radius:12px;background:rgba(15,23,42,0.65);border:1px solid rgba(255,255,255,0.08);backdrop-filter:blur(16px);box-shadow:0 8px 24px rgba(0,0,0,0.25);">
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+                        <div style="display:flex;align-items:center;gap:7px;">
+                            <i class="fa-solid fa-tractor" style="color:#f59e0b;font-size:0.95rem;"></i>
+                            <span style="font-size:0.78rem;font-weight:800;color:var(--text-main);">${currentLang === 'kn' ? 'ಕೃಷಿ ಯಂತ್ರಧಾರೆ ಕೇಂದ್ರ (CHC)' : 'Krishi Yanthradhare Machinery Hub'}</span>
+                        </div>
+                        <span style="font-size:0.62rem;font-weight:800;padding:2px 8px;border-radius:10px;background:rgba(245,158,11,0.18);color:#f59e0b;border:1px solid rgba(245,158,11,0.4);">
+                            ${data.nearest_chc_machinery.distance_km} km • ${currentLang === 'kn' ? 'ಸಬ್ಸಿಡಿ ದರ' : 'Subsidized Hiring'}
+                        </span>
+                    </div>
+                    <div style="font-size:0.74rem;color:var(--text-main);font-weight:700;margin-top:4px;">
+                        ${data.nearest_chc_machinery.chc_name}
+                    </div>
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px;font-size:0.68rem;color:var(--text-muted);">
+                        <span><i class="fa-solid fa-phone" style="color:#10b981;margin-right:4px;"></i>${data.nearest_chc_machinery.phone}</span>
+                        <a href="${data.nearest_chc_machinery.booking_portal}" target="_blank" rel="noopener noreferrer" style="color:var(--accent-blue);text-decoration:none;font-weight:700;background:rgba(59,130,246,0.1);padding:2px 7px;border-radius:5px;border:1px solid rgba(59,130,246,0.25);">
+                            ${currentLang === 'kn' ? 'ಯಂತ್ರ ಬುಕಿಂಗ್' : 'Book Machinery'} <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.55rem;"></i>
+                        </a>
                     </div>
                 </div>
                 ` : ''}`;
@@ -2278,6 +2302,169 @@
                                         </div>
                                     </div>
                                     `).join('')}
+                                </div>
+                                ` : ''}
+
+                                <!-- 📈 Karnataka APMC Mandi Market Live Board -->
+                                ${rec.apmc_mandi ? `
+                                <div style="margin-top: 10px; padding: 12px; background: rgba(59,130,246,0.05); border-radius: 9px; border: 1px solid rgba(59,130,246,0.25);">
+                                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 6px;">
+                                        <span style="font-size: 0.74rem; font-weight: 800; color: #60a5fa; display:flex; align-items:center; gap:5px;">
+                                            <i class="fa-solid fa-store"></i> ${currentLang==='kn' ? 'ಲೈವ್ APMC ಮಾರುಕಟ್ಟೆ ದರ' : 'Live APMC Mandi Price Board'}
+                                        </span>
+                                        <span style="font-size: 0.6rem; background: rgba(59,130,246,0.15); color:#60a5fa; padding: 2px 7px; border-radius: 10px; font-weight: 700;">
+                                            ${rec.apmc_mandi.distance_km} km • ${rec.apmc_mandi.nearest_mandi_name.split('(')[0]}
+                                        </span>
+                                    </div>
+                                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-bottom: 6px;">
+                                        <div style="background:rgba(0,0,0,0.22); padding: 7px 9px; border-radius: 7px; border:1px solid var(--border-light);">
+                                            <div style="font-size: 0.58rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600;">${currentLang==='kn' ? 'ಮಾದರಿ ಬೆಲೆ (Modal Rate)' : 'Current Modal Price'}</div>
+                                            <div style="font-size: 0.92rem; font-weight: 800; color: #60a5fa; margin-top: 2px;">${rec.apmc_mandi.modal_price}</div>
+                                            <div style="font-size:0.58rem;color:var(--text-muted);margin-top:1px;">${rec.apmc_mandi.price_range}</div>
+                                        </div>
+                                        <div style="background:rgba(0,0,0,0.22); padding: 7px 9px; border-radius: 7px; border:1px solid var(--border-light);">
+                                            <div style="font-size: 0.58rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600;">${currentLang==='kn' ? 'ದೈನಂದಿನ ಆವಕ & ಸಾಗಾಟ ವೆಚ್ಚ' : 'Arrivals & Freight'}</div>
+                                            <div style="font-size: 0.82rem; font-weight: 800; color: var(--text-main); margin-top: 2px;">${rec.apmc_mandi.daily_arrivals}</div>
+                                            <div style="font-size:0.58rem;color:#10b981;margin-top:1px;">Freight: ${rec.apmc_mandi.est_freight_cost_per_q}</div>
+                                        </div>
+                                    </div>
+                                    <div style="font-size:0.66rem;color:var(--text-muted);line-height:1.4;">
+                                        <i class="fa-solid fa-arrow-trend-up" style="color:#10b981;margin-right:4px;"></i><strong>${currentLang==='kn' ? 'ಮಾರುಕಟ್ಟೆ ಪ್ರವೃತ್ತಿ:' : '3-Month Outlook:'}</strong> ${rec.apmc_mandi.trend_forecast} (${rec.apmc_mandi.peak_selling_window})
+                                    </div>
+                                </div>
+                                ` : ''}
+
+                                <!-- 🧪 Precision NPK Fertilizer & Split Schedule -->
+                                ${rec.fertilizer_dosage ? `
+                                <div style="margin-top: 10px; padding: 12px; background: rgba(168,85,247,0.05); border-radius: 9px; border: 1px solid rgba(168,85,247,0.25);">
+                                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 6px;">
+                                        <span style="font-size: 0.74rem; font-weight: 800; color: #c084fc; display:flex; align-items:center; gap:5px;">
+                                            <i class="fa-solid fa-flask-vial"></i> ${currentLang==='kn' ? 'ರಸಗೊಬ್ಬರ ಪ್ರಮಾಣ & ಹಂತಗಳು (NPK)' : 'Precision Fertilizer & NPK Schedule'}
+                                        </span>
+                                        <span style="font-size: 0.6rem; background: rgba(168,85,247,0.18); color:#c084fc; padding: 2px 7px; border-radius: 10px; font-weight: 700;">
+                                            ${rec.fertilizer_dosage.total_fertilizer_budget} / acre
+                                        </span>
+                                    </div>
+                                    <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 8px;">
+                                        <div style="background:rgba(0,0,0,0.25); padding: 6px 7px; border-radius: 7px; text-align:center; border:1px solid var(--border-light);">
+                                            <div style="font-size:0.58rem;color:var(--text-muted);font-weight:700;">UREA (46% N)</div>
+                                            <div style="font-size:0.86rem;font-weight:800;color:var(--text-main);">${rec.fertilizer_dosage.commercial_fertilizers.urea.kg_per_acre} kg</div>
+                                            <div style="font-size:0.56rem;color:#c084fc;">${rec.fertilizer_dosage.commercial_fertilizers.urea.bags_45kg} bags</div>
+                                        </div>
+                                        <div style="background:rgba(0,0,0,0.25); padding: 6px 7px; border-radius: 7px; text-align:center; border:1px solid var(--border-light);">
+                                            <div style="font-size:0.58rem;color:var(--text-muted);font-weight:700;">DAP (18-46-0)</div>
+                                            <div style="font-size:0.86rem;font-weight:800;color:var(--text-main);">${rec.fertilizer_dosage.commercial_fertilizers.dap.kg_per_acre} kg</div>
+                                            <div style="font-size:0.56rem;color:#c084fc;">${rec.fertilizer_dosage.commercial_fertilizers.dap.bags_50kg} bags</div>
+                                        </div>
+                                        <div style="background:rgba(0,0,0,0.25); padding: 6px 7px; border-radius: 7px; text-align:center; border:1px solid var(--border-light);">
+                                            <div style="font-size:0.58rem;color:var(--text-muted);font-weight:700;">MOP (60% K₂O)</div>
+                                            <div style="font-size:0.86rem;font-weight:800;color:var(--text-main);">${rec.fertilizer_dosage.commercial_fertilizers.mop.kg_per_acre} kg</div>
+                                            <div style="font-size:0.56rem;color:#c084fc;">${rec.fertilizer_dosage.commercial_fertilizers.mop.bags_50kg} bags</div>
+                                        </div>
+                                    </div>
+                                    <div style="background:rgba(0,0,0,0.18); padding: 6px 8px; border-radius: 7px; font-size:0.65rem; color:var(--text-muted); line-height:1.4;">
+                                        <i class="fa-solid fa-seedling" style="color:#10b981;margin-right:4px;"></i><strong>${currentLang==='kn' ? 'ಸಾವಯವ ಬೆಂಬಲ:' : 'Organic Support:'}</strong> ${rec.fertilizer_dosage.organic_package.fym_compost_tons} Tons FYM + ${rec.fertilizer_dosage.organic_package.biofertilizer_support}
+                                    </div>
+                                </div>
+                                ` : ''}
+
+                                <!-- ⚡ Solar Agri-PV Dual-Income Modeler -->
+                                ${rec.agri_pv ? `
+                                <div style="margin-top: 10px; padding: 12px; background: rgba(245,158,11,0.05); border-radius: 9px; border: 1px solid rgba(245,158,11,0.25);">
+                                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 6px;">
+                                        <span style="font-size: 0.74rem; font-weight: 800; color: #fbbf24; display:flex; align-items:center; gap:5px;">
+                                            <i class="fa-solid fa-solar-panel"></i> ${currentLang==='kn' ? 'ಸೌರ ಕೃಷಿ ದ್ವಿ-ಆದಾಯ (Agri-PV Modeler)' : 'Solar Agri-PV Dual-Income Modeler'}
+                                        </span>
+                                        <span style="font-size: 0.6rem; background: rgba(245,158,11,0.18); color:#fbbf24; padding: 2px 7px; border-radius: 10px; font-weight: 800;">
+                                            ${rec.agri_pv.dual_revenue_multiplier} Cashflow Boost
+                                        </span>
+                                    </div>
+                                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-bottom: 6px;">
+                                        <div style="background:rgba(0,0,0,0.22); padding: 7px 9px; border-radius: 7px; border:1px solid var(--border-light);">
+                                            <div style="font-size: 0.58rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600;">${currentLang==='kn' ? 'ವಾರ್ಷಿಕ ಸೌರ ಉತ್ಪಾದನೆ' : 'Solar Generation (Annual)'}</div>
+                                            <div style="font-size: 0.88rem; font-weight: 800; color: var(--text-main); margin-top: 2px;">${rec.agri_pv.annual_clean_electricity_kwh}</div>
+                                            <div style="font-size:0.58rem;color:#10b981;margin-top:1px;">${rec.agri_pv.feed_in_tariff_rate}</div>
+                                        </div>
+                                        <div style="background:rgba(0,0,0,0.22); padding: 7px 9px; border-radius: 7px; border:1px solid var(--border-light);">
+                                            <div style="font-size: 0.58rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600;">${currentLang==='kn' ? 'ಒಟ್ಟು ದ್ವಿ-ಆದಾಯ (ಬೆಳೆ + ಸೌರ)' : 'Total Dual Income'}</div>
+                                            <div style="font-size: 0.95rem; font-weight: 800; color: #fbbf24; margin-top: 2px;">₹${new Intl.NumberFormat('en-IN').format(rec.agri_pv.total_dual_revenue)}</div>
+                                            <div style="font-size:0.58rem;color:var(--text-muted);margin-top:1px;">Solar: ₹${new Intl.NumberFormat('en-IN').format(rec.agri_pv.annual_solar_revenue)}/yr</div>
+                                        </div>
+                                    </div>
+                                    <div style="font-size:0.66rem;color:var(--text-muted);line-height:1.4;">
+                                        <i class="fa-solid fa-cloud-sun" style="color:#fbbf24;margin-right:4px;"></i><strong>${rec.agri_pv.crop_compatibility}:</strong> ${rec.agri_pv.microclimate_benefit}
+                                    </div>
+                                </div>
+                                ` : ''}
+
+                                <!-- 🌲 20-Year Carbon Credit Monetization -->
+                                ${rec.carbon_credits_20yr ? `
+                                <div style="margin-top: 10px; padding: 12px; background: rgba(16,185,129,0.05); border-radius: 9px; border: 1px solid rgba(16,185,129,0.25);">
+                                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 6px;">
+                                        <span style="font-size: 0.74rem; font-weight: 800; color: #34d399; display:flex; align-items:center; gap:5px;">
+                                            <i class="fa-solid fa-tree"></i> ${currentLang==='kn' ? '೨೦-ವರ್ಷದ ಕಾರ್ಬನ್ ಕ್ರೆಡಿಟ್ ಆದಾಯ (VCM)' : '20-Year Carbon Credit Cashflow'}
+                                        </span>
+                                        <span style="font-size: 0.6rem; background: rgba(16,185,129,0.18); color:#34d399; padding: 2px 7px; border-radius: 10px; font-weight: 800;">
+                                            ${rec.carbon_credits_20yr.total_20yr_carbon_wealth} (20-Yr Wealth)
+                                        </span>
+                                    </div>
+                                    <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-bottom: 6px; font-size:0.65rem;">
+                                        <div style="background:rgba(0,0,0,0.22); padding: 5px; border-radius: 6px; text-align:center;">
+                                            <div style="color:var(--text-muted);font-size:0.56rem;">YEAR 1</div>
+                                            <div style="font-weight:800;color:var(--text-main);">${rec.carbon_credits_20yr.milestones.year_1.co2_sequestered}</div>
+                                            <div style="color:#10b981;font-weight:700;">${rec.carbon_credits_20yr.milestones.year_1.cumulative_revenue}</div>
+                                        </div>
+                                        <div style="background:rgba(0,0,0,0.22); padding: 5px; border-radius: 6px; text-align:center;">
+                                            <div style="color:var(--text-muted);font-size:0.56rem;">YEAR 5</div>
+                                            <div style="font-weight:800;color:var(--text-main);">${rec.carbon_credits_20yr.milestones.year_5.co2_sequestered}</div>
+                                            <div style="color:#10b981;font-weight:700;">${rec.carbon_credits_20yr.milestones.year_5.cumulative_revenue}</div>
+                                        </div>
+                                        <div style="background:rgba(0,0,0,0.22); padding: 5px; border-radius: 6px; text-align:center;">
+                                            <div style="color:var(--text-muted);font-size:0.56rem;">YEAR 10</div>
+                                            <div style="font-weight:800;color:var(--text-main);">${rec.carbon_credits_20yr.milestones.year_10.co2_sequestered}</div>
+                                            <div style="color:#10b981;font-weight:700;">${rec.carbon_credits_20yr.milestones.year_10.cumulative_revenue}</div>
+                                        </div>
+                                        <div style="background:rgba(0,0,0,0.22); padding: 5px; border-radius: 6px; text-align:center;">
+                                            <div style="color:var(--text-muted);font-size:0.56rem;">YEAR 20</div>
+                                            <div style="font-weight:800;color:var(--text-main);">${rec.carbon_credits_20yr.milestones.year_20.co2_sequestered}</div>
+                                            <div style="color:#10b981;font-weight:700;">${rec.carbon_credits_20yr.milestones.year_20.cumulative_revenue}</div>
+                                        </div>
+                                    </div>
+                                    <div style="font-size:0.62rem;color:var(--text-muted);">
+                                        Methodology: ${rec.carbon_credits_20yr.standard} &bull; ${rec.carbon_credits_20yr.vcm_credit_price}
+                                    </div>
+                                </div>
+                                ` : ''}
+
+                                <!-- 🛡️ PMFBY Crop Insurance & Risk Coverage -->
+                                ${rec.pmfby_insurance ? `
+                                <div style="margin-top: 10px; padding: 12px; background: rgba(239,68,68,0.05); border-radius: 9px; border: 1px solid rgba(239,68,68,0.22);">
+                                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 6px;">
+                                        <span style="font-size: 0.74rem; font-weight: 800; color: #f87171; display:flex; align-items:center; gap:5px;">
+                                            <i class="fa-solid fa-shield-halved"></i> ${currentLang==='kn' ? 'ಪ್ರಧಾನ ಮಂತ್ರಿ ಫಸಲ್ ಬಿಮಾ ಯೋಜನೆ (PMFBY)' : 'PMFBY Crop Insurance Coverage'}
+                                        </span>
+                                        <span style="font-size: 0.6rem; background: rgba(239,68,68,0.18); color:#f87171; padding: 2px 7px; border-radius: 10px; font-weight: 800;">
+                                            ${rec.pmfby_insurance.farmer_premium_rate} Premium
+                                        </span>
+                                    </div>
+                                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-bottom: 6px;">
+                                        <div style="background:rgba(0,0,0,0.22); padding: 7px 9px; border-radius: 7px; border:1px solid var(--border-light);">
+                                            <div style="font-size: 0.58rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600;">${currentLang==='kn' ? 'ವಿಮಾ ಮೊತ್ತ (Sum Insured)' : 'Sum Insured / Acre'}</div>
+                                            <div style="font-size: 0.92rem; font-weight: 800; color: var(--text-main); margin-top: 2px;">${rec.pmfby_insurance.sum_insured_per_acre}</div>
+                                            <div style="font-size:0.58rem;color:var(--text-muted);margin-top:1px;">Category: ${rec.pmfby_insurance.category}</div>
+                                        </div>
+                                        <div style="background:rgba(0,0,0,0.22); padding: 7px 9px; border-radius: 7px; border:1px solid var(--border-light);">
+                                            <div style="font-size: 0.58rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600;">${currentLang==='kn' ? 'ರೈತರು ಪಾವತಿಸಬೇಕಾದ ಕಂತು' : 'Farmer Payable Share'}</div>
+                                            <div style="font-size: 0.95rem; font-weight: 800; color: #10b981; margin-top: 2px;">${rec.pmfby_insurance.farmer_payable_premium}</div>
+                                            <div style="font-size:0.58rem;color:var(--text-muted);margin-top:1px;">${rec.pmfby_insurance.govt_subsidy_absorbed}</div>
+                                        </div>
+                                    </div>
+                                    <div style="display:flex; justify-content:space-between; align-items:center; margin-top: 5px;">
+                                        <span style="font-size:0.64rem;color:var(--text-muted);"><i class="fa-solid fa-umbrella" style="color:#f87171;margin-right:4px;"></i>Auto-claim for drought >21 days</span>
+                                        <a href="${rec.pmfby_insurance.portal_url}" target="_blank" rel="noopener noreferrer" style="font-size:0.62rem;color:var(--accent-blue);text-decoration:none;font-weight:700;background:rgba(59,130,246,0.1);padding:2px 7px;border-radius:5px;border:1px solid rgba(59,130,246,0.25);">
+                                            ${rec.pmfby_insurance.portal_name} <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.55rem;"></i>
+                                        </a>
+                                    </div>
                                 </div>
                                 ` : ''}
                                 

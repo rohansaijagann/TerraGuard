@@ -2,7 +2,10 @@ from django.urls import path
 from .views import (
     RecommendationAPI, DiagnosticsAPI, FireRiskAPI, ForestBoundariesAPI, 
     DroughtScanAPI, FireScanAPI, PestDiseaseAPI, LiveAlertsAPI, 
-    YieldEstimatorAPI, ThermalHotspotsAPI, dashboard_view
+    YieldEstimatorAPI, ThermalHotspotsAPI,
+    FertilizerCalcAPI, AgriPVModelerAPI, APMCMarketAPI, 
+    CarbonCreditAPI, MachineryRentalAPI, PMFBYInsuranceAPI,
+    dashboard_view
 )
 
 urlpatterns = [
@@ -17,4 +20,10 @@ urlpatterns = [
     path('api/live-alerts/', LiveAlertsAPI.as_view(), name='api_live_alerts'),
     path('api/estimate-yield/', YieldEstimatorAPI.as_view(), name='api_estimate_yield'),
     path('api/thermal-hotspots/', ThermalHotspotsAPI.as_view(), name='api_thermal_hotspots'),
+    path('api/fertilizer-calc/', FertilizerCalcAPI.as_view(), name='api_fertilizer_calc'),
+    path('api/agri-pv/', AgriPVModelerAPI.as_view(), name='api_agri_pv'),
+    path('api/apmc-prices/', APMCMarketAPI.as_view(), name='api_apmc_prices'),
+    path('api/carbon-credits/', CarbonCreditAPI.as_view(), name='api_carbon_credits'),
+    path('api/machinery-rental/', MachineryRentalAPI.as_view(), name='api_machinery_rental'),
+    path('api/pmfby-insurance/', PMFBYInsuranceAPI.as_view(), name='api_pmfby_insurance'),
 ]
