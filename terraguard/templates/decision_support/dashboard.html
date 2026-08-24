@@ -358,33 +358,39 @@
         #floating-ai-container {
             position: fixed;
             bottom: 24px;
-            left: 24px;
-            z-index: 1200;
+            right: 532px;
+            z-index: 1000;
             display: flex;
             flex-direction: column;
-            align-items: flex-start;
+            align-items: flex-end;
+        }
+        @media (max-width: 900px) {
+            #floating-ai-container {
+                right: 16px;
+                bottom: 68px;
+            }
         }
         #floating-ai-fab {
-            width: 56px; height: 56px; border-radius: 50%;
+            width: 52px; height: 52px; border-radius: 50%;
             background: linear-gradient(135deg, #10b981, #0ea5e9);
-            border: 2px solid rgba(255,255,255,0.3);
+            border: 2px solid rgba(255,255,255,0.35);
             color: #fff; cursor: pointer;
             display: flex; align-items: center; justify-content: center;
-            font-size: 1.45rem;
-            box-shadow: 0 12px 30px rgba(16,185,129,0.5), 0 0 0 1px rgba(255,255,255,0.2) inset;
+            font-size: 1.3rem;
+            box-shadow: 0 10px 28px rgba(16,185,129,0.5), 0 0 0 1px rgba(255,255,255,0.2) inset;
             transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.25s ease;
             flex-shrink: 0;
         }
         #floating-ai-fab:hover {
             transform: scale(1.08) translateY(-2px);
-            box-shadow: 0 16px 36px rgba(16,185,129,0.7);
+            box-shadow: 0 14px 34px rgba(16,185,129,0.65);
         }
         #floating-ai-bubble {
             background: var(--glass-gradient);
             backdrop-filter: blur(24px);
             border: 1px solid var(--glass-border);
-            border-radius: 14px;
-            padding: 7px 12px;
+            border-radius: 20px;
+            padding: 7px 14px;
             font-size: 0.76rem;
             font-weight: 700;
             color: var(--text-main);
@@ -392,7 +398,7 @@
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 7px;
             animation: floatPulse 3s infinite ease-in-out;
             white-space: nowrap;
             user-select: none;
@@ -577,13 +583,13 @@
     <!-- ══ FLOATING RAITHA SAHAYAKA AI WIDGET ══ -->
     <div id="floating-ai-container">
         <!-- Floating Chat Popup Window (Toggled on click) -->
-        <div id="floating-ai-window" style="display:none; width:390px; height:530px; max-width:calc(100vw - 48px); max-height:calc(100vh - 120px); background:var(--glass-gradient); backdrop-filter:blur(48px) saturate(180%); -webkit-backdrop-filter:blur(48px) saturate(180%); border:1px solid var(--glass-border); border-radius:20px; box-shadow:0 32px 64px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.06) inset; margin-bottom:12px; flex-direction:column; overflow:hidden;">
+        <div id="floating-ai-window" style="display:none; width:380px; height:520px; max-width:calc(100vw - 48px); max-height:calc(100vh - 120px); background:var(--glass-gradient); backdrop-filter:blur(48px) saturate(180%); -webkit-backdrop-filter:blur(48px) saturate(180%); border:1px solid var(--glass-border); border-radius:20px; box-shadow:0 32px 64px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.06) inset; margin-bottom:12px; flex-direction:column; overflow:hidden;">
             
             <!-- Window Header -->
             <div style="padding:12px 14px; background:rgba(0,0,0,0.18); border-bottom:1px solid var(--glass-border); display:flex; align-items:center; justify-content:space-between; flex-shrink:0;">
                 <div style="display:flex; align-items:center; gap:9px;">
-                    <div style="width:34px; height:34px; border-radius:10px; background:linear-gradient(135deg, #10b981, #0ea5e9); display:flex; align-items:center; justify-content:center; color:#fff; font-size:1.05rem; box-shadow:0 4px 12px rgba(16,185,129,0.35);">
-                        <i class="fa-solid fa-robot"></i>
+                    <div style="width:34px; height:34px; border-radius:10px; background:linear-gradient(135deg, #10b981, #0ea5e9); display:flex; align-items:center; justify-content:center; color:#fff; font-size:1rem; box-shadow:0 4px 12px rgba(16,185,129,0.35);">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
                     </div>
                     <div>
                         <div style="font-weight:800; font-size:0.88rem; color:var(--text-main); display:flex; align-items:center; gap:5px;">
@@ -609,7 +615,7 @@
             <div id="ai-chat-messages" style="flex:1; overflow-y:auto; padding:14px; display:flex; flex-direction:column; gap:10px;">
                 <div style="display:flex; gap:9px; align-items:flex-start; max-width:92%;">
                     <div style="width:28px; height:28px; border-radius:8px; background:linear-gradient(135deg, #10b981, #0ea5e9); display:flex; align-items:center; justify-content:center; color:#fff; font-size:0.8rem; flex-shrink:0; margin-top:2px;">
-                        <i class="fa-solid fa-robot"></i>
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
                     </div>
                     <div style="background:var(--card-bg); border:1px solid var(--glass-border); border-radius:12px 12px 12px 2px; padding:10px 12px; font-size:0.82rem; color:var(--text-main); line-height:1.55; box-shadow:0 4px 14px rgba(0,0,0,0.15);">
                         <div style="font-weight:700; color:var(--primary); margin-bottom:4px;" id="ai-welcome-title">Hi! How can I help you today? 🙏</div>
@@ -635,15 +641,14 @@
             </div>
         </div>
 
-        <!-- Floating Trigger Row (Circular Button + Greeting Bubble) -->
-        <div style="display:flex; align-items:center; gap:10px;">
-            <button id="floating-ai-fab" type="button" onclick="toggleFloatingAiChat()" title="Raitha Sahayaka AI Agronomist">
-                <i id="fab-ai-icon" class="fa-solid fa-robot"></i>
-            </button>
+        <!-- Floating Trigger Row (Greeting Bubble on Left + Circular Button on Right) -->
+        <div style="display:flex; align-items:center; gap:8px;">
             <div id="floating-ai-bubble" onclick="toggleFloatingAiChat()">
-                <span>👋 <span id="fab-bubble-text">Hi! How can I help you?</span></span>
-                <i class="fa-solid fa-sparkles" style="color:var(--accent-amber); font-size:0.7rem;"></i>
+                <span>✨ <span id="fab-bubble-text">Hi! How can I help you?</span></span>
             </div>
+            <button id="floating-ai-fab" type="button" onclick="toggleFloatingAiChat()" title="Raitha Sahayaka AI Agronomist">
+                <i id="fab-ai-icon" class="fa-solid fa-wand-magic-sparkles"></i>
+            </button>
         </div>
     </div>
 
@@ -2125,45 +2130,58 @@
 
                 <!-- 💧 CGWB Karnataka Groundwater Aquifer Telemetry Card -->
                 ${data.cgwb_groundwater ? `
-                <div style="margin-bottom:12px;padding:12px 14px;border-radius:12px;background:rgba(15,23,42,0.65);border:1px solid rgba(255,255,255,0.08);backdrop-filter:blur(16px);box-shadow:0 8px 24px rgba(0,0,0,0.25);">
-                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
-                        <div style="display:flex;align-items:center;gap:7px;">
-                            <i class="fa-solid fa-water" style="color:#38bdf8;font-size:0.95rem;"></i>
-                            <span style="font-size:0.78rem;font-weight:800;color:var(--text-main);">${currentLang === 'kn' ? 'ಅಂತರ್ಜಲ ಮಟ್ಟ (CGWB ಸರ್ವೆ)' : 'CGWB Groundwater Aquifer Telemetry'}</span>
+                <div style="margin-bottom:12px;padding:12px 14px;border-radius:14px;background:var(--card-bg);border:1px solid var(--glass-border);backdrop-filter:blur(20px);box-shadow:0 8px 24px rgba(0,0,0,0.12);">
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+                        <div style="display:flex;align-items:center;gap:8px;">
+                            <div style="width:28px;height:28px;border-radius:8px;background:rgba(56,189,248,0.14);color:#38bdf8;display:flex;align-items:center;justify-content:center;font-size:0.85rem;border:1px solid rgba(56,189,248,0.25);">
+                                <i class="fa-solid fa-water"></i>
+                            </div>
+                            <span style="font-size:0.82rem;font-weight:800;color:var(--text-main);">${currentLang === 'kn' ? 'ಅಂತರ್ಜಲ ಮಟ್ಟ (CGWB ಸರ್ವೆ)' : 'CGWB Groundwater Aquifer'}</span>
                         </div>
-                        <span style="font-size:0.62rem;font-weight:800;padding:2px 8px;border-radius:10px;background:${data.cgwb_groundwater.color}22;color:${data.cgwb_groundwater.color};border:1px solid ${data.cgwb_groundwater.color}66;letter-spacing:0.02em;">
-                            ${currentLang === 'kn' ? data.cgwb_groundwater.status_kn : data.cgwb_groundwater.status} (${data.cgwb_groundwater.depth_mbgl}m mbgl)
+                        <span style="font-size:0.64rem;font-weight:800;padding:3px 9px;border-radius:20px;background:${data.cgwb_groundwater.color}18;color:${data.cgwb_groundwater.color};border:1px solid ${data.cgwb_groundwater.color}40;letter-spacing:0.02em;">
+                            ${currentLang === 'kn' ? data.cgwb_groundwater.status_kn : data.cgwb_groundwater.status} (${data.cgwb_groundwater.depth_mbgl}m)
                         </span>
                     </div>
-                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:8px 0;background:rgba(0,0,0,0.2);padding:6px 8px;border-radius:8px;">
-                        <div style="font-size:0.65rem;color:var(--text-muted);">${currentLang === 'kn' ? 'ಬೋರ್‌ವೆಲ್ ಸರಾಸರಿ ಆಳ:' : 'Aquifer Depth (mbgl):'} <strong style="color:var(--text-main);">${data.cgwb_groundwater.depth_mbgl} m</strong></div>
-                        <div style="font-size:0.65rem;color:var(--text-muted);">${currentLang === 'kn' ? 'ಬಳಕೆಯ ತೀವ್ರತೆ:' : 'Extraction Level:'} <strong style="color:${data.cgwb_groundwater.color};">${data.cgwb_groundwater.extraction_pct}%</strong></div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0;background:var(--bg-filter);padding:8px 10px;border-radius:10px;border:1px solid var(--border-light);">
+                        <div>
+                            <div style="font-size:0.58rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.04em;">${currentLang === 'kn' ? 'ಬೋರ್‌ವೆಲ್ ಆಳ' : 'Aquifer Depth'}</div>
+                            <div style="font-size:0.88rem;font-weight:800;color:var(--text-main);margin-top:1px;">${data.cgwb_groundwater.depth_mbgl} <span style="font-size:0.68rem;font-weight:600;color:var(--text-muted);">mbgl</span></div>
+                        </div>
+                        <div>
+                            <div style="font-size:0.58rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.04em;">${currentLang === 'kn' ? 'ಬಳಕೆಯ ತೀವ್ರತೆ' : 'Extraction Level'}</div>
+                            <div style="font-size:0.88rem;font-weight:800;color:${data.cgwb_groundwater.color};margin-top:1px;">${data.cgwb_groundwater.extraction_pct}%</div>
+                        </div>
                     </div>
-                    <div style="font-size:0.72rem;color:var(--text-main);line-height:1.45;">
-                        <i class="fa-solid fa-circle-info" style="color:#38bdf8;margin-right:4px;"></i>${currentLang === 'kn' ? data.cgwb_groundwater.advisory_kn : data.cgwb_groundwater.advisory}
+                    <div style="font-size:0.72rem;color:var(--text-muted);line-height:1.5;display:flex;align-items:flex-start;gap:6px;">
+                        <i class="fa-solid fa-circle-info" style="color:#38bdf8;margin-top:2px;font-size:0.75rem;flex-shrink:0;"></i>
+                        <span>${currentLang === 'kn' ? data.cgwb_groundwater.advisory_kn : data.cgwb_groundwater.advisory}</span>
                     </div>
                 </div>
                 ` : ''}
 
                 <!-- 🚜 Krishi Yanthradhare Farm Machinery & Drone Hub -->
                 ${data.nearest_chc_machinery ? `
-                <div style="margin-bottom:18px;padding:12px 14px;border-radius:12px;background:rgba(15,23,42,0.65);border:1px solid rgba(255,255,255,0.08);backdrop-filter:blur(16px);box-shadow:0 8px 24px rgba(0,0,0,0.25);">
-                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
-                        <div style="display:flex;align-items:center;gap:7px;">
-                            <i class="fa-solid fa-tractor" style="color:#f59e0b;font-size:0.95rem;"></i>
-                            <span style="font-size:0.78rem;font-weight:800;color:var(--text-main);">${currentLang === 'kn' ? 'ಕೃಷಿ ಯಂತ್ರಧಾರೆ ಕೇಂದ್ರ (CHC)' : 'Krishi Yanthradhare Machinery Hub'}</span>
+                <div style="margin-bottom:14px;padding:12px 14px;border-radius:14px;background:var(--card-bg);border:1px solid var(--glass-border);backdrop-filter:blur(20px);box-shadow:0 8px 24px rgba(0,0,0,0.12);">
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+                        <div style="display:flex;align-items:center;gap:8px;">
+                            <div style="width:28px;height:28px;border-radius:8px;background:rgba(245,158,11,0.14);color:#f59e0b;display:flex;align-items:center;justify-content:center;font-size:0.85rem;border:1px solid rgba(245,158,11,0.25);">
+                                <i class="fa-solid fa-tractor"></i>
+                            </div>
+                            <div>
+                                <div style="font-size:0.82rem;font-weight:800;color:var(--text-main);">${currentLang === 'kn' ? 'ಕೃಷಿ ಯಂತ್ರಧಾರೆ ಕೇಂದ್ರ (CHC)' : 'Krishi Yanthradhare Hub'}</div>
+                                <div style="font-size:0.65rem;color:var(--text-muted);font-weight:600;">${data.nearest_chc_machinery.chc_name}</div>
+                            </div>
                         </div>
-                        <span style="font-size:0.62rem;font-weight:800;padding:2px 8px;border-radius:10px;background:rgba(245,158,11,0.18);color:#f59e0b;border:1px solid rgba(245,158,11,0.4);">
-                            ${data.nearest_chc_machinery.distance_km} km • ${currentLang === 'kn' ? 'ಸಬ್ಸಿಡಿ ದರ' : 'Subsidized Hiring'}
+                        <span style="font-size:0.62rem;font-weight:800;padding:3px 8px;border-radius:20px;background:rgba(245,158,11,0.12);color:#f59e0b;border:1px solid rgba(245,158,11,0.28);white-space:nowrap;">
+                            ${data.nearest_chc_machinery.distance_km} km • ${currentLang === 'kn' ? 'ಸಬ್ಸಿಡಿ ದರ' : 'Subsidized'}
                         </span>
                     </div>
-                    <div style="font-size:0.74rem;color:var(--text-main);font-weight:700;margin-top:4px;">
-                        ${data.nearest_chc_machinery.chc_name}
-                    </div>
-                    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px;font-size:0.68rem;color:var(--text-muted);">
-                        <span><i class="fa-solid fa-phone" style="color:#10b981;margin-right:4px;"></i>${data.nearest_chc_machinery.phone}</span>
-                        <a href="${data.nearest_chc_machinery.booking_portal}" target="_blank" rel="noopener noreferrer" style="color:var(--accent-blue);text-decoration:none;font-weight:700;background:rgba(59,130,246,0.1);padding:2px 7px;border-radius:5px;border:1px solid rgba(59,130,246,0.25);">
-                            ${currentLang === 'kn' ? 'ಯಂತ್ರ ಬುಕಿಂಗ್' : 'Book Machinery'} <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.55rem;"></i>
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;padding-top:8px;border-top:1px solid var(--border-light);font-size:0.72rem;">
+                        <a href="tel:${data.nearest_chc_machinery.phone}" style="color:var(--primary);text-decoration:none;font-weight:700;display:flex;align-items:center;gap:5px;background:rgba(16,185,129,0.08);padding:4px 9px;border-radius:7px;border:1px solid rgba(16,185,129,0.2);">
+                            <i class="fa-solid fa-phone"></i> ${data.nearest_chc_machinery.phone}
+                        </a>
+                        <a href="${data.nearest_chc_machinery.booking_portal}" target="_blank" rel="noopener noreferrer" style="color:#fff;background:linear-gradient(135deg, #10b981, #0ea5e9);text-decoration:none;font-weight:700;padding:4px 11px;border-radius:7px;box-shadow:0 2px 8px rgba(16,185,129,0.3);display:flex;align-items:center;gap:4px;">
+                            ${currentLang === 'kn' ? 'ಬುಕಿಂಗ್' : 'Book Machinery'} <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.6rem;"></i>
                         </a>
                     </div>
                 </div>
@@ -2206,10 +2224,26 @@
                     const phStatus = ph >= (topRec?.requirements?.ph_min||0) && ph <= (topRec?.requirements?.ph_max||14) ? 'matches perfectly' : 'requires amendment';
                     const roiBase = ROI_BANDS[topRec?.commercial_value] || 480;
                     const estRoi = topRec ? new Intl.NumberFormat('en-IN').format(Math.round(roiBase * (topRec.score || 80) / 100 * 10) * 10) : '0';
-                    const nlText = topRec ? (currentLang === 'kn' ?
-                        `<i class="fa-solid fa-robot" style="margin-right:5px;color:var(--primary)"></i><strong>${data.location_name}</strong> ವ್ಯಾಪ್ತಿಯ ಈ ಜಮೀನು <strong>${getSpeciesDisplayName(topRec.species, 'kn')}</strong> ಕೃಷಿಗೆ ಅತ್ಯಂತ ಸೂಕ್ತವಾಗಿದೆ (<strong>${topRec.score}% ಹೊಂದಾಣಿಕೆ</strong>). ವಾರ್ಷಿಕ ಮಳೆ ${rain}ಮಿಮೀ, ಎತ್ತರ ${elev}ಮೀ, ಮಣ್ಣಿನ pH ${ph}. ಅಂದಾಜು ವಾರ್ಷಿಕ ಆದಾಯ: <strong>₹${estRoi}/ಎಕರೆ·ವರ್ಷ</strong>.` :
-                        `<i class="fa-solid fa-robot" style="margin-right:5px;color:var(--primary)"></i>This site near <strong>${data.location_name}</strong> is well-suited for <strong>${topRec.species}</strong> (${topRec.score}% match). Rainfall <strong>${rainStatus}</strong> at ${rain}mm, elevation <strong>${elevStatus}</strong> at ${elev}m, soil pH <strong>${phStatus}</strong> at ${ph}. Projected ROI: <strong>₹${estRoi}/acre·yr</strong>.`
-                    ) : '';
+                    
+                    const nlText = topRec ? (currentLang === 'kn' ? `
+                        <div style="display:flex;align-items:flex-start;gap:10px;">
+                            <div style="width:30px;height:30px;border-radius:8px;background:rgba(16,185,129,0.14);color:var(--primary);display:flex;align-items:center;justify-content:center;font-size:0.88rem;flex-shrink:0;border:1px solid rgba(16,185,129,0.25);">
+                                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                            </div>
+                            <div style="flex:1;font-size:0.78rem;line-height:1.55;color:var(--text-main);">
+                                <strong>${data.location_name}</strong> ವ್ಯಾಪ್ತಿಯ ಈ ಜಮೀನು <strong>${getSpeciesDisplayName(topRec.species, 'kn')}</strong> ಕೃಷಿಗೆ ಅತ್ಯಂತ ಸೂಕ್ತವಾಗಿದೆ (<span style="color:#10b981;font-weight:800;">${topRec.score}% ಹೊಂದಾಣಿಕೆ</span>). ವಾರ್ಷಿಕ ಮಳೆ <strong>${rain}ಮಿಮೀ</strong>, ಎತ್ತರ <strong>${elev}ಮೀ</strong>, ಮಣ್ಣಿನ pH <strong>${ph}</strong>. ಅಂದಾಜು ಆದಾಯ: <strong style="color:var(--primary);font-size:0.86rem;">₹${estRoi}/ಎಕರೆ·ವರ್ಷ</strong>.
+                            </div>
+                        </div>
+                    ` : `
+                        <div style="display:flex;align-items:flex-start;gap:10px;">
+                            <div style="width:30px;height:30px;border-radius:8px;background:rgba(16,185,129,0.14);color:var(--primary);display:flex;align-items:center;justify-content:center;font-size:0.88rem;flex-shrink:0;border:1px solid rgba(16,185,129,0.25);">
+                                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                            </div>
+                            <div style="flex:1;font-size:0.78rem;line-height:1.55;color:var(--text-main);">
+                                This site near <strong>${data.location_name}</strong> is optimal for <strong>${topRec.species}</strong> (<span style="color:#10b981;font-weight:800;">${topRec.score}% match</span>). Rainfall <strong>${rainStatus}</strong> at <strong>${rain}mm</strong>, elevation <strong>${elevStatus}</strong> at <strong>${elev}m</strong>, soil pH <strong>${phStatus}</strong> at <strong>${ph}</strong>. Projected ROI: <strong style="color:var(--primary);font-size:0.86rem;">₹${estRoi}/acre·yr</strong>.
+                            </div>
+                        </div>
+                    `) : '';
 
                     // 4-Tier Agroforestry Explainer Summary in short, plain farmer terms
                     const multiNlText = currentLang === 'kn' ? `
@@ -3755,58 +3789,60 @@ multiCropModels.forEach((model, mIdx) => {
                         const safeVoiceText = voiceText.replace(/'/g, "\\'").replace(/"/g, "&quot;");
 
                         riskHtml += `
-                        <div class="pest-risk-item" data-category="${category}" style="background:var(--glass-bg);border:1px solid ${sevBorder};border-left:3px solid ${sevColor};border-radius:12px;padding:14px;margin-bottom:12px;box-shadow:0 4px 12px rgba(0,0,0,0.04);">
+                        <div class="pest-risk-item" data-category="${category}" style="background:var(--card-bg);border:1px solid var(--glass-border);border-radius:14px;padding:14px;margin-bottom:12px;backdrop-filter:blur(16px);box-shadow:0 8px 24px rgba(0,0,0,0.08);">
                             <!-- Header row -->
-                            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:8px;">
-                                <div style="display:flex;align-items:center;gap:8px;">
-                                    <i class="fa-solid ${risk.icon}" style="color:${risk.color};font-size:1.15rem;flex-shrink:0;"></i>
+                            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:10px;">
+                                <div style="display:flex;align-items:center;gap:10px;">
+                                    <div style="width:34px;height:34px;border-radius:10px;background:${risk.color}18;color:${risk.color};display:flex;align-items:center;justify-content:center;font-size:1rem;border:1px solid ${risk.color}33;flex-shrink:0;">
+                                        <i class="fa-solid ${risk.icon}"></i>
+                                    </div>
                                     <div>
-                                        <div style="font-weight:800;font-size:0.88rem;color:var(--text-main);line-height:1.35;">${dName}</div>
-                                        <div style="font-size:0.7rem;color:var(--text-muted);margin-top:2px;">
-                                            ${currentLang === 'kn' ? 'ಬಾಧಿತ ಬೆಳೆಗಳು:' : 'Affects:'} <strong style="color:var(--text-main);">${dCrops}</strong>
+                                        <div style="font-weight:800;font-size:0.88rem;color:var(--text-main);line-height:1.3;">${dName}</div>
+                                        <div style="font-size:0.68rem;color:var(--text-muted);margin-top:2px;">
+                                            ${currentLang === 'kn' ? 'ಬಾಧಿತ ಬೆಳೆಗಳು:' : 'Affects:'} <span style="color:var(--text-main);font-weight:600;">${dCrops}</span>
                                         </div>
                                     </div>
                                 </div>
-                                <div style="display:flex;align-items:center;gap:6px;">
-                                    <button onclick="speakAdvisory('${safeVoiceText}', '${currentLang}')" title="${currentLang==='kn'?'ಆಲಿಸಿ':'Listen to Advisory'}" style="background:rgba(59,130,246,0.1);color:#3b82f6;border:1px solid rgba(59,130,246,0.25);padding:3px 7px;border-radius:6px;font-size:0.7rem;cursor:pointer;">
+                                <div style="display:flex;align-items:center;gap:5px;">
+                                    <button onclick="speakAdvisory('${safeVoiceText}', '${currentLang}')" title="${currentLang==='kn'?'ಆಲಿಸಿ':'Listen to Advisory'}" style="background:rgba(59,130,246,0.08);color:#38bdf8;border:1px solid rgba(59,130,246,0.2);padding:4px 8px;border-radius:7px;font-size:0.72rem;cursor:pointer;transition:all 0.2s;">
                                         <i class="fa-solid fa-volume-high"></i>
                                     </button>
-                                    <span style="background:${sevBg};color:${sevColor};border:1px solid ${sevBorder};padding:2px 8px;border-radius:8px;font-weight:800;font-size:0.65rem;white-space:nowrap;flex-shrink:0;">${sevLabel}</span>
+                                    <span style="background:${sevBg};color:${sevColor};border:1px solid ${sevBorder};padding:3px 9px;border-radius:20px;font-weight:800;font-size:0.64rem;letter-spacing:0.02em;white-space:nowrap;">${sevLabel}</span>
                                 </div>
                             </div>
 
                             <!-- Why it happens — biological cause -->
                             ${dReason ? `
-                            <div style="background:rgba(0,0,0,0.12);border-radius:8px;padding:8px 10px;margin-bottom:10px;border-left:3px solid ${risk.color};">
-                                <div style="font-size:0.62rem;font-weight:700;text-transform:uppercase;color:var(--text-muted);letter-spacing:0.04em;margin-bottom:3px;">
-                                    <i class="fa-solid fa-microscope" style="color:${risk.color};"></i> ${currentLang === 'kn' ? 'ರೋಗ ಬರಲು ಕಾರಣ (ಜೈವಿಕ ವಿಶ್ಲೇಷಣೆ)' : 'WHY THIS HAPPENS (BIOLOGICAL CAUSE)'}
+                            <div style="background:var(--bg-filter);border-radius:9px;padding:8px 11px;margin-bottom:8px;border:1px solid var(--border-light);">
+                                <div style="font-size:0.6rem;font-weight:700;text-transform:uppercase;color:var(--text-muted);letter-spacing:0.05em;margin-bottom:3px;display:flex;align-items:center;gap:4px;">
+                                    <i class="fa-solid fa-microscope" style="color:${risk.color};"></i> ${currentLang === 'kn' ? 'ರೋಗಕ್ಕೆ ಜೈವಿಕ ಕಾರಣ' : 'Biological Mechanism'}
                                 </div>
-                                <div style="font-size:0.77rem;color:var(--text-main);line-height:1.5;">${dReason}</div>
+                                <div style="font-size:0.74rem;color:var(--text-main);line-height:1.5;">${dReason}</div>
                             </div>` : ''}
 
                             <!-- Live trigger explanation -->
                             ${dTrigger ? `
-                            <div style="background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.18);border-radius:8px;padding:6px 10px;margin-bottom:10px;display:flex;align-items:flex-start;gap:6px;">
+                            <div style="background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.18);border-radius:9px;padding:7px 11px;margin-bottom:10px;display:flex;align-items:flex-start;gap:7px;">
                                 <i class="fa-solid fa-bolt" style="color:#f59e0b;font-size:0.75rem;margin-top:2px;flex-shrink:0;"></i>
-                                <span style="font-size:0.72rem;color:var(--text-muted);line-height:1.5;">
-                                    <strong style="color:#f59e0b;">${currentLang === 'kn' ? 'ಪ್ರಸ್ತುತ ಹವಾಮಾನ ಸ್ಥಿತಿ:' : 'Live Weather Trigger:'}</strong> ${dTrigger}
-                                </span>
+                                <div style="font-size:0.72rem;color:var(--text-muted);line-height:1.45;">
+                                    <strong style="color:#f59e0b;">${currentLang === 'kn' ? 'ಹವಾಮಾನ ಕಾರಣ:' : 'Weather Trigger:'}</strong> ${dTrigger}
+                                </div>
                             </div>` : ''}
 
                             <!-- Remedy sections (side by side) -->
                             <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-                                <div style="background:rgba(16,185,129,0.05);border:1px solid rgba(16,185,129,0.16);border-radius:9px;padding:9px;">
-                                    <div style="font-size:0.59rem;font-weight:700;text-transform:uppercase;color:#10b981;letter-spacing:0.04em;margin-bottom:4px;">
+                                <div style="background:rgba(16,185,129,0.06);border:1px solid rgba(16,185,129,0.18);border-radius:10px;padding:9px 11px;">
+                                    <div style="font-size:0.6rem;font-weight:800;text-transform:uppercase;color:#10b981;letter-spacing:0.04em;margin-bottom:4px;display:flex;align-items:center;gap:4px;">
                                         🌿 ${currentLang === 'kn' ? 'ಜೈವಿಕ ನಿಯಂತ್ರಣ' : 'Bio-Control'}
                                     </div>
-                                    <div style="font-size:0.75rem;color:var(--text-main);line-height:1.5;">${dBio}</div>
+                                    <div style="font-size:0.73rem;color:var(--text-main);line-height:1.45;">${dBio}</div>
                                 </div>
-                                <div style="background:rgba(239,68,68,0.04);border:1px solid rgba(239,68,68,0.14);border-radius:9px;padding:9px;">
-                                    <div style="font-size:0.59rem;font-weight:700;text-transform:uppercase;color:#ef4444;letter-spacing:0.04em;margin-bottom:4px;">
+                                <div style="background:rgba(168,85,247,0.06);border:1px solid rgba(168,85,247,0.18);border-radius:10px;padding:9px 11px;">
+                                    <div style="font-size:0.6rem;font-weight:800;text-transform:uppercase;color:#c084fc;letter-spacing:0.04em;margin-bottom:4px;display:flex;align-items:center;gap:4px;">
                                         🧪 ${currentLang === 'kn' ? 'ರಾಸಾಯನಿಕ ಔಷಧಿ' : 'Chemical Control'}
                                     </div>
-                                    <div style="font-size:0.78rem;font-weight:700;color:var(--text-main);">${dChem}</div>
-                                    <div style="font-size:0.69rem;color:var(--text-muted);margin-top:3px;line-height:1.4;">${dDosage}</div>
+                                    <div style="font-size:0.74rem;font-weight:800;color:var(--text-main);line-height:1.35;">${dChem}</div>
+                                    <div style="font-size:0.66rem;color:var(--text-muted);margin-top:3px;line-height:1.4;">${dDosage}</div>
                                 </div>
                             </div>
                         </div>`;
