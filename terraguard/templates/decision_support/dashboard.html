@@ -497,6 +497,44 @@
         .ai-chat-bot-bubble tr:last-child td { border-bottom: none; }
         .ai-chat-bot-bubble tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
 
+        /* ══ PROFESSIONAL RAITHA SAHAYAKA BOTANICAL AI WIDGET ══ */
+        .ai-avatar-core {
+            width: 36px; height: 36px; border-radius: 12px;
+            background: linear-gradient(135deg, #059669 0%, #0d9488 50%, #0284c7 100%);
+            display: flex; align-items: center; justify-content: center;
+            color: #fff; font-size: 1.05rem;
+            box-shadow: 0 4px 14px rgba(16,185,129,0.35), 0 0 0 1px rgba(255,255,255,0.2) inset;
+            flex-shrink: 0;
+        }
+        .ai-bot-avatar {
+            width: 28px; height: 28px; border-radius: 9px;
+            background: linear-gradient(135deg, #059669, #0d9488);
+            display: flex; align-items: center; justify-content: center;
+            color: #fff; font-size: 0.8rem; flex-shrink: 0; margin-top: 2px;
+            box-shadow: 0 2px 8px rgba(16,185,129,0.25), 0 0 0 1px rgba(255,255,255,0.15) inset;
+        }
+        .ai-section-badge {
+            display: inline-flex; align-items: center; gap: 6px;
+            background: rgba(255,255,255,0.04); border: 1px solid var(--border-light);
+            border-radius: 6px; padding: 3px 8px; margin: 6px 0 2px 0;
+            font-size: 0.72rem; font-weight: 800; color: var(--text-main);
+        }
+        .ai-telemetry-badge {
+            display: inline-flex; align-items: center; gap: 6px;
+            background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.25);
+            border-radius: 6px; padding: 4px 9px; margin-bottom: 6px;
+            font-size: 0.72rem; font-weight: 800; color: #10b981;
+        }
+        .ai-live-pulse-dot {
+            width: 7px; height: 7px; border-radius: 50%;
+            background: #10b981; box-shadow: 0 0 8px #10b981;
+            display: inline-block; animation: pulseGlow 2s infinite ease-in-out;
+        }
+        @keyframes pulseGlow {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.3); opacity: 1; box-shadow: 0 0 12px #10b981; }
+        }
+
         /* ══ FLOATING RAITHA SAHAYAKA AI WIDGET ══ */
 #floating-ai-window {
     display:none;position:absolute;bottom:calc(100% + 12px);right:0;
@@ -579,9 +617,9 @@ body.dark-theme .ai-window-header{background:rgba(0,0,0,0.15)}
             }
         }
         #floating-ai-fab {
-            width: 52px; height: 52px; border-radius: 50%;
-            background: linear-gradient(135deg, #10b981, #0ea5e9);
-            border: 2px solid rgba(255,255,255,0.35);
+            width: 52px; height: 52px; border-radius: 16px;
+            background: linear-gradient(135deg, #059669 0%, #0d9488 50%, #0284c7 100%);
+            border: 1.5px solid rgba(255,255,255,0.3);
             color: #fff; cursor: pointer;
             display: flex; align-items: center; justify-content: center;
             font-size: 1.3rem;
@@ -1033,7 +1071,7 @@ body.dark-theme .ai-window-header{background:rgba(0,0,0,0.15)}
             <div class="ai-window-header">
                 <div style="display:flex; align-items:center; gap:9px;">
                     <div style="width:34px; height:34px; border-radius:10px; background:linear-gradient(135deg, #10b981, #0ea5e9); display:flex; align-items:center; justify-content:center; color:#fff; font-size:1rem; box-shadow:0 4px 12px rgba(16,185,129,0.35);">
-                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        <i class="fa-solid fa-leaf"></i>
                     </div>
                     <div>
                         <h3>
@@ -1063,11 +1101,11 @@ body.dark-theme .ai-window-header{background:rgba(0,0,0,0.15)}
             <div id="ai-chat-messages" style="flex:1; overflow-y:auto; padding:var(--space-md); display:flex; flex-direction:column; gap:10px;">
                 <div style="display:flex; gap:9px; align-items:flex-start; max-width:92%;">
                     <div style="width:28px; height:28px; border-radius:8px; background:linear-gradient(135deg, #10b981, #0ea5e9); display:flex; align-items:center; justify-content:center; color:#fff; font-size:0.8rem; flex-shrink:0; margin-top:2px;">
-                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        <i class="fa-solid fa-leaf"></i>
                     </div>
                     <div class="ai-welcome-card">
-                        <div style="font-weight:700; color:var(--primary); margin-bottom:4px;" id="ai-welcome-title">Hi! How can I help you today? 🙏</div>
-                        <div id="ai-welcome-desc">I am <strong>Raitha Sahayaka</strong>, your AI Agronomist. Ask me anything about crop suitability, fertilizer dosages, water/drought management, or upload a leaf photo for disease diagnosis!</div>
+                        <div style="font-weight:800; color:var(--text-main); font-size:0.86rem; margin-bottom:4px; display:flex; align-items:center; gap:6px;" id="ai-welcome-title"><i class="fa-solid fa-leaf" style="color:var(--primary);"></i> <span>Raitha Sahayaka Agronomic Intelligence</span></div>
+                        <div id="ai-welcome-desc" style="font-size:0.75rem; color:var(--text-muted); line-height:1.45;">Agricultural decision support grounded in Karnataka soil telemetry. Ask about crop pathology, precision NPK schedules, aquifer status, or upload a leaf photo for computer vision analysis.</div>
                     </div>
                 </div>
             </div>
@@ -1096,10 +1134,10 @@ body.dark-theme .ai-window-header{background:rgba(0,0,0,0.15)}
         <!-- Floating Trigger Row (Greeting Bubble on Left + Circular Button on Right) -->
         <div style="display:flex; align-items:center; gap:8px;">
             <div id="floating-ai-bubble" onclick="toggleFloatingAiChat()">
-                <span>✨ <span id="fab-bubble-text">Hi! How can I help you?</span></span>
+                <span class="ai-live-pulse-dot"></span> <span id="fab-bubble-text" style="font-weight:700;">Raitha Sahayaka AI</span>
             </div>
             <button id="floating-ai-fab" type="button" onclick="toggleFloatingAiChat()" title="Raitha Sahayaka AI Agronomist">
-                <i id="fab-ai-icon" class="fa-solid fa-wand-magic-sparkles"></i>
+                <i id="fab-ai-icon" class="fa-solid fa-leaf"></i>
             </button>
         </div>
     </div>
@@ -2711,7 +2749,7 @@ body.dark-theme .ai-window-header{background:rgba(0,0,0,0.15)}
                     const nlText = topRec ? (currentLang === 'kn' ? `
                         <div style="display:flex;align-items:flex-start;gap:10px;">
                             <div style="width:30px;height:30px;border-radius: var(--radius-sm);background:rgba(16,185,129,0.14);color:var(--primary);display:flex;align-items:center;justify-content:center;font-size:0.88rem;flex-shrink:0;border:1px solid rgba(16,185,129,0.25);">
-                                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                                <i class="fa-solid fa-leaf"></i>
                             </div>
                             <div style="flex:1;font-size:0.78rem;line-height:1.55;color:var(--text-main);">
                                 <strong>${data.location_name}</strong> ವ್ಯಾಪ್ತಿಯ ಈ ಜಮೀನು <strong>${getSpeciesDisplayName(topRec.species, 'kn')}</strong> ಕೃಷಿಗೆ ಅತ್ಯಂತ ಸೂಕ್ತವಾಗಿದೆ (<span style="color:#10b981;font-weight:800;">${topRec.score}% ಹೊಂದಾಣಿಕೆ</span>). ವಾರ್ಷಿಕ ಮಳೆ <strong>${rain}ಮಿಮೀ</strong>, ಎತ್ತರ <strong>${elev}ಮೀ</strong>, ಮಣ್ಣಿನ pH <strong>${ph}</strong>. ಅಂದಾಜು ಆದಾಯ: <strong style="color:var(--primary);font-size:0.86rem;">₹${estRoi}/ಎಕರೆ·ವರ್ಷ</strong>.
@@ -2720,7 +2758,7 @@ body.dark-theme .ai-window-header{background:rgba(0,0,0,0.15)}
                     ` : `
                         <div style="display:flex;align-items:flex-start;gap:10px;">
                             <div style="width:30px;height:30px;border-radius: var(--radius-sm);background:rgba(16,185,129,0.14);color:var(--primary);display:flex;align-items:center;justify-content:center;font-size:0.88rem;flex-shrink:0;border:1px solid rgba(16,185,129,0.25);">
-                                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                                <i class="fa-solid fa-leaf"></i>
                             </div>
                             <div style="flex:1;font-size:0.78rem;line-height:1.55;color:var(--text-main);">
                                 This site near <strong>${data.location_name}</strong> is optimal for <strong>${topRec.species}</strong> (<span style="color:#10b981;font-weight:800;">${topRec.score}% match</span>). Rainfall <strong>${rainStatus}</strong> at <strong>${rain}mm</strong>, elevation <strong>${elevStatus}</strong> at <strong>${elev}m</strong>, soil pH <strong>${phStatus}</strong> at <strong>${ph}</strong>. Projected ROI: <strong style="color:var(--primary);font-size:0.86rem;">₹${estRoi}/acre·yr</strong>.
@@ -5261,43 +5299,43 @@ multiCropModels.forEach((model, mIdx) => {
             
             if (text.includes('teak') || text.includes('sandalwood') || text.includes('mahogany') || text.includes('areca') || text.includes('pepper') || text.includes('coffee') || text.includes('crop') || text.includes('tree') || text.includes('ಬೆಳೆ') || text.includes('ಮರ')) {
                 return isKn ? [
-                    { label: "💰 ನಿರೀಕ್ಷಿತ ಆದಾಯ (ROI)", q: "ಈ ಬೆಳೆಗೆ ಎಕರೆಗೆ ಎಷ್ಟು ನಿರೀಕ್ಷಿತ ಆದಾಯ (ROI) ಸಿಗುತ್ತದೆ?" },
-                    { label: "📅 ಬಿತ್ತನೆಗೆ ಸೂಕ್ತ ಸಮಯ", q: "ಈ ಬೆಳೆಯನ್ನು ನೆಡಲು ಅತ್ಯುತ್ತಮ ತಿಂಗಳು ಮತ್ತು ಹವಾಮಾನ ಯಾವುದು?" },
-                    { label: "🏛️ ಸರ್ಕಾರಿ ಸಬ್ಸಿಡಿ", q: "ಈ ಕೃಷಿಗೆ ಸಿಗುವ ಸರ್ಕಾರಿ ಯೋಜನೆಗಳು ಮತ್ತು ಸಹಾಯಧನ ಯಾವುವು?" }
+                    { icon: 'fa-chart-line', label: "ನಿರೀಕ್ಷಿತ ಆದಾಯ (ROI)", q: "ಈ ಬೆಳೆಗೆ ಎಕರೆಗೆ ಎಷ್ಟು ನಿರೀಕ್ಷಿತ ಆದಾಯ (ROI) ಸಿಗುತ್ತದೆ?" },
+                    { icon: 'fa-calendar-days', label: "ಬಿತ್ತನೆಗೆ ಸೂಕ್ತ ಸಮಯ", q: "ಈ ಬೆಳೆಯನ್ನು ನೆಡಲು ಅತ್ಯುತ್ತಮ ತಿಂಗಳು ಮತ್ತು ಹವಾಮಾನ ಯಾವುದು?" },
+                    { icon: 'fa-building-columns', label: "ಸರ್ಕಾರಿ ಸಬ್ಸಿಡಿ", q: "ಈ ಕೃಷಿಗೆ ಸಿಗುವ ಸರ್ಕಾರಿ ಯೋಜನೆಗಳು ಮತ್ತು ಸಹಾಯಧನ ಯಾವುವು?" }
                 ] : [
-                    { label: "💰 Expected ROI", q: "What is the expected annual ROI per acre for this crop?" },
-                    { label: "📅 Planting Season", q: "What is the optimal planting month and soil preparation?" },
-                    { label: "🏛️ Govt Subsidies", q: "What government subsidies (DBT/KAPY/MIDH) are available for this?" }
+                    { icon: 'fa-chart-line', label: "Expected ROI", q: "What is the expected annual ROI per acre for this crop?" },
+                    { icon: 'fa-calendar-days', label: "Planting Season", q: "What is the optimal planting month and soil preparation?" },
+                    { icon: 'fa-building-columns', label: "Govt Subsidies", q: "What government subsidies (DBT/KAPY/MIDH) are available for this?" }
                 ];
             } else if (text.includes('pest') || text.includes('disease') || text.includes('fungal') || text.includes('blast') || text.includes('rot') || text.includes('photo') || text.includes('ರೋಗ') || text.includes('ಕೀಟ') || text.includes('ಔಷಧ')) {
                 return isKn ? [
-                    { label: "🌿 ಸಾವಯವ ಜೈವಿಕ ಔಷಧ", q: "ರಾಸಾಯನಿಕವಿಲ್ಲದೆ ಸಾವಯವ ಪದ್ಧತಿಯಲ್ಲಿ ಈ ರೋಗವನ್ನು ಹೇಗೆ ತಡೆಗಟ್ಟಬಹುದು?" },
-                    { label: "🏪 ಹತ್ತಿರದ ಕೃಷಿ ಮಳಿಗೆ", q: "ನನ್ನ ತಾಲ್ಲೂಕಿನಲ್ಲಿ ಅಧಿಕೃತ ಕೃಷಿ ಔಷಧ ಸಿಗುವ ಕೇಂದ್ರ ಯಾವುದು?" },
-                    { label: "💧 ಸಿಂಪರಣೆ ಪ್ರಮಾಣ", q: "೧ ಲೀಟರ್ ನೀರಿಗೆ ಎಷ್ಟು ಪ್ರಮಾಣದ ಔಷಧ ಬೆರೆಸಿ ಸಿಂಪಡಿಸಬೇಕು?" }
+                    { icon: 'fa-leaf', label: "ಸಾವಯವ ಜೈವಿಕ ಔಷಧ", q: "ರಾಸಾಯನಿಕವಿಲ್ಲದೆ ಸಾವಯವ ಪದ್ಧತಿಯಲ್ಲಿ ಈ ರೋಗವನ್ನು ಹೇಗೆ ತಡೆಗಟ್ಟಬಹುದು?" },
+                    { icon: 'fa-store', label: "ಹತ್ತಿರದ ಕೃಷಿ ಮಳಿಗೆ", q: "ನನ್ನ ತಾಲ್ಲೂಕಿನಲ್ಲಿ ಅಧಿಕೃತ ಕೃಷಿ ಔಷಧ ಸಿಗುವ ಕೇಂದ್ರ ಯಾವುದು?" },
+                    { icon: 'fa-droplet', label: "ಸಿಂಪರಣೆ ಪ್ರಮಾಣ", q: "೧ ಲೀಟರ್ ನೀರಿಗೆ ಎಷ್ಟು ಪ್ರಮಾಣದ ಔಷಧ ಬೆರೆಸಿ ಸಿಂಪಡಿಸಬೇಕು?" }
                 ] : [
-                    { label: "🌿 Organic Bio-Control", q: "What organic bio-fungicides (like Trichoderma) can prevent this?" },
-                    { label: "🏪 Nearest Agri Dealer", q: "Where is the nearest verified KSSC/agri-input store for these inputs?" },
-                    { label: "💧 Spray Dosage", q: "What is the exact dosage per liter and spraying interval?" }
+                    { icon: 'fa-leaf', label: "Organic Bio-Control", q: "What organic bio-fungicides (like Trichoderma) can prevent this?" },
+                    { icon: 'fa-store', label: "Nearest Agri Dealer", q: "Where is the nearest verified KSSC/agri-input store for these inputs?" },
+                    { icon: 'fa-droplet', label: "Spray Dosage", q: "What is the exact dosage per liter and spraying interval?" }
                 ];
             } else if (text.includes('drought') || text.includes('water') || text.includes('rain') || text.includes('borewell') || text.includes('ಬರ') || text.includes('ನೀರು') || text.includes('ಬೋರ್')) {
                 return isKn ? [
-                    { label: "💧 ಹನಿ ನೀರಾವರಿ ಸಬ್ಸಿಡಿ", q: "PMKSY ಅಡಿಯಲ್ಲಿ ೯೦% ಹನಿ ನೀರಾವರಿ ಸಬ್ಸಿಡಿ ಪಡೆಯುವುದು ಹೇಗೆ?" },
-                    { label: "🌾 ಕಡಿಮೆ ನೀರಿನ ಬೆಳೆಗಳು", q: "ಬರಗಾಲದಲ್ಲಿ ಕಡಿಮೆ ನೀರಿಗೆ ಅಧಿಕ ಇಳುವರಿ ಕೊಡುವ ಬೆಳೆಗಳಾವುವು?" },
-                    { label: "🌧️ ಮಳೆ ಮುನ್ಸೂಚನೆ", q: "ಮುಂದಿನ ತಿಂಗಳುಗಳಲ್ಲಿ ಮಳೆ ಪ್ರಮಾಣ ಎಷ್ಟಿರಬಹುದು?" }
+                    { icon: 'fa-droplet', label: "ಹನಿ ನೀರಾವರಿ ಸಬ್ಸಿಡಿ", q: "PMKSY ಅಡಿಯಲ್ಲಿ ೯೦% ಹನಿ ನೀರಾವರಿ ಸಬ್ಸಿಡಿ ಪಡೆಯುವುದು ಹೇಗೆ?" },
+                    { icon: 'fa-wheat-awn', label: "ಕಡಿಮೆ ನೀರಿನ ಬೆಳೆಗಳು", q: "ಬರಗಾಲದಲ್ಲಿ ಕಡಿಮೆ ನೀರಿಗೆ ಅಧಿಕ ಇಳುವರಿ ಕೊಡುವ ಬೆಳೆಗಳಾವುವು?" },
+                    { icon: 'fa-cloud-rain', label: "ಮಳೆ ಮುನ್ಸೂಚನೆ", q: "ಮುಂದಿನ ತಿಂಗಳುಗಳಲ್ಲಿ ಮಳೆ ಪ್ರಮಾಣ ಎಷ್ಟಿರಬಹುದು?" }
                 ] : [
-                    { label: "💧 Drip Irrigation Subsidy", q: "How do I claim the 90% PMKSY micro-drip subsidy in Karnataka?" },
-                    { label: "🌾 Drought-Resilient Crops", q: "Which short-duration drought crops survive on minimal water?" },
-                    { label: "🌧️ 9-Month Rain Forecast", q: "What is the seasonal rainfall outlook for my district?" }
+                    { icon: 'fa-droplet', label: "Drip Irrigation Subsidy", q: "How do I claim the 90% PMKSY micro-drip subsidy in Karnataka?" },
+                    { icon: 'fa-wheat-awn', label: "Drought-Resilient Crops", q: "Which short-duration drought crops survive on minimal water?" },
+                    { icon: 'fa-cloud-rain', label: "9-Month Rain Forecast", q: "What is the seasonal rainfall outlook for my district?" }
                 ];
             } else {
                 return isKn ? [
-                    { label: "🌾 ರಸಗೊಬ್ಬರ ಲೆಕ್ಕ", q: "ನನ್ನ ಜಮೀನಿಗೆ ಎಷ್ಟು NPK ಗೊಬ್ಬರ ಶಿಫಾರಸು ಮಾಡಲಾಗಿದೆ?" },
-                    { label: "🏛️ ರೈತ ಸಿರಿ DBT", q: "ರೈತ ಸಿರಿ ಯೋಜನೆಯಡಿ ₹೧೦,೦೦೦ ಸಹಾಯಧನ ಪಡೆಯುವುದು ಹೇಗೆ?" },
-                    { label: "⚡ ಸೌರ ಕೃಷಿ ಆದಾಯ", q: "ಸೌರ ಕೃಷಿ (Agri-PV) ಅಡಿಯಲ್ಲಿ ವಾರ್ಷಿಕ ಎಷ್ಟು ಆದಾಯ ಪಡೆಯಬಹುದು?" }
+                    { icon: 'fa-flask', label: "ರಸಗೊಬ್ಬರ ಲೆಕ್ಕ", q: "ನನ್ನ ಜಮೀನಿಗೆ ಎಷ್ಟು NPK ಗೊಬ್ಬರ ಶಿಫಾರಸು ಮಾಡಲಾಗಿದೆ?" },
+                    { icon: 'fa-building-columns', label: "ರೈತ ಸಿರಿ DBT", q: "ರೈತ ಸಿರಿ ಯೋಜನೆಯಡಿ ₹೧೦,೦೦೦ ಸಹಾಯಧನ ಪಡೆಯುವುದು ಹೇಗೆ?" },
+                    { icon: 'fa-solar-panel', label: "ಸೌರ ಕೃಷಿ ಆದಾಯ", q: "ಸೌರ ಕೃಷಿ (Agri-PV) ಅಡಿಯಲ್ಲಿ ವಾರ್ಷಿಕ ಎಷ್ಟು ಆದಾಯ ಪಡೆಯಬಹುದು?" }
                 ] : [
-                    { label: "🌾 NPK Fertilizer Dosage", q: "What is the exact NPK fertilizer schedule for my soil pH?" },
-                    { label: "🏛️ Raitha Siri Scheme", q: "How do I apply for the Raitha Siri ₹10,000/ha DBT incentive?" },
-                    { label: "⚡ Solar Agri-PV Income", q: "How much dual income can Solar Agri-PV generate on 1 acre?" }
+                    { icon: 'fa-flask', label: "NPK Fertilizer Dosage", q: "What is the exact NPK fertilizer schedule for my soil pH?" },
+                    { icon: 'fa-building-columns', label: "Raitha Siri Scheme", q: "How do I apply for the Raitha Siri ₹10,000/ha DBT incentive?" },
+                    { icon: 'fa-solar-panel', label: "Solar Agri-PV Income", q: "How much dual income can Solar Agri-PV generate on 1 acre?" }
                 ];
             }
         }
@@ -5355,7 +5393,7 @@ multiCropModels.forEach((model, mIdx) => {
 
                                     bCard.innerHTML = `
                                         <div style="width:28px; height:28px; border-radius:8px; background:linear-gradient(135deg, #10b981, #0ea5e9); display:flex; align-items:center; justify-content:center; color:#fff; font-size:0.8rem; flex-shrink:0; margin-top:2px;">
-                                            <i class="fa-solid fa-wand-magic-sparkles"></i>
+                                            <i class="fa-solid fa-leaf"></i>
                                         </div>
                                         <div class="ai-chat-bot-bubble" style="flex:1;">
                                             <div style="margin-bottom:6px;">${formattedHtml}</div>
@@ -5408,7 +5446,7 @@ multiCropModels.forEach((model, mIdx) => {
             typingBubble.className = 'ai-bot-msg-wrap';
             typingBubble.innerHTML = `
                 <div style="width:28px; height:28px; border-radius:8px; background:linear-gradient(135deg, #10b981, #0ea5e9); display:flex; align-items:center; justify-content:center; color:#fff; font-size:0.8rem; flex-shrink:0; margin-top:2px;">
-                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    <i class="fa-solid fa-leaf"></i>
                 </div>
                 <div class="ai-chat-bot-bubble" style="display:flex; align-items:center; gap:5px; padding:10px 14px;">
                     <span class="typing-dot"></span>
@@ -5467,7 +5505,7 @@ multiCropModels.forEach((model, mIdx) => {
 
                 botCard.innerHTML = `
                     <div style="width:28px; height:28px; border-radius:8px; background:linear-gradient(135deg, #10b981, #0ea5e9); display:flex; align-items:center; justify-content:center; color:#fff; font-size:0.8rem; flex-shrink:0; margin-top:2px;">
-                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        <i class="fa-solid fa-leaf"></i>
                     </div>
                     <div class="ai-chat-bot-bubble" style="flex:1;">
                         <div style="margin-bottom:6px;">${formattedHtml}</div>
@@ -5550,7 +5588,7 @@ multiCropModels.forEach((model, mIdx) => {
                 chatMessagesContainer.innerHTML = `
                     <div style="display:flex; gap:9px; align-items:flex-start; max-width:92%;">
                         <div style="width:28px; height:28px; border-radius:8px; background:linear-gradient(135deg, #10b981, #0ea5e9); display:flex; align-items:center; justify-content:center; color:#fff; font-size:0.8rem; flex-shrink:0; margin-top:2px;">
-                            <i class="fa-solid fa-wand-magic-sparkles"></i>
+                            <i class="fa-solid fa-leaf"></i>
                         </div>
                         <div style="background:var(--card-bg); border:1px solid var(--glass-border); border-radius:12px 12px 12px 2px; padding:10px 12px; font-size:0.82rem; color:var(--text-main); line-height:1.55; box-shadow:0 4px 14px rgba(0,0,0,0.15);">
                             <div style="font-weight:700; color:var(--primary); margin-bottom:4px;">${currentLang==='kn' ? 'ನಮಸ್ಕಾರ ರೈತ ಬಾಂಧವರೇ! 🙏' : 'Namaskara! 🙏'}</div>
@@ -5661,70 +5699,70 @@ multiCropModels.forEach((model, mIdx) => {
             let chips = [];
             if (activeTab === 'diag') {
                 chips = isKn ? [
-                    { label: `💧 ${locName} ಬರ ಅಪಾಯ?`, q: `${locName} ಭಾಗದಲ್ಲಿ ಪ್ರಸ್ತುತ ಬರ ಅಥವಾ ನೀರಿನ ಕೊರತೆ ಅಪಾಯ ಎಷ್ಟಿದೆ?` },
-                    { label: "🛰️ ತೇವಾಂಶ & SPI ಸ್ಥಿತಿ", q: "ನನ್ನ ಜಮೀನಿನ ಉಪಗ್ರಹ ಮಣ್ಣಿನ ತೇವಾಂಶ ಮತ್ತು SPI ಸೂಚಿ ವಿವರ ತಿಳಿಸಿ." },
-                    { label: "🌧️ ೯ ತಿಂಗಳ ಮಳೆ ಮುನ್ಸೂಚನೆ", q: "ಮುಂದಿನ ೯ ತಿಂಗಳಲ್ಲಿ ವಾಡಿಕೆ ಮಳೆ ಪ್ರಮಾಣ ಎಷ್ಟು ನಿರೀಕ್ಷಿಸಬಹುದು?" },
-                    { label: "🚨 ತುರ್ತು ನೀರಾವರಿ ಕ್ರಮ", q: "ಬರಗಾಲದ ನೀರಿನ ಒತ್ತಡ ಕಡಿಮೆ ಮಾಡಲು ತುರ್ತು ನೀರಾವರಿ ವಿಧಾನಗಳೇನು?" }
+                    { icon: 'fa-droplet', label: `${locName} ಬರ ಅಪಾಯ?`, q: `${locName} ಭಾಗದಲ್ಲಿ ಪ್ರಸ್ತುತ ಬರ ಅಥವಾ ನೀರಿನ ಕೊರತೆ ಅಪಾಯ ಎಷ್ಟಿದೆ?` },
+                    { icon: 'fa-satellite', label: "ತೇವಾಂಶ & SPI ಸ್ಥಿತಿ", q: "ನನ್ನ ಜಮೀನಿನ ಉಪಗ್ರಹ ಮಣ್ಣಿನ ತೇವಾಂಶ ಮತ್ತು SPI ಸೂಚಿ ವಿವರ ತಿಳಿಸಿ." },
+                    { icon: 'fa-cloud-rain', label: "೯ ತಿಂಗಳ ಮಳೆ ಮುನ್ಸೂಚನೆ", q: "ಮುಂದಿನ ೯ ತಿಂಗಳಲ್ಲಿ ವಾಡಿಕೆ ಮಳೆ ಪ್ರಮಾಣ ಎಷ್ಟು ನಿರೀಕ್ಷಿಸಬಹುದು?" },
+                    { icon: 'fa-shield-halved', label: "ತುರ್ತು ನೀರಾವರಿ ಕ್ರಮ", q: "ಬರಗಾಲದ ನೀರಿನ ಒತ್ತಡ ಕಡಿಮೆ ಮಾಡಲು ತುರ್ತು ನೀರಾವರಿ ವಿಧಾನಗಳೇನು?" }
                 ] : [
-                    { label: `💧 Drought risk in ${locName}?`, q: `What is the current water stress and drought risk level in ${locName}?` },
-                    { label: "🛰️ Moisture & SPI Index", q: `Explain the satellite root-zone moisture and SPI drought severity for ${locName}.` },
-                    { label: "🌧️ 9-Month Rain Forecast", q: `What is the 9-month predictive rainfall anomaly for ${distName}?` },
-                    { label: "🚨 Emergency Protocols", q: "What emergency irrigation steps should I take to prevent crop drying?" }
+                    { icon: 'fa-droplet', label: `Drought risk in ${locName}?`, q: `What is the current water stress and drought risk level in ${locName}?` },
+                    { icon: 'fa-satellite', label: "Moisture & SPI Index", q: `Explain the satellite root-zone moisture and SPI drought severity for ${locName}.` },
+                    { icon: 'fa-cloud-rain', label: "9-Month Rain Forecast", q: `What is the 9-month predictive rainfall anomaly for ${distName}?` },
+                    { icon: 'fa-shield-halved', label: "Emergency Protocols", q: "What emergency irrigation steps should I take to prevent crop drying?" }
                 ];
             } else if (activeTab === 'fire') {
                 chips = isKn ? [
-                    { label: `🔥 ${locName} ಕಾಡ್ಗಿಚ್ಚು ಅಪಾಯ?`, q: `${locName} ಸುತ್ತಮುತ್ತ ಕಾಡ್ಗಿಚ್ಚು ಮತ್ತು ಉಷ್ಣ ಸೂಚಿ (FWI) ಅಪಾಯ ಎಷ್ಟಿದೆ?` },
-                    { label: "🌲 ಬೆಂಕಿ ತಡೆ ಪಟ್ಟಿ ನಿರ್ಮಾಣ", q: "ತೋಟಕ್ಕೆ ಬೆಂಕಿ ಹರಡದಂತೆ ಎಷ್ಟು ಅಗಲದ Firebreak ಬೆಂಕಿ ತಡೆ ಪಟ್ಟಿ ನಿರ್ಮಿಸಬೇಕು?" },
-                    { label: "🚒 ಹತ್ತಿರದ KFD ಕಂಟ್ರೋಲ್ ರೂಂ", q: "ತುರ್ತು ಸಂದರ್ಭದಲ್ಲಿ ಕರ್ನಾಟಕ ಅರಣ್ಯ ಇಲಾಖೆ (KFD) ಸಹಾಯ ಪಡೆಯುವುದು ಹೇಗೆ?" },
-                    { label: "⚠️ ಗಾಳಿ ಮತ್ತು ಇಂಧನ ಹೊರೆ", q: "ಒಣ ಎಲೆಗಳ ಹೊರೆ ಮತ್ತು ಗಾಳಿಯ ವೇಗದಿಂದ ಬೆಂಕಿ ಹರಡುವ ವೇಗ (ROS) ಎಷ್ಟಿದೆ?" }
+                    { icon: 'fa-fire', label: `${locName} ಕಾಡ್ಗಿಚ್ಚು ಅಪಾಯ?`, q: `${locName} ಸುತ್ತಮುತ್ತ ಕಾಡ್ಗಿಚ್ಚು ಮತ್ತು ಉಷ್ಣ ಸೂಚಿ (FWI) ಅಪಾಯ ಎಷ್ಟಿದೆ?` },
+                    { icon: 'fa-tree', label: "ಬೆಂಕಿ ತಡೆ ಪಟ್ಟಿ ನಿರ್ಮಾಣ", q: "ತೋಟಕ್ಕೆ ಬೆಂಕಿ ಹರಡದಂತೆ ಎಷ್ಟು ಅಗಲದ Firebreak ಬೆಂಕಿ ತಡೆ ಪಟ್ಟಿ ನಿರ್ಮಿಸಬೇಕು?" },
+                    { icon: 'fa-truck-medical', label: "ಹತ್ತಿರದ KFD ಕಂಟ್ರೋಲ್ ರೂಂ", q: "ತುರ್ತು ಸಂದರ್ಭದಲ್ಲಿ ಕರ್ನಾಟಕ ಅರಣ್ಯ ಇಲಾಖೆ (KFD) ಸಹಾಯ ಪಡೆಯುವುದು ಹೇಗೆ?" },
+                    { icon: 'fa-wind', label: "ಗಾಳಿ ಮತ್ತು ಇಂಧನ ಹೊರೆ", q: "ಒಣ ಎಲೆಗಳ ಹೊರೆ ಮತ್ತು ಗಾಳಿಯ ವೇಗದಿಂದ ಬೆಂಕಿ ಹರಡುವ ವೇಗ (ROS) ಎಷ್ಟಿದೆ?" }
                 ] : [
-                    { label: `🔥 Fire spread in ${locName}?`, q: `What is the Canadian FWI wildfire rating and spread risk in ${locName}?` },
-                    { label: "🌲 Firebreak Design", q: "How wide should plantation firebreaks be to protect my agroforestry trees?" },
-                    { label: "🚒 Nearest KFD Control Room", q: `Who is the emergency dispatch for forest fire response in ${distName}?` },
-                    { label: "⚠️ Wind & Fuel Load", q: "How does current wind speed affect fire rate of spread (ROS)?" }
+                    { icon: 'fa-fire', label: `Fire spread in ${locName}?`, q: `What is the Canadian FWI wildfire rating and spread risk in ${locName}?` },
+                    { icon: 'fa-tree', label: "Firebreak Design", q: "How wide should plantation firebreaks be to protect my agroforestry trees?" },
+                    { icon: 'fa-truck-medical', label: "Nearest KFD Control Room", q: `Who is the emergency dispatch for forest fire response in ${distName}?` },
+                    { icon: 'fa-wind', label: "Wind & Fuel Load", q: "How does current wind speed affect fire rate of spread (ROS)?" }
                 ];
             } else if (activeTab === 'pest') {
                 chips = isKn ? [
-                    { label: `🐛 ${locName} ಕೀಟ ರೋಗ ಅಪಾಯ?`, q: `${locName} ಭಾಗದಲ್ಲಿ ಪ್ರಸ್ತುತ ತಾಪಮಾನ ಮತ್ತು ತೇವಾಂಶಕ್ಕೆ ತಕ್ಕಂತೆ ಯಾವ ರೋಗಗಳ ಅಪಾಯವಿದೆ?` },
-                    { label: "🧪 ಜೈವಿಕ ನಿಯಂತ್ರಣ ಔಷಧ", q: "ಟ್ರೈಕೋಡರ್ಮಾ ಮತ್ತು ಸೂಡೋಮೊನಾಸ್ ಜೈವಿಕ ಶಿಲೀಂಧ್ರನಾಶಕ ಪ್ರಮಾಣ ತಿಳಿಸಿ." },
-                    { label: "🏪 ಹತ್ತಿರದ KSSC ಕೃಷಿ ಮಳಿಗೆ", q: `${distName} ಜಿಲ್ಲೆಯ ಅಧಿಕೃತ ಕೃಷಿ ಇನ್‌ಪುಟ್ ಮತ್ತು ಕ್ರಿಮಿನಾಶಕ ಮಳಿಗೆ ಎಲ್ಲಿದೆ?` },
-                    { label: "📷 ಎಲೆ ರೋಗ ತಪಾಸಣೆ", q: "ನನ್ನ ಬೆಳೆಯ ಎಲೆಯ ಫೋಟೋ ಅಪ್ಲೋಡ್ ಮಾಡಿ ರೋಗ ಪತ್ತೆ ಹಚ್ಚುವುದು ಹೇಗೆ?" }
+                    { icon: 'fa-shield-virus', label: `${locName} ಕೀಟ ರೋಗ ಅಪಾಯ?`, q: `${locName} ಭಾಗದಲ್ಲಿ ಪ್ರಸ್ತುತ ತಾಪಮಾನ ಮತ್ತು ತೇವಾಂಶಕ್ಕೆ ತಕ್ಕಂತೆ ಯಾವ ರೋಗಗಳ ಅಪಾಯವಿದೆ?` },
+                    { icon: 'fa-flask', label: "ಜೈವಿಕ ನಿಯಂತ್ರಣ ಔಷಧ", q: "ಟ್ರೈಕೋಡರ್ಮಾ ಮತ್ತು ಸೂಡೋಮೊನಾಸ್ ಜೈವಿಕ ಶಿಲೀಂಧ್ರನಾಶಕ ಪ್ರಮಾಣ ತಿಳಿಸಿ." },
+                    { icon: 'fa-store', label: "ಹತ್ತಿರದ KSSC ಕೃಷಿ ಮಳಿಗೆ", q: `${distName} ಜಿಲ್ಲೆಯ ಅಧಿಕೃತ ಕೃಷಿ ಇನ್‌ಪುಟ್ ಮತ್ತು ಕ್ರಿಮಿನಾಶಕ ಮಳಿಗೆ ಎಲ್ಲಿದೆ?` },
+                    { icon: 'fa-camera', label: "ಎಲೆ ರೋಗ ತಪಾಸಣೆ", q: "ನನ್ನ ಬೆಳೆಯ ಎಲೆಯ ಫೋಟೋ ಅಪ್ಲೋಡ್ ಮಾಡಿ ರೋಗ ಪತ್ತೆ ಹಚ್ಚುವುದು ಹೇಗೆ?" }
                 ] : [
-                    { label: `🐛 Pest risks in ${locName}?`, q: `What fungal or pest threats are elevated under current humidity in ${locName}?` },
-                    { label: "🧪 Bio-Control Dosages", q: "What are the recommended application rates for Trichoderma and Neem oil?" },
-                    { label: "🏪 Nearest KSSC Store", q: `Where is the nearest government certified seed and agri-input store in ${distName}?` },
-                    { label: "🍃 Leaf Spot Treatment", q: "What is the best curative spray for foliar leaf spots and blast?" }
+                    { icon: 'fa-shield-virus', label: `Pest threats in ${locName}?`, q: `What fungal or pest threats are elevated under current humidity in ${locName}?` },
+                    { icon: 'fa-flask', label: "Bio-Control Dosages", q: "What are the recommended application rates for Trichoderma and Neem oil?" },
+                    { icon: 'fa-store', label: "Nearest KSSC Store", q: `Where is the nearest government certified seed and agri-input store in ${distName}?` },
+                    { icon: 'fa-camera', label: "Leaf Photo Diagnosis", q: "How do I diagnose foliar spots with the AI leaf camera?" }
                 ];
             } else if (activeTab === 'saved') {
                 chips = isKn ? [
-                    { label: "📊 ಉಳಿಸಿದ ತೋಟಗಳ ಹೋಲಿಕೆ", q: "ನಾನು ಉಳಿಸಿರುವ ಜಮೀನುಗಳ ಪೈಕಿ ಅತ್ಯಂತ ಲಾಭದಾಯಕ ಬೆಳೆ ಯಾವುದು?" },
-                    { label: "💰 ಗರಿಷ್ಠ ROI ಜಮೀನು", q: "ಉಳಿಸಿದ ಸ್ಥಳಗಳಲ್ಲಿ ಅತಿ ಹೆಚ್ಚು ವಾರ್ಷಿಕ ಆದಾಯ ನೀಡುವ ಸ್ಥಳ ಯಾವುದು?" },
-                    { label: "🌦️ ಹವಾಮಾನ ಎಚ್ಚರಿಕೆ", q: "ನನ್ನ ಉಳಿಸಿದ ಜಮೀನುಗಳ ವ್ಯಾಪ್ತಿಯಲ್ಲಿ ಇತ್ತೀಚಿನ ಹವಾಮಾನ ಎಚ್ಚರಿಕೆಗಳೇನು?" }
+                    { icon: 'fa-chart-pie', label: "ಉಳಿಸಿದ ತೋಟಗಳ ಹೋಲಿಕೆ", q: "ನಾನು ಉಳಿಸಿರುವ ಜಮೀನುಗಳ ಪೈಕಿ ಅತ್ಯಂತ ಲಾಭದಾಯಕ ಬೆಳೆ ಯಾವುದು?" },
+                    { icon: 'fa-chart-line', label: "ಗರಿಷ್ಠ ROI ಜಮೀನು", q: "ಉಳಿಸಿದ ಸ್ಥಳಗಳಲ್ಲಿ ಅತಿ ಹೆಚ್ಚು ವಾರ್ಷಿಕ ಆದಾಯ ನೀಡುವ ಸ್ಥಳ ಯಾವುದು?" },
+                    { icon: 'fa-cloud-sun', label: "ಹವಾಮಾನ ಎಚ್ಚರಿಕೆ", q: "ನನ್ನ ಉಳಿಸಿದ ಜಮೀನುಗಳ ವ್ಯಾಪ್ತಿಯಲ್ಲಿ ಇತ್ತೀಚಿನ ಹವಾಮಾನ ಎಚ್ಚರಿಕೆಗಳೇನು?" }
                 ] : [
-                    { label: "📊 Compare Bookmarks", q: "Compare the crop suitability and ROI across my saved farm locations." },
-                    { label: "💰 Highest ROI Site", q: "Which of my bookmarked farms yields the highest commercial returns?" },
-                    { label: "🌦️ Weather Alerts for Sites", q: "Are there any high heat or drought alerts for my saved farm locations?" }
+                    { icon: 'fa-chart-pie', label: "Compare Bookmarks", q: "Compare the crop suitability and ROI across my saved farm locations." },
+                    { icon: 'fa-chart-line', label: "Highest ROI Site", q: "Which of my bookmarked farms yields the highest commercial returns?" },
+                    { icon: 'fa-cloud-sun', label: "Weather Alerts for Sites", q: "Are there any high heat or drought alerts for my saved farm locations?" }
                 ];
             } else {
                 // Default Agro tab
                 chips = isKn ? [
-                    { label: `🌾 ${locName} NPK ಗೊಬ್ಬರ ಲೆಕ್ಕ`, q: `${locName} ಮಣ್ಣಿನ pH ${currentFarmContext.ph} ಗೆ ಶಿಫಾರಸು ಮಾಡಲಾದ NPK ರಸಗೊಬ್ಬರ ಪ್ರಮಾಣ ಎಷ್ಟು?` },
-                    { label: "💧 ಕಡಿಮೆ ನೀರಿನ ಬೆಳೆಗಳು", q: `ವಾರ್ಷಿಕ ${currentFarmContext.rainfall}ಮಿಮೀ ಮಳೆಗೆ ಸೂಕ್ತವಾದ ಕಡಿಮೆ ನೀರಿನ ವಾಣಿಜ್ಯ ಬೆಳೆಗಳಾವುವು?` },
-                    { label: `🏛️ ${distName} ಸಬ್ಸಿಡಿ ಯೋಜನೆಗಳು`, q: `${distName} ಜಿಲ್ಲೆಗೆ ಲಭ್ಯವಿರುವ ಕೃಷಿ ಅರಣ್ಯ (KAPY) & ರೈತ ಸಿರಿ ಸಬ್ಸಿಡಿ ಪಡೆಯುವುದು ಹೇಗೆ?` },
-                    { label: "🌲 ೪-ಹಂತದ ಅಂತರ ವಿನ್ಯಾಸ", q: "೧ ಎಕರೆಗೆ ೪-ಹಂತದ ಬಹುಬೆಳೆ ಪದ್ಧತಿಯಲ್ಲಿ ಸಾಲಿನ ಅಂತರ ಮತ್ತು ಸಸಿಗಳ ಸಂಖ್ಯೆ ತಿಳಿಸಿ." },
-                    { label: "⚡ ಸೌರ ಕೃಷಿ (Agri-PV) ಆದಾಯ", q: "ಪ್ರಧಾನ ಮಂತ್ರಿ ಕುಸುಮ್ (PM-KUSUM) ಯೋಜನೆಯಡಿ ಸೌರ ಕೃಷಿಯಿಂದ ವಾರ್ಷಿಕ ಎಷ್ಟು ದ್ವಿ-ಆದಾಯ ಸಿಗುತ್ತದೆ?" }
+                    { icon: 'fa-flask', label: `${locName} NPK ಗೊಬ್ಬರ ಲೆಕ್ಕ`, q: `${locName} ಮಣ್ಣಿನ pH ${currentFarmContext.ph} ಗೆ ಶಿಫಾರಸು ಮಾಡಲಾದ NPK ರಸಗೊಬ್ಬರ ಪ್ರಮಾಣ ಎಷ್ಟು?` },
+                    { icon: 'fa-droplet', label: "ಕಡಿಮೆ ನೀರಿನ ಬೆಳೆಗಳು", q: `ವಾರ್ಷಿಕ ${currentFarmContext.rainfall}ಮಿಮೀ ಮಳೆಗೆ ಸೂಕ್ತವಾದ ಕಡಿಮೆ ನೀರಿನ ವಾಣಿಜ್ಯ ಬೆಳೆಗಳಾವುವು?` },
+                    { icon: 'fa-building-columns', label: `${distName} ಸಬ್ಸಿಡಿ ಯೋಜನೆಗಳು`, q: `${distName} ಜಿಲ್ಲೆಗೆ ಲಭ್ಯವಿರುವ ಕೃಷಿ ಅರಣ್ಯ (KAPY) & ರೈತ ಸಿರಿ ಸಬ್ಸಿಡಿ ಪಡೆಯುವುದು ಹೇಗೆ?` },
+                    { icon: 'fa-tree', label: "೪-ಹಂತದ ಅಂತರ ವಿನ್ಯಾಸ", q: "೧ ಎಕರೆಗೆ ೪-ಹಂತದ ಬಹುಬೆಳೆ ಪದ್ಧತಿಯಲ್ಲಿ ಸಾಲಿನ ಅಂತರ ಮತ್ತು ಸಸಿಗಳ ಸಂಖ್ಯೆ ತಿಳಿಸಿ." },
+                    { icon: 'fa-solar-panel', label: "ಸೌರ ಕೃಷಿ (Agri-PV) ಆದಾಯ", q: "ಪ್ರಧಾನ ಮಂತ್ರಿ ಕುಸುಮ್ (PM-KUSUM) ಯೋಜನೆಯಡಿ ಸೌರ ಕೃಷಿಯಿಂದ ವಾರ್ಷಿಕ ಎಷ್ಟು ದ್ವಿ-ಆದಾಯ ಸಿಗುತ್ತದೆ?" }
                 ] : [
-                    { label: `🌾 NPK for ${locName}`, q: `What is the customized NPK fertilizer schedule for ${locName} soil with pH ${currentFarmContext.ph}?` },
-                    { label: "💧 Low Water Crops", q: `Which high-value crops are optimal for ${currentFarmContext.rainfall}mm annual rainfall?` },
-                    { label: `🏛️ Subsidies in ${distName}`, q: `What government subsidy schemes (KAPY, Raitha Siri, MIDH) apply in ${distName}?` },
-                    { label: "🌲 4-Tier Spacing", q: "What is the recommended multi-tier canopy spacing and tree density per acre?" },
-                    { label: "⚡ Solar Agri-PV Returns", q: "How much dual income can I generate on 1 acre with Solar Agri-PV under PM-KUSUM?" }
+                    { icon: 'fa-flask', label: `NPK for ${locName}`, q: `What is the customized NPK fertilizer schedule for ${locName} soil with pH ${currentFarmContext.ph}?` },
+                    { icon: 'fa-droplet', label: "Low Water Crops", q: `Which high-value crops are optimal for ${currentFarmContext.rainfall}mm annual rainfall?` },
+                    { icon: 'fa-building-columns', label: `Subsidies in ${distName}`, q: `What government subsidy schemes (KAPY, Raitha Siri, MIDH) apply in ${distName}?` },
+                    { icon: 'fa-tree', label: "4-Tier Spacing", q: "What is the recommended multi-tier canopy spacing and tree density per acre?" },
+                    { icon: 'fa-solar-panel', label: "Solar Agri-PV Returns", q: "How much dual income can I generate on 1 acre with Solar Agri-PV under PM-KUSUM?" }
                 ];
             }
 
             chipsContainer.innerHTML = chips.map(c => `
                 <button type="button" onclick="handleAiQuickPrompt(this)" data-q="${c.q.replace(/"/g, '&quot;')}" class="ai-followup-btn" style="white-space:nowrap;flex-shrink:0;">
-                    ${c.label}
+                    <i class="fa-solid ${c.icon}"></i> <span>${c.label}</span>
                 </button>
             `).join('');
         }
