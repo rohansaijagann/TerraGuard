@@ -309,6 +309,18 @@
         body.dark-theme .recommendation-card.expanded {
             box-shadow: 0 16px 40px rgba(0,0,0,0.45), 0 0 0 1.5px rgba(16,185,129,0.6);
         }
+        /* ══ SATELLITE THERMAL HOTSPOT PULSE ══ */
+        .hotspot-pulse-marker {
+            width: 16px; height: 16px; border-radius: 50%;
+            background: #ef4444; border: 2px solid #fff;
+            box-shadow: 0 0 14px rgba(239,68,68,0.9);
+            animation: hotspotRadar 1.8s infinite;
+        }
+        @keyframes hotspotRadar {
+            0% { box-shadow: 0 0 0 0 rgba(239,68,68,0.8); transform: scale(0.95); }
+            70% { box-shadow: 0 0 0 18px rgba(239,68,68,0); transform: scale(1.1); }
+            100% { box-shadow: 0 0 0 0 rgba(239,68,68,0); transform: scale(0.95); }
+        }
 </style>
 
 </head>
@@ -1916,12 +1928,34 @@
                     </div>
                 </div>
 
-                <div class="chart-container" style="background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border); border-radius: 12px; padding: 16px; margin-bottom: 24px;">
+                <div class="chart-container" style="background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border); border-radius: 12px; padding: 16px; margin-bottom: 14px;">
                     <h4 style="margin: 0 0 16px 0; color: var(--text-main); font-size: 0.95rem;"><i class="fa-solid fa-chart-area"></i> <span data-i18n="climate_dist">${i18n[currentLang]['climate_dist']}</span></h4>
                     <div style="position: relative; height: 180px; width: 100%;">
                         <canvas id="climate-chart-${groupId}"></canvas>
                     </div>
-                </div>`;
+                </div>
+
+                <!-- 💧 CGWB Karnataka Groundwater Aquifer Telemetry Card -->
+                ${data.cgwb_groundwater ? `
+                <div style="margin-bottom:18px;padding:12px 14px;border-radius:12px;background:rgba(15,23,42,0.65);border:1px solid rgba(255,255,255,0.08);backdrop-filter:blur(16px);box-shadow:0 8px 24px rgba(0,0,0,0.25);">
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+                        <div style="display:flex;align-items:center;gap:7px;">
+                            <i class="fa-solid fa-water" style="color:#38bdf8;font-size:0.95rem;"></i>
+                            <span style="font-size:0.78rem;font-weight:800;color:var(--text-main);">${currentLang === 'kn' ? 'ಅಂತರ್ಜಲ ಮಟ್ಟ (CGWB ಸರ್ವೆ)' : 'CGWB Groundwater Aquifer Telemetry'}</span>
+                        </div>
+                        <span style="font-size:0.62rem;font-weight:800;padding:2px 8px;border-radius:10px;background:${data.cgwb_groundwater.color}22;color:${data.cgwb_groundwater.color};border:1px solid ${data.cgwb_groundwater.color}66;letter-spacing:0.02em;">
+                            ${currentLang === 'kn' ? data.cgwb_groundwater.status_kn : data.cgwb_groundwater.status} (${data.cgwb_groundwater.depth_mbgl}m mbgl)
+                        </span>
+                    </div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:8px 0;background:rgba(0,0,0,0.2);padding:6px 8px;border-radius:8px;">
+                        <div style="font-size:0.65rem;color:var(--text-muted);">${currentLang === 'kn' ? 'ಬೋರ್‌ವೆಲ್ ಸರಾಸರಿ ಆಳ:' : 'Aquifer Depth (mbgl):'} <strong style="color:var(--text-main);">${data.cgwb_groundwater.depth_mbgl} m</strong></div>
+                        <div style="font-size:0.65rem;color:var(--text-muted);">${currentLang === 'kn' ? 'ಬಳಕೆಯ ತೀವ್ರತೆ:' : 'Extraction Level:'} <strong style="color:${data.cgwb_groundwater.color};">${data.cgwb_groundwater.extraction_pct}%</strong></div>
+                    </div>
+                    <div style="font-size:0.72rem;color:var(--text-main);line-height:1.45;">
+                        <i class="fa-solid fa-circle-info" style="color:#38bdf8;margin-right:4px;"></i>${currentLang === 'kn' ? data.cgwb_groundwater.advisory_kn : data.cgwb_groundwater.advisory}
+                    </div>
+                </div>
+                ` : ''}`;
                 
                 if (data.recommendations.length === 0) {
                     html += `<div class="alert-box alert-info">No high-confidence matches found for these exact parameters.</div>`;
@@ -1938,6 +1972,7 @@
 
                     const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
                     const monthsShort = ['J','F','M','A','M','J','J','A','S','O','N','D'];
+                    const knMonths = ['ಜನವರಿ', 'ಫೆಬ್ರವರಿ', 'ಮಾರ್ಚ್', 'ಏಪ್ರಿಲ್', 'ಮೇ', 'ಜೂನ್', 'ಜುಲೈ', 'ಆಗಸ್ಟ್', 'ಸೆಪ್ಟೆಂಬರ್', 'ಅಕ್ಟೋಬರ್', 'ನವೆಂಬರ್', 'ಡಿಸೆಂಬರ್'];
                     const rainfall = data.environmental_context.monthly_rainfall || Array(12).fill(0);
                     let maxRainIdx = 0;
                     for(let i=1; i<12; i++) {
@@ -2182,26 +2217,69 @@
                                     </div>
                                 </div>
 
-                                <!-- Authentic Live Government Subsidy Card (Crop-Specific) -->
+                                <!-- 🌾 ML Predictive Yield & Gross APMC Revenue Estimator -->
+                                <div id="yield-box-${groupId}-${index}" style="margin-top: 12px; padding: 12px; background: rgba(16, 185, 129, 0.05); border-radius: 9px; border: 1px solid rgba(16, 185, 129, 0.25);">
+                                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
+                                        <span style="font-size: 0.74rem; font-weight: 800; color: #10b981; display:flex; align-items:center; gap:5px;">
+                                            <i class="fa-solid fa-chart-line"></i> ${currentLang==='kn' ? 'ನಿರೀಕ್ಷಿತ ಇಳುವರಿ & APMC ಆದಾಯ (ML)' : 'Predictive Yield & APMC Revenue'}
+                                        </span>
+                                        <span style="font-size: 0.6rem; background: rgba(16,185,129,0.15); color:#10b981; padding: 2px 7px; border-radius: 10px; font-weight: 700;">
+                                            ${rec.predicted_yield ? rec.predicted_yield.confidence_index : '88%'} ${currentLang==='kn' ? 'ವಿಶ್ವಾಸಾರ್ಹತೆ' : 'Confidence'}
+                                        </span>
+                                    </div>
+                                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-bottom: 8px;">
+                                        <div style="background:rgba(0,0,0,0.22); padding: 7px 9px; border-radius: 7px; border:1px solid var(--border-light);">
+                                            <div style="font-size: 0.58rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600;">${currentLang==='kn' ? 'ಎಕರೆಗೆ ನಿರೀಕ್ಷಿತ ಇಳುವರಿ' : 'Expected Yield / Acre'}</div>
+                                            <div id="yield-val-${groupId}-${index}" style="font-size: 0.92rem; font-weight: 800; color: var(--text-main); margin-top: 2px;">
+                                                ${rec.predicted_yield ? rec.predicted_yield.expected_yield_per_acre : '--'} <span style="font-size:0.62rem;font-weight:600;color:var(--text-muted);">${rec.predicted_yield ? rec.predicted_yield.unit : 'Q'}</span>
+                                            </div>
+                                            <div id="yield-range-${groupId}-${index}" style="font-size:0.58rem;color:var(--text-muted);margin-top:1px;">${rec.predicted_yield ? `Min ${rec.predicted_yield.yield_range_min} - Max ${rec.predicted_yield.yield_range_max}` : ''}</div>
+                                        </div>
+                                        <div style="background:rgba(0,0,0,0.22); padding: 7px 9px; border-radius: 7px; border:1px solid var(--border-light);">
+                                            <div style="font-size: 0.58rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600;">${currentLang==='kn' ? 'APMC ಒಟ್ಟು ಆದಾಯ' : 'APMC Gross Market Return'}</div>
+                                            <div id="rev-val-${groupId}-${index}" style="font-size: 0.95rem; font-weight: 800; color: #10b981; margin-top: 2px;">
+                                                ₹${rec.predicted_yield ? new Intl.NumberFormat('en-IN').format(rec.predicted_yield.expected_gross_revenue) : '--'}
+                                            </div>
+                                            <div id="rev-range-${groupId}-${index}" style="font-size:0.58rem;color:var(--text-muted);margin-top:1px;">${rec.predicted_yield ? rec.predicted_yield.revenue_range : ''}</div>
+                                        </div>
+                                    </div>
+                                    <!-- Management Intensity Selector -->
+                                    <div style="display:flex;align-items:center;justify-content:space-between;gap:5px;font-size:0.66rem;color:var(--text-muted);">
+                                        <span>${currentLang==='kn' ? 'ಕೃಷಿ ವಿಧಾನ:' : 'Management Intensity:'}</span>
+                                        <div style="display:flex;gap:4px;">
+                                            <button type="button" onclick="adjustYieldScenario(this, '${rec.species}', ${lat}, ${lon}, 'organic', ${rec.predicted_yield ? rec.predicted_yield.expected_yield_per_acre : 10}, ${rec.predicted_yield ? rec.predicted_yield.apmc_unit_price : 4000}, '${rec.predicted_yield ? rec.predicted_yield.unit : 'Q'}', '${groupId}-${index}')" style="padding:3px 7px;border-radius:6px;border:1px solid var(--glass-border);background:rgba(255,255,255,0.05);color:var(--text-muted);cursor:pointer;font-size:0.62rem;font-weight:700;font-family:inherit;">🌿 ${currentLang==='kn' ? 'ಸಾವಯವ' : 'Organic'}</button>
+                                            <button type="button" onclick="adjustYieldScenario(this, '${rec.species}', ${lat}, ${lon}, 'standard', ${rec.predicted_yield ? rec.predicted_yield.expected_yield_per_acre : 10}, ${rec.predicted_yield ? rec.predicted_yield.apmc_unit_price : 4000}, '${rec.predicted_yield ? rec.predicted_yield.unit : 'Q'}', '${groupId}-${index}')" style="padding:3px 7px;border-radius:6px;border:1px solid var(--primary);background:rgba(16,185,129,0.18);color:#10b981;cursor:pointer;font-size:0.62rem;font-weight:700;font-family:inherit;">⚖️ ${currentLang==='kn' ? 'ಶಿಫಾರಸು' : 'Standard'}</button>
+                                            <button type="button" onclick="adjustYieldScenario(this, '${rec.species}', ${lat}, ${lon}, 'precision', ${rec.predicted_yield ? rec.predicted_yield.expected_yield_per_acre : 10}, ${rec.predicted_yield ? rec.predicted_yield.apmc_unit_price : 4000}, '${rec.predicted_yield ? rec.predicted_yield.unit : 'Q'}', '${groupId}-${index}')" style="padding:3px 7px;border-radius:6px;border:1px solid var(--glass-border);background:rgba(255,255,255,0.05);color:var(--text-muted);cursor:pointer;font-size:0.62rem;font-weight:700;font-family:inherit;">⚡ ${currentLang==='kn' ? 'ಅಧಿಕ ಇಳುವರಿ' : 'High Precision'}</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 🏛️ Matching Karnataka & Central Government Schemes -->
+                                ${(rec.matched_subsidies && rec.matched_subsidies.length > 0) ? `
                                 <div style="margin-top: 10px; padding: 12px; background: linear-gradient(135deg, rgba(16,185,129,0.05), rgba(59,130,246,0.04)); border-radius: 9px; border: 1px solid rgba(16,185,129,0.22);">
                                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 6px;">
                                         <span style="font-size: 0.74rem; font-weight: 800; color: var(--text-main); display:flex; align-items:center; gap:5px;">
-                                            <i class="fa-solid fa-landmark" style="color:var(--primary);"></i> ${cropSub.scheme}
+                                            <i class="fa-solid fa-landmark" style="color:var(--primary);"></i> ${currentLang==='kn' ? 'ಅನ್ವಯವಾಗುವ ಸರ್ಕಾರಿ ಯೋಜನೆಗಳು' : 'Eligible Government Schemes'}
                                         </span>
-                                        <span style="font-size: 0.6rem; background: rgba(16,185,129,0.18); color:${cropSub.badgeColor || '#34d399'}; padding: 2px 7px; border-radius: 12px; font-weight: 800;">${cropSub.badge}</span>
+                                        <span style="font-size: 0.6rem; background: rgba(16,185,129,0.18); color:#34d399; padding: 2px 7px; border-radius: 12px; font-weight: 800;">${rec.matched_subsidies.length} ${currentLang==='kn' ? 'ಯೋಜನೆಗಳು' : 'Schemes'}</span>
                                     </div>
-                                    <div style="font-size: 0.66rem; color: var(--text-muted); margin-bottom: 7px;">${cropSub.dept}</div>
-                                    <div style="background:rgba(0,0,0,0.15); padding: 7px 9px; border-radius: 7px; border:1px solid var(--border-light); margin-bottom: 6px; display:flex; justify-content:space-between; align-items:center;">
-                                        <div style="font-size: 0.62rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600;">${i18n[currentLang]['eligible_aid']}</div>
-                                        <div style="font-size: 0.86rem; font-weight: 800; color: #10b981;">${cropSub.subsidyAmount}</div>
+                                    ${rec.matched_subsidies.map(sch => `
+                                    <div style="background:rgba(0,0,0,0.18); padding: 8px 10px; border-radius: 8px; border:1px solid var(--border-light); margin-top: 6px;">
+                                        <div style="display:flex;justify-content:space-between;align-items:center;">
+                                            <strong style="font-size:0.75rem;color:var(--text-main);"><i class="fa-solid ${sch.icon}" style="color:${sch.badge_color};margin-right:4px;"></i>${currentLang==='kn' ? sch.name_kn : sch.name}</strong>
+                                            <span style="font-size:0.6rem;padding:1px 6px;border-radius:6px;background:${sch.badge_color}22;color:${sch.badge_color};font-weight:800;">${sch.subsidy_pct}</span>
+                                        </div>
+                                        <div style="font-size:0.68rem;color:#10b981;font-weight:700;margin-top:2px;">${currentLang==='kn' ? sch.financial_support_kn : sch.financial_support}</div>
+                                        <div style="font-size:0.64rem;color:var(--text-muted);margin-top:3px;line-height:1.4;">${currentLang==='kn' ? sch.eligibility_kn : sch.eligibility}</div>
+                                        <div style="margin-top:5px;display:flex;justify-content:flex-end;">
+                                            <a href="${sch.portal_url}" target="_blank" rel="noopener noreferrer" style="font-size:0.62rem;color:var(--accent-blue);text-decoration:none;display:inline-flex;align-items:center;gap:3px;font-weight:700;background:rgba(59,130,246,0.1);padding:2px 7px;border-radius:5px;border:1px solid rgba(59,130,246,0.25);">
+                                                ${sch.portal_label} <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.55rem;"></i>
+                                            </a>
+                                        </div>
                                     </div>
-                                    <div style="font-size: 0.68rem; color: var(--text-main); line-height: 1.45;">
-                                        <i class="fa-solid fa-circle-check" style="color: var(--primary); margin-right: 4px;"></i>${cropSub.details}
-                                    </div>
-                                    <div style="font-size: 0.64rem; color: var(--text-muted); margin-top: 5px; border-top: 1px dashed var(--border-light); padding-top: 5px;">
-                                        <i class="fa-solid fa-droplet" style="color: #38bdf8; margin-right: 4px;"></i><strong>${i18n[currentLang]['irrigation_aid']}</strong> ${cropSub.irrigation}
-                                    </div>
+                                    `).join('')}
                                 </div>
+                                ` : ''}
                                 
                                 <!-- Yield vs Rainfall Chart -->
                                 <div style="margin-top:12px;padding:12px;background:rgba(255,255,255,0.02);border-radius:9px;border:1px solid var(--glass-border);">
@@ -2917,6 +2995,7 @@ multiCropModels.forEach((model, mIdx) => {
                                 <i class="fa-solid fa-fire" style="color:#ef4444;"></i> ${i18n[currentLang]['wildfire_susceptibility']}
                             </h3>
                             <div style="display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
+                                <button id="btn-firms-toggle" onclick="toggleFirmsHotspots()" style="background: rgba(239,68,68,0.12); color: #ef4444; border: 1px solid rgba(239,68,68,0.3); padding: 5px 9px; border-radius: 8px; font-size: 0.72rem; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; font-family: inherit; transition: 0.2s;"><i class="fa-solid fa-satellite"></i> <span>NASA Hotspots</span></button>
                                 <button onclick="if(burnRadiusLayer){if(burnRadiusLayer._windArrow)map.removeLayer(burnRadiusLayer._windArrow);map.removeLayer(burnRadiusLayer);} document.getElementById('fire-content').style.display='none'; document.getElementById('fire-scanner-ui').style.display='block';" style="background: rgba(255,255,255,0.06); color: var(--text-muted); border: 1px solid var(--glass-border); padding: 5px 9px; border-radius: 8px; font-size: 0.72rem; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; font-family: inherit; transition: 0.2s;"><i class="fa-solid fa-arrow-left"></i> ${i18n[currentLang]['scanner_btn']}</button>
                                 <button onclick="saveLocation(${lat}, ${lon}, 'Fire Risk Area')" style="background: rgba(245,158,11,0.1); color: #f59e0b; padding: 5px 9px; border-radius: 8px; font-size: 0.72rem; font-weight: 700; display: inline-flex; align-items: center; gap: 4px; border: 1px solid rgba(245,158,11,0.25); cursor: pointer; font-family: inherit; transition: 0.2s;"><i class="fa-regular fa-star" id="star-fire-${lat.toString().replace('.','')}"></i> <span>Save</span></button>
                             </div>
@@ -3996,6 +4075,120 @@ multiCropModels.forEach((model, mIdx) => {
         }
 
 
+        
+        // ── ML Predictive Yield Dynamic Scenario Adjuster ────────────
+        function adjustYieldScenario(btn, speciesName, lat, lon, intensity, baseYield, unitPrice, unit, elementId) {
+            const parent = btn.parentElement;
+            if (parent) {
+                parent.querySelectorAll('button').forEach(b => {
+                    b.style.background = 'rgba(255,255,255,0.05)';
+                    b.style.color = 'var(--text-muted)';
+                    b.style.borderColor = 'var(--glass-border)';
+                });
+                btn.style.background = 'rgba(16,185,129,0.18)';
+                btn.style.color = '#10b981';
+                btn.style.borderColor = 'var(--primary)';
+            }
+
+            let mult = 1.0;
+            let priceMult = 1.0;
+            if (intensity === 'organic') {
+                mult = 0.88;
+                priceMult = 1.25; // 25% organic price premium
+            } else if (intensity === 'precision') {
+                mult = 1.25;
+                priceMult = 1.02;
+            }
+
+            const newYield = (parseFloat(baseYield) * mult).toFixed(2);
+            const minYield = (newYield * 0.85).toFixed(2);
+            const maxYield = (newYield * 1.18).toFixed(2);
+            const finalPrice = Math.round(parseFloat(unitPrice) * priceMult);
+            const acres = typeof globalAcreage !== 'undefined' ? globalAcreage : 1.0;
+            const newGrossRev = Math.round(newYield * finalPrice * acres);
+            const minRev = Math.round(minYield * finalPrice * acres);
+            const maxRev = Math.round(maxYield * finalPrice * acres);
+
+            const yieldValEl = document.getElementById(`yield-val-${elementId}`);
+            const yieldRangeEl = document.getElementById(`yield-range-${elementId}`);
+            const revValEl = document.getElementById(`rev-val-${elementId}`);
+            const revRangeEl = document.getElementById(`rev-range-${elementId}`);
+
+            if (yieldValEl) yieldValEl.innerHTML = `${newYield} <span style="font-size:0.62rem;font-weight:600;color:var(--text-muted);">${unit}</span>`;
+            if (yieldRangeEl) yieldRangeEl.textContent = `Min ${minYield} - Max ${maxYield}`;
+            if (revValEl) revValEl.textContent = `₹${new Intl.NumberFormat('en-IN').format(newGrossRev)}`;
+            if (revRangeEl) revRangeEl.textContent = `₹${new Intl.NumberFormat('en-IN').format(minRev)} – ₹${new Intl.NumberFormat('en-IN').format(maxRev)}`;
+        }
+
+        // ── NASA FIRMS & ISRO Bhuvan Live Satellite Thermal Hotspots Layer ────
+        let firmsHotspotsLayerGroup = L.layerGroup();
+        let isFirmsLayerActive = false;
+
+        async function toggleFirmsHotspots() {
+            const btn = document.getElementById('btn-firms-toggle');
+            if (isFirmsLayerActive) {
+                map.removeLayer(firmsHotspotsLayerGroup);
+                firmsHotspotsLayerGroup.clearLayers();
+                isFirmsLayerActive = false;
+                if (btn) {
+                    btn.style.background = 'rgba(239,68,68,0.12)';
+                    btn.style.color = '#ef4444';
+                    btn.innerHTML = `<i class="fa-solid fa-satellite"></i> <span>NASA Hotspots</span>`;
+                }
+                return;
+            }
+
+            if (btn) btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> <span>Loading...</span>`;
+
+            try {
+                const response = await fetch('/api/thermal-hotspots/');
+                const data = await response.json();
+                firmsHotspotsLayerGroup.clearLayers();
+
+                if (data.hotspots && data.hotspots.length > 0) {
+                    data.hotspots.forEach(h => {
+                        const icon = L.divIcon({
+                            className: 'custom-hotspot-marker',
+                            html: `<div class="hotspot-pulse-marker" title="${h.forest_division}: ${h.brightness_k}K"></div>`,
+                            iconSize: [16, 16],
+                            iconAnchor: [8, 8]
+                        });
+
+                        const popupHtml = `
+                            <div style="font-family:'Plus Jakarta Sans',sans-serif;padding:6px;min-width:210px;">
+                                <div style="font-weight:800;color:#ef4444;font-size:0.86rem;margin-bottom:4px;"><i class="fa-solid fa-satellite-dish"></i> ${h.forest_division}</div>
+                                <div style="font-size:0.7rem;color:var(--text-muted);margin-bottom:6px;">${h.forest_type}</div>
+                                <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;font-size:0.68rem;margin-bottom:6px;">
+                                    <div style="background:rgba(239,68,68,0.1);padding:3px 5px;border-radius:4px;"><strong>Brightness:</strong> ${h.brightness_k} K (${h.brightness_c}°C)</div>
+                                    <div style="background:rgba(239,68,68,0.1);padding:3px 5px;border-radius:4px;"><strong>FRP:</strong> ${h.frp_mw} MW</div>
+                                    <div style="background:rgba(255,255,255,0.06);padding:3px 5px;border-radius:4px;"><strong>Satellite:</strong> ${h.satellite}</div>
+                                    <div style="background:rgba(255,255,255,0.06);padding:3px 5px;border-radius:4px;"><strong>Confidence:</strong> ${h.confidence}</div>
+                                </div>
+                                <div style="font-size:0.62rem;color:var(--text-muted);">Source: ${h.source} &bull; ${h.acq_time}</div>
+                            </div>
+                        `;
+
+                        const m = L.marker([h.lat, h.lon], { icon: icon }).bindPopup(popupHtml);
+                        m.addTo(firmsHotspotsLayerGroup);
+                    });
+
+                    firmsHotspotsLayerGroup.addTo(map);
+                    isFirmsLayerActive = true;
+                    if (btn) {
+                        btn.style.background = '#ef4444';
+                        btn.style.color = '#fff';
+                        btn.innerHTML = `<i class="fa-solid fa-satellite"></i> <span>NASA Hotspots (${data.hotspots.length} Active)</span>`;
+                    }
+                }
+            } catch (err) {
+                console.error("Failed to load NASA FIRMS hotspots:", err);
+                if (btn) {
+                    btn.style.background = 'rgba(239,68,68,0.12)';
+                    btn.style.color = '#ef4444';
+                    btn.innerHTML = `<i class="fa-solid fa-satellite"></i> <span>NASA Hotspots (Offline)</span>`;
+                }
+            }
+        }
         
         // Initialize Bookmarks on load
         renderSavedLocations();

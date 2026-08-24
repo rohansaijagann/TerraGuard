@@ -1,5 +1,9 @@
 from django.urls import path
-from .views import RecommendationAPI, DiagnosticsAPI, FireRiskAPI, ForestBoundariesAPI, DroughtScanAPI, FireScanAPI, PestDiseaseAPI, LiveAlertsAPI, dashboard_view
+from .views import (
+    RecommendationAPI, DiagnosticsAPI, FireRiskAPI, ForestBoundariesAPI, 
+    DroughtScanAPI, FireScanAPI, PestDiseaseAPI, LiveAlertsAPI, 
+    YieldEstimatorAPI, ThermalHotspotsAPI, dashboard_view
+)
 
 urlpatterns = [
     path('', dashboard_view, name='dashboard'), 
@@ -11,4 +15,6 @@ urlpatterns = [
     path('api/fire-scan/', FireScanAPI.as_view(), name='api_fire_scan'),
     path('api/pest-disease/', PestDiseaseAPI.as_view(), name='api_pest_disease'),
     path('api/live-alerts/', LiveAlertsAPI.as_view(), name='api_live_alerts'),
+    path('api/estimate-yield/', YieldEstimatorAPI.as_view(), name='api_estimate_yield'),
+    path('api/thermal-hotspots/', ThermalHotspotsAPI.as_view(), name='api_thermal_hotspots'),
 ]
