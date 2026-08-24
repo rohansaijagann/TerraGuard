@@ -1573,20 +1573,30 @@
         });
 
         // ── Dynamic Universal Water Keywords Scanner ─────────────────
-        const WATER_KEYWORDS = [
-            'lake', 'tank', 'reservoir', 'dam', 'sea', 'ocean', 'river', 'canal', 'creek', 
-            'stream', 'backwater', 'barrage', 'pond', 'falls', 'water', 'dock', 
-            'bay', 'marsh', 'wetland', 'lagoon', 'coast', 'gulf', 'estuary', 'beach',
-            'kere', 'katte', 'kunte', 'sagara', 'sagar', 'jalashaya', 'anekattu', 'halla', 
-            'hole', 'nadi', 'talab', 'bawdi', 'bawli', 'teerth', 'teertha', 'sarovara',
-            'ಕೆರೆ', 'ಜಲಾಶಯ', 'ಹಳ್ಳ', 'ಹೊಳೆ', 'ನದಿ', 'ಸಮುದ್ರ', 'ತಲಾಬ್', 'ತೀರ್ಥ', 'ಅಣೆಕಟ್ಟು', 
-            'ಡ್ಯಾಂ', 'ಬ್ಯಾರೇಜ್', 'ಕೊಳ್ಳ', 'ಸಾಗರ', 'ಕುಂಟೆ', 'ಕಟ್ಟೆ', 'ಸರೋವರ'
-        ];
+        const TOWN_EXCLUDE_SET = new Set([
+            'sagara', 'sagar', 'holenarasipura', 'holenarsipur', 'holehonnuru', 'holealur', 
+            'mudhol', 'sandur', 'honnali', 'haliyal', 'hangal', 'kumta', 'bhatkal', 'ankola', 
+            'karwar', 'kundapura', 'udupi', 'karkala', 'belthangady', 'puttur', 'sullia', 
+            'madikeri', 'somwarpet', 'virajpet', 'channagiri', 'tarikere', 'kadur', 
+            'harapanahalli', 'hagaribommanahalli', 'kudligi', 'hosapete', 'gangavathi', 
+            'sindhanur', 'manvi', 'devadurga', 'lingasugur', 'kushtagi', 'yelburga', 'ron', 
+            'shirahatti', 'mundargi', 'nargund', 'navalgund', 'kalghatgi', 'kundgol', 
+            'alnavar', 'annigeri', 'bilagi', 'badami', 'hungund', 'ilkal', 'guledgudda', 
+            'rabkavi banhatti', 'jamkhandi', 'athani', 'kagwad', 'nippani', 'chikkodi', 
+            'raybag', 'gokak', 'mudalgi', 'hukkeri', 'belagavi', 'bailhongal', 'kittur', 
+            'saundatti', 'ramdurg', 'khanapur', 'yadgir', 'shahapur', 'shorapur', 'hunsagi', 
+            'gurmitkal', 'wadgera', 'bidar', 'basavakalyan', 'humnabad', 'bhalki', 'aurad', 
+            'kamalnagar', 'chitguppa', 'karnataka', 'india', 'bengaluru', 'mysuru', 'ballari',
+            'kolar', 'mandya', 'hassan', 'tumakuru', 'dharwad', 'shivamogga', 'chikkamagaluru'
+        ]);
+
+        const WATER_REGEX = /\b(lake|reservoir|dam|canal|creek|stream|backwater|barrage|ocean|sea|beach|waterfall|falls|wetland|lagoon|kere|katte|kunte|jalashaya|anekattu|sarovara|ಕೆರೆ|ಜಲಾಶಯ|ಹಳ್ಳ|ಸಮುದ್ರ|ತಲಾಬ್|ತೀರ್ಥ|ಅಣೆಕಟ್ಟು|ಡ್ಯಾಂ|ಬ್ಯಾರೇಜ್|ಸರೋವರ)\b/i;
 
         function scanTextForWater(text) {
             if (!text || typeof text !== 'string') return false;
-            const t = text.toLowerCase();
-            return WATER_KEYWORDS.some(kw => t.includes(kw));
+            const t = text.trim().toLowerCase();
+            if (TOWN_EXCLUDE_SET.has(t)) return false;
+            return WATER_REGEX.test(t);
         }
 
         function searchLocation(overrideQuery = null) {

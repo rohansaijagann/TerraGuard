@@ -361,25 +361,44 @@ KARNATAKA_TOWNS = [
     {"name": "Chitguppa", "name_kn": "ಚಿಟಗುಪ್ಪ", "district": "Bidar", "lat": 17.6900, "lon": 77.2200}
 ]
 
-# ══ 3. DYNAMIC WATER KEYWORDS SCANNER ══
-WATER_KEYWORDS = [
-    'lake', 'tank', 'reservoir', 'dam', 'sea', 'ocean', 'river', 'canal', 'creek', 
-    'stream', 'backwater', 'barrage', 'pond', 'falls', 'water', 'dock', 
-    'bay', 'marsh', 'wetland', 'lagoon', 'coast', 'gulf', 'estuary', 'beach',
-    'kere', 'katte', 'kunte', 'sagara', 'sagar', 'jalashaya', 'anekattu', 'halla', 
-    'hole', 'nadi', 'talab', 'bawdi', 'bawli', 'teerth', 'teertha', 'sarovara',
-    'ಕೆರೆ', 'ಜಲಾಶಯ', 'ಹಳ್ಳ', 'ಹೊಳೆ', 'ನದಿ', 'ಸಮುದ್ರ', 'ತಲಾಬ್', 'ತೀರ್ಥ', 'ಅಣೆಕಟ್ಟು', 
-    'ಡ್ಯಾಂ', 'ಬ್ಯಾರೇಜ್', 'ಕೊಳ್ಳ', 'ಸಾಗರ', 'ಕುಂಟೆ', 'ಕಟ್ಟೆ', 'ಸರೋವರ'
-]
+# ══ 3. DYNAMIC WATER KEYWORDS SCANNER (Word-Boundary & Town Safe) ══
+import re
+
+TOWN_IGNORE_LIST = {
+    'sagara', 'sagar', 'holenarasipura', 'holenarsipur', 'holehonnuru', 'holealur', 
+    'mudhol', 'sandur', 'honnali', 'haliyal', 'hangal', 'kumta', 'bhatkal', 'ankola', 
+    'karwar', 'kundapura', 'udupi', 'karkala', 'belthangady', 'puttur', 'sullia', 
+    'madikeri', 'somwarpet', 'virajpet', 'channagiri', 'tarikere', 'kadur', 
+    'harapanahalli', 'hagaribommanahalli', 'kudligi', 'hosapete', 'gangavathi', 
+    'sindhanur', 'manvi', 'devadurga', 'lingasugur', 'kushtagi', 'yelburga', 'ron', 
+    'shirahatti', 'mundargi', 'nargund', 'navalgund', 'kalghatgi', 'kundgol', 
+    'alnavar', 'annigeri', 'bilagi', 'badami', 'hungund', 'ilkal', 'guledgudda', 
+    'rabkavi banhatti', 'jamkhandi', 'athani', 'kagwad', 'nippani', 'chikkodi', 
+    'raybag', 'gokak', 'mudalgi', 'hukkeri', 'belagavi', 'bailhongal', 'kittur', 
+    'saundatti', 'ramdurg', 'khanapur', 'yadgir', 'shahapur', 'shorapur', 'hunsagi', 
+    'gurmitkal', 'wadgera', 'bidar', 'basavakalyan', 'humnabad', 'bhalki', 'aurad', 
+    'kamalnagar', 'chitguppa', 'karnataka', 'india', 'bengaluru', 'mysuru', 'ballari',
+    'kolar', 'mandya', 'hassan', 'tumakuru', 'dharwad', 'shivamogga', 'chikkamagaluru',
+    'kaveri river basin', 'krishna river basin', 'pennar basin', 'godavari basin'
+}
+
+WATER_WORD_REGEX = re.compile(
+    r'\b(lake|reservoir|dam|canal|creek|stream|backwater|barrage|ocean|sea|beach|waterfall|falls|wetland|lagoon|kere|katte|kunte|jalashaya|anekattu|sarovara|ಕೆರೆ|ಜಲಾಶಯ|ಹಳ್ಳ|ಸಮುದ್ರ|ತಲಾಬ್|ತೀರ್ಥ|ಅಣೆಕಟ್ಟು|ಡ್ಯಾಂ|ಬ್ಯಾರೇಜ್|ಸರೋವರ)\b',
+    re.IGNORECASE
+)
 
 def scan_text_for_water(text):
-    """Detects any water-related keyword in English, Kannada, or transliteration."""
+    """Detects actual water body names while excluding legitimate towns and districts."""
     if not text:
         return False
-    t_lower = text.lower()
-    for kw in WATER_KEYWORDS:
-        if kw in t_lower:
-            return True
+    t_clean = text.strip().lower()
+    if t_clean in TOWN_IGNORE_LIST:
+        return False
+    if WATER_WORD_REGEX.search(t_clean):
+        words = t_clean.split()
+        if len(words) == 1 and words[0] in TOWN_IGNORE_LIST:
+            return False
+        return True
     return False
 
 def haversine_km(lat1, lon1, lat2, lon2):
@@ -415,7 +434,7 @@ def check_karnataka_location(lat, lon):
     Combines:
     1. Arabian Sea coastal geometry
     2. 85+ Pre-compiled Dams, Reservoirs, and City Lakes
-    3. Dynamic Real-Time Reverse-Geocoding Water Keyword Scanner (catches ANY lake/tank in any village)
+    3. Dynamic Real-Time Reverse-Geocoding Water Keyword Scanner
     4. Karnataka Bounding & Offline 200+ Taluks place namer
     """
     # 1. Arabian Sea Check
@@ -446,42 +465,29 @@ def check_karnataka_location(lat, lon):
                 "error_message_kn": f"ಜಲಮೂಲ ಪತ್ತೆಯಾಗಿದೆ ({res['name_kn']}). ಜಲಾಶಯ ಅಥವಾ ಕೆರೆಯ ಮೇಲೆ ಕೃಷಿ ವಿಶ್ಲೇಷಣೆ ಅನ್ವಯಿಸುವುದಿಲ್ಲ."
             }
 
-    # 3. Dynamic Live Reverse-Geocode Water Keyword Scanner (for unlisted lakes, canals, village ponds)
+    # 3. Dynamic Live Reverse-Geocode Water Keyword Scanner (Optional verification)
     import requests
     try:
         url_bdc = f"https://api.bigdatacloud.net/data/reverse-geocode-client?latitude={lat}&longitude={lon}&localityLanguage=en"
-        r_bdc = requests.get(url_bdc, timeout=2.5)
+        r_bdc = requests.get(url_bdc, timeout=1.8)
         if r_bdc.status_code == 200:
             d = r_bdc.json()
-            if not d.get('countryCode'):
-                return {
-                    "is_valid": False,
-                    "is_water": True,
-                    "is_outside": False,
-                    "location_name": "🌊 Water Body / Ocean",
-                    "location_name_kn": "🌊 ಜಲಮೂಲ / ಸಮುದ್ರ",
-                    "district": "Water Body",
-                    "error_message": "Water body detected. Please select a solid land coordinate within Karnataka.",
-                    "error_message_kn": "ಜಲಮೂಲ ಪತ್ತೆಯಾಗಿದೆ. ದಯವಿಟ್ಟು ಕರ್ನಾಟಕದ ಭೂಪ್ರದೇಶದ ಜಮೀನನ್ನು ಆಯ್ಕೆಮಾಡಿ."
-                }
-            
-            # Scan informative & administrative items for any lake / tank / dam keyword
-            items = d.get('localityInfo', {}).get('informative', []) + d.get('localityInfo', {}).get('administrative', [])
-            for item in items:
-                n = item.get('name', '')
-                if scan_text_for_water(n):
-                    if n.lower() in ['karnataka', 'india', 'kaveri river basin', 'krishna river basin', 'pennar basin', 'godavari basin']:
-                        continue
-                    return {
-                        "is_valid": False,
-                        "is_water": True,
-                        "is_outside": False,
-                        "location_name": f"🌊 {n}",
-                        "location_name_kn": f"🌊 {n}",
-                        "district": "Inland Water",
-                        "error_message": f"Inland water body detected ({n}). Agricultural suitability, drought telemetry, and fire risk are not applicable over water.",
-                        "error_message_kn": f"ಜಲಮೂಲ ಪತ್ತೆಯಾಗಿದೆ ({n}). ಜಲಾಶಯ ಅಥವಾ ಕೆರೆಯ ಮೇಲೆ ಕೃಷಿ ವಿಶ್ಲೇಷಣೆ ಅನ್ವಯಿಸುವುದಿಲ್ಲ."
-                    }
+            if d.get('countryCode') == 'IN':
+                items = d.get('localityInfo', {}).get('informative', []) + d.get('localityInfo', {}).get('administrative', [])
+                for item in items:
+                    n = item.get('name', '')
+                    desc = item.get('description', '').lower()
+                    if ('water' in desc or 'lake' in desc or 'reservoir' in desc or 'dam' in desc) and scan_text_for_water(n):
+                        return {
+                            "is_valid": False,
+                            "is_water": True,
+                            "is_outside": False,
+                            "location_name": f"🌊 {n}",
+                            "location_name_kn": f"🌊 {n}",
+                            "district": "Inland Water",
+                            "error_message": f"Inland water body detected ({n}). Agricultural suitability, drought telemetry, and fire risk are not applicable over water.",
+                            "error_message_kn": f"ಜಲಮೂಲ ಪತ್ತೆಯಾಗಿದೆ ({n}). ಜಲಾಶಯ ಅಥವಾ ಕೆರೆಯ ಮೇಲೆ ಕೃಷಿ ವಿಶ್ಲೇಷಣೆ ಅನ್ವಯಿಸುವುದಿಲ್ಲ."
+                        }
     except Exception:
         pass
 
