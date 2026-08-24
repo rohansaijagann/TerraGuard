@@ -31,18 +31,32 @@
     </script>
 
     <style>
-        /* ══ TERRAGUARD DESIGN SYSTEM v3 ══ */
+        /* ══ TERRAGUARD DESIGN SYSTEM v4 ══ */
         :root {
+            /* ── Brand Colors ── */
             --primary:#059669; --primary-dark:#047857; --primary-glow:rgba(5,150,105,0.22);
             --accent-blue:#2563eb; --accent-amber:#d97706; --accent-red:#dc2626;
+            --primary-light:rgba(5,150,105,0.12);
+            /* ── Surfaces ── */
             --bg-body:#f1f5f9; --bg-panel:rgba(255,255,255,0.92);
-            --text-main:#0f172a; --text-muted:#475569;
             --glass-bg:rgba(255,255,255,0.8); --glass-border:rgba(0,0,0,0.1);
             --glass-gradient:linear-gradient(135deg,rgba(255,255,255,0.96),rgba(248,250,252,0.88));
             --bg-filter:rgba(0,0,0,0.04); --bg-icon-tree:rgba(5,150,105,0.12);
             --bg-icon-crop:rgba(217,119,6,0.12); --border-light:rgba(0,0,0,0.08);
             --card-bg:rgba(255,255,255,0.88); --scrollbar-thumb:rgba(0,0,0,0.18);
-            --primary-light:rgba(5,150,105,0.12);
+            /* ── Text ── */
+            --text-main:#0f172a; --text-muted:#475569;
+            /* ── Standardized Radius Scale ── */
+            --radius-sm:8px; --radius-md:12px; --radius-lg:16px; --radius-xl:20px; --radius-pill:999px;
+            /* ── Standardized Typography Scale ── */
+            --text-xs:0.6rem; --text-sm:0.7rem; --text-base:0.78rem; --text-md:0.85rem; --text-lg:0.95rem; --text-xl:1.1rem; --text-2xl:1.3rem;
+            /* ── Standardized Spacing Scale ── */
+            --space-xs:4px; --space-sm:8px; --space-md:12px; --space-lg:16px; --space-xl:24px;
+            /* ── Standardized Shadows ── */
+            --shadow-card:0 4px 16px rgba(0,0,0,0.06);
+            --shadow-card-hover:0 12px 32px rgba(0,0,0,0.12);
+            --shadow-glass:0 24px 48px rgba(0,0,0,0.2);
+            --shadow-fab:0 10px 28px rgba(5,150,105,0.4);
         }
         body.dark-theme {
             --primary:#10b981; --primary-dark:#059669; --primary-glow:rgba(16,185,129,0.25);
@@ -55,6 +69,10 @@
             --bg-filter:rgba(255,255,255,0.04); --bg-icon-tree:rgba(16,185,129,0.14);
             --bg-icon-crop:rgba(245,158,11,0.14); --border-light:rgba(255,255,255,0.06);
             --card-bg:rgba(20,30,50,0.7); --scrollbar-thumb:rgba(255,255,255,0.08);
+            --shadow-card:0 4px 16px rgba(0,0,0,0.2);
+            --shadow-card-hover:0 12px 32px rgba(0,0,0,0.35);
+            --shadow-glass:0 24px 48px rgba(0,0,0,0.5);
+            --shadow-fab:0 10px 28px rgba(16,185,129,0.5);
         }
         *,*::before,*::after{box-sizing:border-box}
         ::-webkit-scrollbar{width:4px} ::-webkit-scrollbar-track{background:transparent} ::-webkit-scrollbar-thumb{background:var(--scrollbar-thumb);border-radius:4px}
@@ -206,8 +224,6 @@
         @keyframes pulse{0%,100%{opacity:0.5}50%{opacity:1}}
         @keyframes radarPulse{0%{box-shadow:0 0 0 0 rgba(16,185,129,0.7)}70%{box-shadow:0 0 0 18px rgba(16,185,129,0)}100%{box-shadow:0 0 0 0 rgba(16,185,129,0)}}
         @keyframes pulseFire{0%{transform:scale(0.96);opacity:0.75}70%{transform:scale(1.04);opacity:0.3}100%{transform:scale(0.96);opacity:0.75}}
-        @keyframes fireRingGrow{0%{transform:scale(1);opacity:0.9}50%{transform:scale(1.35);opacity:0.4}100%{transform:scale(1);opacity:0.9}}
-        @keyframes countUp{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
         @keyframes gaugeAnim{from{stroke-dashoffset:283}to{stroke-dashoffset:var(--gauge-offset)}}
         @keyframes alertSlideDown{from{opacity:0;transform:translateY(-100%)}to{opacity:1;transform:translateY(0)}}
         /* Smart Alert Banner */
@@ -295,8 +311,65 @@
             .v-tab-btn::after{right:auto;top:auto;bottom:0;left:20%;right:20%;width:auto;height:3px;border-radius:0 0 3px 3px}
             .panel-content{flex:1;overflow:hidden;min-height:0}
             #feed-container{overflow-y:auto}
+            .env-metrics{grid-template-columns:repeat(2,1fr)}
+            .stat-grid{grid-template-columns:1fr}
+            #floating-ai-window{width:calc(100vw - 32px) !important;max-height:60vh !important}
+            .v-tab-btn span{font-size:0.48rem}
         }
         @media print{body{overflow:visible;background:#fff}#map-container{display:none}#agent-sidebar{width:100%;max-width:none;box-shadow:none;border:none}.sticky-header-container,.vertical-tabs{display:none}.recommendation-card{break-inside:avoid;border:1px solid #ccc !important}.details-container{display:block !important}}
+        /* ══ UTILITY CLASSES FOR COMPONENTS ══ */
+        .tab-panel{padding:var(--space-lg);display:flex;flex-direction:column;gap:var(--space-md)}
+        .section-header{display:flex;align-items:center;gap:var(--space-sm);margin-bottom:var(--space-sm)}
+        .section-header i{font-size:1rem}
+        .section-header .section-title{font-weight:800;font-size:var(--text-lg);color:var(--text-main)}
+        .section-header .section-desc{font-size:var(--text-base);color:var(--text-muted);line-height:1.55;margin:0 0 var(--space-md)}
+        .live-badge{background:rgba(16,185,129,0.12);color:var(--primary);border:1px solid rgba(16,185,129,0.3);padding:2px 8px;border-radius:var(--radius-sm);font-weight:800;font-size:var(--text-xs);letter-spacing:0.05em}
+        .scanner-card{background:var(--card-bg);border:1px solid var(--glass-border);border-radius:var(--radius-lg);padding:var(--space-lg);margin-bottom:var(--space-md);box-shadow:var(--shadow-card)}
+        .risk-btn-group{display:flex;gap:7px}
+        .risk-btn{flex:1;padding:10px 6px;border-radius:var(--radius-md);cursor:pointer;font-weight:700;font-size:var(--text-sm);transition:all 0.2s;letter-spacing:0.02em;font-family:inherit}
+        .risk-btn:hover{transform:translateY(-1px);filter:brightness(1.1)}
+        .risk-btn-high{background:rgba(239,68,68,0.08);color:var(--accent-red);border:1px solid rgba(239,68,68,0.25)}
+        .risk-btn-med{background:rgba(245,158,11,0.08);color:var(--accent-amber);border:1px solid rgba(245,158,11,0.25)}
+        .risk-btn-low{background:rgba(16,185,129,0.08);color:var(--primary);border:1px solid rgba(16,185,129,0.25)}
+        /* ── Empty state / initial prompt ── */
+        .empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:var(--space-xl) var(--space-lg);text-align:center;gap:var(--space-sm)}
+        .empty-state-icon{width:64px;height:64px;border-radius:var(--radius-lg);background:linear-gradient(135deg,rgba(16,185,129,0.15),rgba(59,130,246,0.1));display:flex;align-items:center;justify-content:center;margin-bottom:var(--space-xs);border:1px solid rgba(16,185,129,0.2)}
+        .empty-state-icon i{font-size:1.6rem;color:var(--primary)}
+        .empty-state-title{font-size:1rem;font-weight:800;color:var(--text-main);letter-spacing:-0.02em}
+        .empty-state-desc{font-size:var(--text-base);color:var(--text-muted);line-height:1.6;max-width:240px}
+        .feature-pills{display:flex;gap:var(--space-sm);flex-wrap:wrap;justify-content:center;margin-top:var(--space-xs)}
+        .feature-pill{padding:3px 10px;border-radius:var(--radius-pill);font-size:0.68rem;font-weight:700;display:flex;align-items:center;gap:4px}
+        .feature-pill-green{background:rgba(16,185,129,0.1);color:var(--primary);border:1px solid rgba(16,185,129,0.2)}
+        .feature-pill-blue{background:rgba(59,130,246,0.1);color:#93c5fd;border:1px solid rgba(59,130,246,0.2)}
+        .feature-pill-amber{background:rgba(245,158,11,0.1);color:#fcd34d;border:1px solid rgba(245,158,11,0.2)}
+        /* ── Icon badge utility ── */
+        .icon-badge{width:28px;height:28px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:0.8rem;flex-shrink:0}
+        .icon-badge-lg{width:34px;height:34px;border-radius:10px;font-size:0.95rem}
+        .icon-badge-green{background:rgba(16,185,129,0.12);color:var(--primary)}
+        .icon-badge-blue{background:rgba(59,130,246,0.12);color:var(--accent-blue)}
+        .icon-badge-amber{background:rgba(245,158,11,0.12);color:var(--accent-amber)}
+        .icon-badge-red{background:rgba(239,68,68,0.12);color:var(--accent-red)}
+        /* ── Stat card utility for inline rendered cards ── */
+        .stat-card{background:var(--card-bg);border:1px solid var(--glass-border);border-radius:var(--radius-lg);padding:var(--space-lg);box-shadow:var(--shadow-card);transition:transform 0.2s,box-shadow 0.2s}
+        .stat-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-card-hover)}
+        .stat-card-inner{background:var(--bg-filter);border:1px solid var(--border-light);border-radius:var(--radius-md);padding:var(--space-md)}
+        .stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-sm)}
+        .stat-label{font-size:var(--text-xs);font-weight:700;text-transform:uppercase;letter-spacing:0.04em;color:var(--text-muted)}
+        .stat-value{font-size:var(--text-md);font-weight:800;color:var(--text-main)}
+        .stat-value-lg{font-size:var(--text-xl);font-weight:800;color:var(--text-main)}
+        .stat-value-primary{color:var(--primary)}
+        /* ── Dispatch / emergency card utility ── */
+        .dispatch-card{background:var(--card-bg);border:1px solid var(--glass-border);border-radius:var(--radius-lg);padding:var(--space-lg);box-shadow:var(--shadow-card);margin-bottom:var(--space-md)}
+        .dispatch-header{display:flex;align-items:center;gap:var(--space-sm);margin-bottom:var(--space-md)}
+        .dispatch-name{font-weight:800;font-size:var(--text-md);color:var(--text-main)}
+        .dispatch-meta{font-size:var(--text-sm);color:var(--text-muted)}
+        .call-btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:var(--radius-md);background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;border:none;cursor:pointer;font-weight:700;font-size:var(--text-sm);font-family:inherit;transition:all 0.2s;box-shadow:0 4px 12px rgba(16,185,129,0.3)}
+        .call-btn:hover{transform:translateY(-1px);filter:brightness(1.1)}
+        .call-btn-red{background:linear-gradient(135deg,#ef4444,#dc2626);box-shadow:0 4px 12px rgba(239,68,68,0.3)}
+        /* ── Protocol / checklist utility ── */
+        .protocol-item{display:flex;align-items:flex-start;gap:var(--space-sm);padding:var(--space-sm) 0;border-bottom:1px solid var(--border-light);font-size:var(--text-base);color:var(--text-main);line-height:1.5}
+        .protocol-item:last-child{border-bottom:none}
+        .protocol-item i{color:var(--primary);margin-top:3px;flex-shrink:0;font-size:var(--text-sm)}
     
 /* ══ CARD SPRING TRANSITIONS & DEPTH ══ */
         .recommendation-card {
@@ -311,10 +384,17 @@
         }
         /* ══ SATELLITE THERMAL HOTSPOT PULSE ══ */
         .hotspot-pulse-marker {
-            width: 16px; height: 16px; border-radius: 50%;
-            background: #ef4444; border: 2px solid #fff;
-            box-shadow: 0 0 14px rgba(239,68,68,0.9);
+            width: 14px;
+            height: 14px;
+            background: #ef4444;
+            border-radius: 50%;
+            border: 2px solid #fff;
             animation: hotspotRadar 1.8s infinite;
+        }
+        @keyframes hotspotRadar {
+            0% { box-shadow: 0 0 0 0 rgba(239,68,68,0.7); }
+            70% { box-shadow: 0 0 0 12px rgba(239,68,68,0); }
+            100% { box-shadow: 0 0 0 0 rgba(239,68,68,0); }
         }
         /* ══ AI CHAT STYLING & TYPING ANIMATIONS ══ */
         .typing-dot {
@@ -355,6 +435,67 @@
             word-break: break-word;
         }
         /* ══ FLOATING RAITHA SAHAYAKA AI WIDGET ══ */
+#floating-ai-window {
+    display:none;position:absolute;bottom:calc(100% + 12px);right:0;
+    width:380px;max-height:520px;background:var(--glass-gradient);
+    backdrop-filter:blur(32px);border:1px solid var(--glass-border);
+    border-radius:var(--radius-xl);box-shadow:var(--shadow-glass);
+    flex-direction:column;overflow:hidden;
+}
+.ai-window-header {
+    display:flex;align-items:center;justify-content:space-between;
+    padding:var(--space-md) var(--space-lg);
+    border-bottom:1px solid var(--glass-border);
+    background:rgba(0,0,0,0.05);
+}
+body.dark-theme .ai-window-header{background:rgba(0,0,0,0.15)}
+.ai-window-header h3 {
+    margin:0;font-size:var(--text-md);font-weight:800;
+    color:var(--text-main);display:flex;align-items:center;gap:var(--space-sm);
+}
+.ai-header-actions{display:flex;gap:var(--space-xs)}
+.ai-header-btn {
+    background:var(--bg-filter);border:1px solid var(--border-light);
+    color:var(--text-muted);border-radius:var(--radius-sm);padding:4px 8px;
+    cursor:pointer;font-size:var(--text-sm);transition:all 0.2s;
+}
+.ai-header-btn:hover{color:var(--text-main);background:rgba(0,0,0,0.1)}
+.ai-welcome-card {
+    background:var(--bg-filter);border:1px solid var(--border-light);
+    border-radius:var(--radius-md);padding:var(--space-md);
+    margin:var(--space-md);text-align:center;
+}
+#ai-quick-chips {
+    display:flex;gap:var(--space-sm);padding:0 var(--space-md);
+    overflow-x:auto;flex-shrink:0;
+}
+#ai-quick-chips::-webkit-scrollbar{height:0}
+.ai-input-area {
+    display:flex;gap:var(--space-sm);padding:var(--space-md);
+    border-top:1px solid var(--glass-border);align-items:center;
+}
+#ai-chat-input {
+    flex:1;padding:var(--space-sm) var(--space-md);
+    border:1px solid var(--border-light);border-radius:var(--radius-md);
+    background:var(--glass-bg);color:var(--text-main);
+    font-family:inherit;font-size:var(--text-base);outline:none;
+    transition:border-color 0.2s;
+}
+#ai-chat-input:focus{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-glow)}
+.ai-action-btn {
+    width:36px;height:36px;border-radius:var(--radius-md);
+    border:1px solid var(--border-light);background:var(--glass-bg);
+    color:var(--text-muted);cursor:pointer;display:flex;
+    align-items:center;justify-content:center;font-size:var(--text-md);
+    transition:all 0.2s;flex-shrink:0;
+}
+.ai-action-btn:hover{color:var(--primary);border-color:var(--primary);background:var(--primary-light)}
+.ai-action-btn-send {
+    background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+    color:#fff;border:none;
+}
+.ai-action-btn-send:hover{filter:brightness(1.1);transform:scale(1.05)}
+
         #floating-ai-container {
             position: fixed;
             bottom: 24px;
@@ -482,31 +623,31 @@
             </div>
             
             <div id="feed" class="tab-content">
-                <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px 20px;text-align:center;gap:10px;">
-                    <div style="width:64px;height:64px;border-radius:18px;background:linear-gradient(135deg,rgba(16,185,129,0.15),rgba(59,130,246,0.1));display:flex;align-items:center;justify-content:center;margin-bottom:4px;border:1px solid rgba(16,185,129,0.2);">
-                        <i class="fa-solid fa-map-location-dot" style="font-size:1.6rem;color:var(--primary);"></i>
+                <div class="empty-state">
+                    <div class="empty-state-icon">
+                        <i class="fa-solid fa-map-location-dot"></i>
                     </div>
-                    <div style="font-size:1rem;font-weight:800;color:var(--text-main);letter-spacing:-0.02em;" data-i18n="tap_prompt_title">Tap any point in Karnataka</div>
-                    <div style="font-size:0.78rem;color:var(--text-muted);line-height:1.6;max-width:240px;" data-i18n="default_prompt">Click on the map or search a location to run live satellite telemetry and get AI-powered crop &amp; tree recommendations.</div>
-                    <div style="display:flex;gap:8px;margin-top:4px;flex-wrap:wrap;justify-content:center;">
-                        <span style="background:rgba(16,185,129,0.1);color:var(--primary);border:1px solid rgba(16,185,129,0.2);padding:3px 10px;border-radius:20px;font-size:0.68rem;font-weight:700;"><i class="fa-solid fa-seedling"></i> <span data-i18n="crop_suitability">Crop Suitability</span></span>
-                        <span style="background:rgba(59,130,246,0.1);color:#93c5fd;border:1px solid rgba(59,130,246,0.2);padding:3px 10px;border-radius:20px;font-size:0.68rem;font-weight:700;"><i class="fa-solid fa-leaf"></i> <span data-i18n="carbon_credits">Carbon Credits</span></span>
-                        <span style="background:rgba(245,158,11,0.1);color:#fcd34d;border:1px solid rgba(245,158,11,0.2);padding:3px 10px;border-radius:20px;font-size:0.68rem;font-weight:700;"><i class="fa-solid fa-coins"></i> <span data-i18n="roi_forecast">ROI Forecast</span></span>
+                    <div class="empty-state-title" data-i18n="tap_prompt_title">Tap any point in Karnataka</div>
+                    <div class="empty-state-desc" data-i18n="default_prompt">Click on the map or search a location to run live satellite telemetry and get AI-powered crop &amp; tree recommendations.</div>
+                    <div class="feature-pills">
+                        <span class="feature-pill feature-pill-green"><i class="fa-solid fa-seedling"></i> <span data-i18n="crop_suitability">Crop Suitability</span></span>
+                        <span class="feature-pill feature-pill-blue"><i class="fa-solid fa-leaf"></i> <span data-i18n="carbon_credits">Carbon Credits</span></span>
+                        <span class="feature-pill feature-pill-amber"><i class="fa-solid fa-coins"></i> <span data-i18n="roi_forecast">ROI Forecast</span></span>
                     </div>
                 </div>
             </div>
             
-            <div id="diag-feed" class="tab-content" style="display:none;padding:14px;">
-                <div id="regional-scanner-ui" style="background:var(--card-bg);border:1px solid var(--glass-border);border-radius:13px;padding:14px;margin-bottom:10px;">
-                    <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
-                        <i class="fa-solid fa-satellite" style="color:var(--primary);font-size:1rem;"></i>
-                        <span style="font-weight:800;font-size:0.9rem;color:var(--text-main);" data-i18n="diag_title">Regional Drought Scanner</span>
+            <div id="diag-feed" class="tab-content tab-panel" style="display:none;">
+                <div id="regional-scanner-ui" class="scanner-card">
+                    <div class="section-header">
+                        <i class="fa-solid fa-satellite" style="color:var(--primary)"></i>
+                        <span class="section-title" data-i18n="diag_title">Regional Drought Scanner</span>
                     </div>
-                    <p style="font-size:0.78rem;color:var(--text-muted);margin:0 0 12px;line-height:1.5;" data-i18n="diag_desc">Scan Karnataka for systemic drought signatures using live satellite telemetry.</p>
-                    <div style="display:flex;gap:7px;">
-                        <button onclick="scanRegion('high')" style="flex:1;background:rgba(239,68,68,0.08);color:#ef4444;border:1px solid rgba(239,68,68,0.25);padding:9px 6px;border-radius:9px;cursor:pointer;font-weight:700;font-size:0.75rem;transition:all 0.2s;letter-spacing:0.02em;" data-i18n="risk_high">🔴 High Risk</button>
-                        <button onclick="scanRegion('medium')" style="flex:1;background:rgba(245,158,11,0.08);color:#f59e0b;border:1px solid rgba(245,158,11,0.25);padding:9px 6px;border-radius:9px;cursor:pointer;font-weight:700;font-size:0.75rem;transition:all 0.2s;letter-spacing:0.02em;" data-i18n="risk_med">🟡 Med Risk</button>
-                        <button onclick="scanRegion('low')" style="flex:1;background:rgba(16,185,129,0.08);color:#10b981;border:1px solid rgba(16,185,129,0.25);padding:9px 6px;border-radius:9px;cursor:pointer;font-weight:700;font-size:0.75rem;transition:all 0.2s;letter-spacing:0.02em;" data-i18n="risk_low">🟢 Low Risk</button>
+                    <p class="section-header section-desc" data-i18n="diag_desc">Scan Karnataka for systemic drought signatures using live satellite telemetry.</p>
+                    <div class="risk-btn-group">
+                        <button onclick="scanRegion('high')" class="risk-btn risk-btn-high" data-i18n="risk_high">🔴 High Risk</button>
+                        <button onclick="scanRegion('medium')" class="risk-btn risk-btn-med" data-i18n="risk_med">🟡 Med Risk</button>
+                        <button onclick="scanRegion('low')" class="risk-btn risk-btn-low" data-i18n="risk_low">🟢 Low Risk</button>
                     </div>
                 </div>
                 <div id="diag-content">
@@ -514,41 +655,41 @@
                 </div>
             </div>
             
-            <div id="pest-feed" class="tab-content" style="display:none;padding:14px;">
-                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
-                    <div style="display:flex;align-items:center;gap:9px;">
-                        <i class="fa-solid fa-bug" style="color:#f59e0b;font-size:1rem;"></i>
-                        <span style="font-weight:800;font-size:0.9rem;color:var(--text-main);">Pest & Disease Risk</span>
+            <div id="pest-feed" class="tab-content tab-panel" style="display:none;">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space-sm);">
+                    <div class="section-header" style="margin-bottom:0">
+                        <i class="fa-solid fa-bug" style="color:var(--accent-amber)"></i>
+                        <span class="section-title">Pest & Disease Risk</span>
                     </div>
-                    <span style="background:rgba(16,185,129,0.12);color:#10b981;border:1px solid rgba(16,185,129,0.3);padding:2px 8px;border-radius:8px;font-weight:800;font-size:0.6rem;letter-spacing:0.05em;">LIVE</span>
+                    <span class="live-badge">LIVE</span>
                 </div>
-                <p style="font-size:0.77rem;color:var(--text-muted);margin:0 0 12px;line-height:1.55;">Weather-driven vulnerability analysis for Karnataka crops. Click anywhere on the map or use your current Agro location.</p>
+                <p class="section-desc" style="font-size:var(--text-base);color:var(--text-muted);margin:0 0 var(--space-md);line-height:1.55;">Weather-driven vulnerability analysis for Karnataka crops. Click anywhere on the map or use your current Agro location.</p>
                 <div id="pest-content">
                     <div class="alert-box alert-info"><i class="fa-solid fa-circle-info"></i><span>Select a location on the map to scan for pest &amp; disease risks based on live temperature, humidity, and 7-day rainfall data.</span></div>
                 </div>
             </div>
 
-            <div id="saved-feed" class="tab-content" style="display:none;padding:14px;">
-                <div style="display:flex;align-items:center;gap:9px;margin-bottom:12px;">
-                    <i class="fa-solid fa-bookmark" style="color:var(--primary);font-size:1rem;"></i>
-                    <span style="font-weight:800;font-size:0.9rem;color:var(--text-main);" data-i18n="saved_title">Saved Locations</span>
+            <div id="saved-feed" class="tab-content tab-panel" style="display:none;">
+                <div class="section-header">
+                    <i class="fa-solid fa-bookmark" style="color:var(--primary)"></i>
+                    <span class="section-title" data-i18n="saved_title">Saved Locations</span>
                 </div>
                 <div id="saved-list">
                     <div class="alert-box alert-info"><i class="fa-solid fa-bookmark"></i><span data-i18n="saved_empty">No saved locations yet. Run an analysis and click ⭐ to save for quick access.</span></div>
                 </div>
             </div>
 
-            <div id="fire-feed" class="tab-content" style="display:none;padding:14px;">
-                <div id="fire-scanner-ui" style="background:var(--card-bg);border:1px solid var(--glass-border);border-radius:13px;padding:14px;margin-bottom:10px;">
-                    <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
-                        <i class="fa-solid fa-fire" style="color:#ef4444;font-size:1rem;"></i>
-                        <span style="font-weight:800;font-size:0.9rem;color:var(--text-main);" data-i18n="fire_title">Forest Fire Scanner</span>
+            <div id="fire-feed" class="tab-content tab-panel" style="display:none;">
+                <div id="fire-scanner-ui" class="scanner-card">
+                    <div class="section-header">
+                        <i class="fa-solid fa-fire" style="color:var(--accent-red)"></i>
+                        <span class="section-title" data-i18n="fire_title">Forest Fire Scanner</span>
                     </div>
-                    <p style="font-size:0.78rem;color:var(--text-muted);margin:0 0 12px;line-height:1.5;" data-i18n="fire_desc">All Karnataka forest reserves are displayed on the map, color-coded by real-time fire weather risk.</p>
-                    <div style="display:flex;gap:7px;">
-                        <button onclick="scanFireRegion('high')" style="flex:1;background:rgba(239,68,68,0.08);color:#ef4444;border:1px solid rgba(239,68,68,0.25);padding:9px 6px;border-radius:9px;cursor:pointer;font-weight:700;font-size:0.75rem;transition:all 0.2s;letter-spacing:0.02em;" data-i18n="risk_high">🔴 High Risk</button>
-                        <button onclick="scanFireRegion('medium')" style="flex:1;background:rgba(245,158,11,0.08);color:#f59e0b;border:1px solid rgba(245,158,11,0.25);padding:9px 6px;border-radius:9px;cursor:pointer;font-weight:700;font-size:0.75rem;transition:all 0.2s;letter-spacing:0.02em;" data-i18n="risk_med">🟡 Med Risk</button>
-                        <button onclick="scanFireRegion('low')" style="flex:1;background:rgba(16,185,129,0.08);color:#10b981;border:1px solid rgba(16,185,129,0.25);padding:9px 6px;border-radius:9px;cursor:pointer;font-weight:700;font-size:0.75rem;transition:all 0.2s;letter-spacing:0.02em;" data-i18n="risk_low">🟢 Low Risk</button>
+                    <p class="section-desc" style="font-size:var(--text-base);color:var(--text-muted);margin:0 0 var(--space-md);line-height:1.5;" data-i18n="fire_desc">All Karnataka forest reserves are displayed on the map, color-coded by real-time fire weather risk.</p>
+                    <div class="risk-btn-group">
+                        <button onclick="scanFireRegion('high')" class="risk-btn risk-btn-high" data-i18n="risk_high">🔴 High Risk</button>
+                        <button onclick="scanFireRegion('medium')" class="risk-btn risk-btn-med" data-i18n="risk_med">🟡 Med Risk</button>
+                        <button onclick="scanFireRegion('low')" class="risk-btn risk-btn-low" data-i18n="risk_low">🟢 Low Risk</button>
                     </div>
                 </div>
                 <div id="fire-content" style="display:none;">
@@ -583,41 +724,41 @@
     <!-- ══ FLOATING RAITHA SAHAYAKA AI WIDGET ══ -->
     <div id="floating-ai-container">
         <!-- Floating Chat Popup Window (Toggled on click) -->
-        <div id="floating-ai-window" style="display:none; width:380px; height:520px; max-width:calc(100vw - 48px); max-height:calc(100vh - 120px); background:var(--glass-gradient); backdrop-filter:blur(48px) saturate(180%); -webkit-backdrop-filter:blur(48px) saturate(180%); border:1px solid var(--glass-border); border-radius:20px; box-shadow:0 32px 64px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.06) inset; margin-bottom:12px; flex-direction:column; overflow:hidden;">
+        <div id="floating-ai-window">
             
             <!-- Window Header -->
-            <div style="padding:12px 14px; background:rgba(0,0,0,0.18); border-bottom:1px solid var(--glass-border); display:flex; align-items:center; justify-content:space-between; flex-shrink:0;">
+            <div class="ai-window-header">
                 <div style="display:flex; align-items:center; gap:9px;">
                     <div style="width:34px; height:34px; border-radius:10px; background:linear-gradient(135deg, #10b981, #0ea5e9); display:flex; align-items:center; justify-content:center; color:#fff; font-size:1rem; box-shadow:0 4px 12px rgba(16,185,129,0.35);">
                         <i class="fa-solid fa-wand-magic-sparkles"></i>
                     </div>
                     <div>
-                        <div style="font-weight:800; font-size:0.88rem; color:var(--text-main); display:flex; align-items:center; gap:5px;">
+                        <h3>
                             <span id="ai-modal-header-title">Raitha Sahayaka AI</span>
                             <span style="font-size:0.56rem; background:rgba(16,185,129,0.18); color:#10b981; border:1px solid rgba(16,185,129,0.3); padding:1px 6px; border-radius:8px; font-weight:800;">LIVE</span>
-                        </div>
+                        </h3>
                         <div style="font-size:0.64rem; color:var(--text-muted); margin-top:1px;">
                             📍 <span id="ai-farm-loc-name">Karnataka Farm</span>
                         </div>
                     </div>
                 </div>
-                <div style="display:flex; align-items:center; gap:6px;">
-                    <button type="button" onclick="clearAiChat()" style="background:rgba(255,255,255,0.06); border:1px solid var(--glass-border); color:var(--text-muted); padding:5px 8px; border-radius:8px; cursor:pointer; font-size:0.72rem; font-weight:700; transition:0.2s;" title="Clear Chat">
+                <div class="ai-header-actions">
+                    <button type="button" onclick="clearAiChat()" class="ai-header-btn" title="Clear Chat">
                         <i class="fa-solid fa-trash-can"></i>
                     </button>
-                    <button type="button" onclick="toggleFloatingAiChat()" style="background:rgba(255,255,255,0.06); border:1px solid var(--glass-border); color:var(--text-muted); padding:5px 9px; border-radius:8px; cursor:pointer; font-size:0.78rem; font-weight:700; transition:0.2s;" title="Close Window">
+                    <button type="button" onclick="toggleFloatingAiChat()" class="ai-header-btn" title="Close Window">
                         <i class="fa-solid fa-xmark"></i>
                     </button>
                 </div>
             </div>
 
             <!-- Chat Messages Scroll Area -->
-            <div id="ai-chat-messages" style="flex:1; overflow-y:auto; padding:14px; display:flex; flex-direction:column; gap:10px;">
+            <div id="ai-chat-messages" style="flex:1; overflow-y:auto; padding:var(--space-md); display:flex; flex-direction:column; gap:10px;">
                 <div style="display:flex; gap:9px; align-items:flex-start; max-width:92%;">
                     <div style="width:28px; height:28px; border-radius:8px; background:linear-gradient(135deg, #10b981, #0ea5e9); display:flex; align-items:center; justify-content:center; color:#fff; font-size:0.8rem; flex-shrink:0; margin-top:2px;">
                         <i class="fa-solid fa-wand-magic-sparkles"></i>
                     </div>
-                    <div style="background:var(--card-bg); border:1px solid var(--glass-border); border-radius:12px 12px 12px 2px; padding:10px 12px; font-size:0.82rem; color:var(--text-main); line-height:1.55; box-shadow:0 4px 14px rgba(0,0,0,0.15);">
+                    <div class="ai-welcome-card">
                         <div style="font-weight:700; color:var(--primary); margin-bottom:4px;" id="ai-welcome-title">Hi! How can I help you today? 🙏</div>
                         <div id="ai-welcome-desc">I am <strong>Raitha Sahayaka</strong>, your AI Agronomist. Ask me anything about crop suitability, fertilizer dosages, water/drought management, or government subsidies!</div>
                     </div>
@@ -625,17 +766,17 @@
             </div>
 
             <!-- Quick Prompt Chips -->
-            <div id="ai-quick-chips" style="padding:6px 12px; background:rgba(0,0,0,0.08); border-top:1px solid var(--border-light); display:flex; gap:5px; overflow-x:auto; white-space:nowrap; flex-shrink:0;">
+            <div id="ai-quick-chips">
                 <!-- Populated dynamically via renderAiQuickChips -->
             </div>
 
             <!-- Input Box with Voice Mic & Send Button -->
-            <div style="padding:10px 12px; background:var(--glass-bg); border-top:1px solid var(--glass-border); display:flex; gap:7px; align-items:center; flex-shrink:0;">
-                <button type="button" id="btn-ai-mic" onclick="toggleAiVoiceInput()" style="width:36px; height:36px; border-radius:10px; background:rgba(255,255,255,0.06); border:1px solid var(--border-light); color:var(--text-muted); cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:0.9rem; transition:all 0.2s;" title="Speak in Kannada / English">
+            <div class="ai-input-area">
+                <button type="button" id="btn-ai-mic" onclick="toggleAiVoiceInput()" class="ai-action-btn" title="Speak in Kannada / English">
                     <i class="fa-solid fa-microphone"></i>
                 </button>
-                <input type="text" id="ai-chat-input" placeholder="Ask a farming question... / ಕೃಷಿ ಪ್ರಶ್ನೆ ಕೇಳಿ..." onkeydown="if(event.key==='Enter') sendAiChatMessage()" style="flex:1; padding:9px 12px; border-radius:10px; border:1px solid var(--border-light); background:var(--glass-bg); color:var(--text-main); font-family:inherit; font-size:0.82rem; outline:none; transition:border-color 0.2s;">
-                <button type="button" id="btn-ai-send" onclick="sendAiChatMessage()" style="width:36px; height:36px; border-radius:10px; background:linear-gradient(135deg, #10b981, #0ea5e9); border:none; color:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:0.88rem; box-shadow:0 4px 10px rgba(16,185,129,0.3); transition:all 0.2s;">
+                <input type="text" id="ai-chat-input" placeholder="Ask a farming question... / ಕೃಷಿ ಪ್ರಶ್ನೆ ಕೇಳಿ..." onkeydown="if(event.key==='Enter') sendAiChatMessage()">
+                <button type="button" id="btn-ai-send" onclick="sendAiChatMessage()" class="ai-action-btn ai-action-btn-send">
                     <i class="fa-solid fa-paper-plane"></i>
                 </button>
             </div>
@@ -656,7 +797,6 @@
         let activeTab = 'agro';
         let diagChartInstance = null;
         let burnRadiusLayer = null;
-        let fireForestLayer = null;
         let fireSpreadLayers = [];
         let droughtLayerGroup = null;
         let fireLayerGroup = null;
@@ -738,7 +878,7 @@
             const name = placeName || getKarnatakaPlaceName(latStr, lonStr);
             
             setLocationMarker(latStr, lonStr, name);
-            const searchInput = document.getElementById('search-input');
+            const searchInput = document.getElementById('location-search');
             if (searchInput) searchInput.value = name;
             
             // Mark loading state
@@ -1984,7 +2124,7 @@
             const fetchTime = new Date();
             const skelId = 'skel-' + Date.now();
             const instantPlaceName = getKarnatakaPlaceName(lat, lon);
-            const searchInput = document.getElementById('search-input');
+            const searchInput = document.getElementById('location-search');
             if (searchInput) searchInput.value = instantPlaceName;
 
             feed.innerHTML = `
@@ -1997,13 +2137,13 @@
                                 <div style="font-size:0.72rem;color:var(--text-muted);">${lat}° N, ${lon}° E · Fetching live telemetry...</div>
                             </div>
                         </div>
-                        <span style="font-size:0.68rem;background:rgba(16,185,129,0.12);color:var(--primary);border:1px solid rgba(16,185,129,0.3);padding:2px 8px;border-radius:12px;font-weight:700;">Live Feed</span>
+                        <span style="font-size:0.68rem;background:rgba(16,185,129,0.12);color:var(--primary);border:1px solid rgba(16,185,129,0.3);padding:2px 8px;border-radius: var(--radius-md);font-weight:700;">Live Feed</span>
                     </div>
                     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:16px">
-                        ${Array(4).fill('<div class="skel-box" style="height:62px;border-radius:10px;"></div>').join('')}
+                        ${Array(4).fill('<div class="skel-box" style="height:62px;border-radius: var(--radius-md);"></div>').join('')}
                     </div>
                     <div class="skel-box" style="height:180px;margin-bottom:16px;"></div>
-                    ${Array(3).fill(`<div style="margin-bottom:8px"><div class="skel-line" style="width:100%;height:64px;border-radius:13px;"></div></div>`).join('')}
+                    ${Array(3).fill(`<div style="margin-bottom:8px"><div class="skel-line" style="width:100%;height:64px;border-radius: var(--radius-md);"></div></div>`).join('')}
                 </div>`;
 
 
@@ -2065,19 +2205,19 @@
                 
                 html += `
                 <!-- Live Data Freshness Badge at Top -->
-                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;padding:4px 10px;background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.22);border-radius:8px;font-size:0.68rem;color:var(--text-muted);">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;padding:4px 10px;background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.22);border-radius: var(--radius-sm);font-size:0.68rem;color:var(--text-muted);">
                     <div style="display:flex;align-items:center;gap:6px;">
                         <span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:#10b981;box-shadow:0 0 6px rgba(16,185,129,0.8);animation:pulse 1.5s infinite;"></span>
                         <strong style="color:var(--text-main);">Live Telemetry</strong> &bull; Fetched at ${fetchedTimeStr}
                     </div>
-                    <span style="background:rgba(16,185,129,0.18);color:#10b981;border:1px solid rgba(16,185,129,0.3);padding:1px 7px;border-radius:8px;font-weight:800;font-size:0.56rem;letter-spacing:0.04em;">LIVE</span>
+                    <span style="background:rgba(16,185,129,0.18);color:#10b981;border:1px solid rgba(16,185,129,0.3);padding:1px 7px;border-radius: var(--radius-sm);font-weight:800;font-size:0.56rem;letter-spacing:0.04em;">LIVE</span>
                 </div>
 
                 <div style="margin-bottom:16px;">
                     <!-- Location Name Row -->
                     <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px;">
                         <div style="display:flex;align-items:center;gap:8px;min-width:0;">
-                            <div style="width:32px;height:32px;border-radius:8px;background:rgba(16,185,129,0.15);color:var(--primary);display:flex;align-items:center;justify-content:center;flex-shrink:0;border:1px solid rgba(16,185,129,0.25);font-size:0.9rem;">
+                            <div style="width:32px;height:32px;border-radius: var(--radius-sm);background:rgba(16,185,129,0.15);color:var(--primary);display:flex;align-items:center;justify-content:center;flex-shrink:0;border:1px solid rgba(16,185,129,0.25);font-size:0.9rem;">
                                 <i class="fa-solid fa-location-crosshairs"></i>
                             </div>
                             <div style="min-width:0;">
@@ -2088,12 +2228,12 @@
                         <div style="display:flex;gap:5px;align-items:center;flex-shrink:0;">
                             <span class="temp-chip"><i class="fa-solid fa-temperature-half"></i>${data.environmental_context.temp}°C</span>
                             <span class="humidity-chip"><i class="fa-solid fa-droplet"></i>${data.environmental_context.humidity}%</span>
-                            <button onclick="copyShareLink()" title="${i18n[currentLang]['copy_link']}" style="background:rgba(59,130,246,0.1);color:var(--accent-blue);padding:4px 8px;border-radius:20px;font-size:0.72rem;font-weight:700;display:flex;align-items:center;gap:4px;border:1px solid rgba(59,130,246,0.22);cursor:pointer;transition:all 0.2s;white-space:nowrap;font-family:inherit;"><i class="fa-solid fa-link"></i></button>
-                            <button onclick="saveLocation(${lat}, ${lon}, '${data.location_name}')" style="background:rgba(245,158,11,0.1);color:#f59e0b;padding:4px 10px;border-radius:20px;font-size:0.72rem;font-weight:700;display:flex;align-items:center;gap:5px;border:1px solid rgba(245,158,11,0.25);cursor:pointer;transition:all 0.2s;white-space:nowrap;font-family:inherit;"><i class="fa-regular fa-star" id="star-agro-${lat.toString().replace('.','')}"></i> ${i18n[currentLang]['save_btn']}</button>
+                            <button onclick="copyShareLink()" title="${i18n[currentLang]['copy_link']}" style="background:rgba(59,130,246,0.1);color:var(--accent-blue);padding:4px 8px;border-radius: var(--radius-lg);font-size:0.72rem;font-weight:700;display:flex;align-items:center;gap:4px;border:1px solid rgba(59,130,246,0.22);cursor:pointer;transition:all 0.2s;white-space:nowrap;font-family:inherit;"><i class="fa-solid fa-link"></i></button>
+                            <button onclick="saveLocation(${lat}, ${lon}, '${data.location_name}')" style="background:rgba(245,158,11,0.1);color:#f59e0b;padding:4px 10px;border-radius: var(--radius-lg);font-size:0.72rem;font-weight:700;display:flex;align-items:center;gap:5px;border:1px solid rgba(245,158,11,0.25);cursor:pointer;transition:all 0.2s;white-space:nowrap;font-family:inherit;"><i class="fa-regular fa-star" id="star-agro-${lat.toString().replace('.','')}"></i> ${i18n[currentLang]['save_btn']}</button>
                         </div>
                     </div>
                     <!-- Coords chip -->
-                    <div style="display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,0.04);border:1px solid var(--glass-border);border-radius:6px;padding:3px 8px;font-size:0.67rem;font-family:monospace;color:var(--text-muted);">
+                    <div style="display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,0.04);border:1px solid var(--glass-border);border-radius: var(--radius-sm);padding:3px 8px;font-size:0.67rem;font-family:monospace;color:var(--text-muted);">
                         <i class="fa-solid fa-crosshairs" style="font-size:0.6rem;"></i>${parseFloat(lat).toFixed(4)}, ${parseFloat(lon).toFixed(4)}
                     </div>
                 </div>
@@ -2121,7 +2261,7 @@
                     </div>
                 </div>
 
-                <div class="chart-container" style="background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border); border-radius: 12px; padding: 16px; margin-bottom: 14px;">
+                <div class="chart-container" style="background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border); border-radius: var(--radius-md); padding: 16px; margin-bottom: 14px;">
                     <h4 style="margin: 0 0 16px 0; color: var(--text-main); font-size: 0.95rem;"><i class="fa-solid fa-chart-area"></i> <span data-i18n="climate_dist">${i18n[currentLang]['climate_dist']}</span></h4>
                     <div style="position: relative; height: 180px; width: 100%;">
                         <canvas id="climate-chart-${groupId}"></canvas>
@@ -2130,19 +2270,19 @@
 
                 <!-- 💧 CGWB Karnataka Groundwater Aquifer Telemetry Card -->
                 ${data.cgwb_groundwater ? `
-                <div style="margin-bottom:12px;padding:12px 14px;border-radius:14px;background:var(--card-bg);border:1px solid var(--glass-border);backdrop-filter:blur(20px);box-shadow:0 8px 24px rgba(0,0,0,0.12);">
+                <div style="margin-bottom:12px;padding: var(--space-md) var(--space-lg);border-radius: var(--radius-md);background:var(--card-bg);border:1px solid var(--glass-border);backdrop-filter:blur(20px);box-shadow:0 8px 24px rgba(0,0,0,0.12);">
                     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
                         <div style="display:flex;align-items:center;gap:8px;">
-                            <div style="width:28px;height:28px;border-radius:8px;background:rgba(56,189,248,0.14);color:#38bdf8;display:flex;align-items:center;justify-content:center;font-size:0.85rem;border:1px solid rgba(56,189,248,0.25);">
+                            <div style="width:28px;height:28px;border-radius: var(--radius-sm);background:rgba(56,189,248,0.14);color:#38bdf8;display:flex;align-items:center;justify-content:center;font-size:0.85rem;border:1px solid rgba(56,189,248,0.25);">
                                 <i class="fa-solid fa-water"></i>
                             </div>
                             <span style="font-size:0.82rem;font-weight:800;color:var(--text-main);">${currentLang === 'kn' ? 'ಅಂತರ್ಜಲ ಮಟ್ಟ (CGWB ಸರ್ವೆ)' : 'CGWB Groundwater Aquifer'}</span>
                         </div>
-                        <span style="font-size:0.64rem;font-weight:800;padding:3px 9px;border-radius:20px;background:${data.cgwb_groundwater.color}18;color:${data.cgwb_groundwater.color};border:1px solid ${data.cgwb_groundwater.color}40;letter-spacing:0.02em;">
+                        <span style="font-size:0.64rem;font-weight:800;padding:3px 9px;border-radius: var(--radius-lg);background:${data.cgwb_groundwater.color}18;color:${data.cgwb_groundwater.color};border:1px solid ${data.cgwb_groundwater.color}40;letter-spacing:0.02em;">
                             ${currentLang === 'kn' ? data.cgwb_groundwater.status_kn : data.cgwb_groundwater.status} (${data.cgwb_groundwater.depth_mbgl}m)
                         </span>
                     </div>
-                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0;background:var(--bg-filter);padding:8px 10px;border-radius:10px;border:1px solid var(--border-light);">
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0;background:var(--bg-filter);padding: var(--space-sm) var(--space-md);border-radius: var(--radius-md);border:1px solid var(--border-light);">
                         <div>
                             <div style="font-size:0.58rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.04em;">${currentLang === 'kn' ? 'ಬೋರ್‌ವೆಲ್ ಆಳ' : 'Aquifer Depth'}</div>
                             <div style="font-size:0.88rem;font-weight:800;color:var(--text-main);margin-top:1px;">${data.cgwb_groundwater.depth_mbgl} <span style="font-size:0.68rem;font-weight:600;color:var(--text-muted);">mbgl</span></div>
@@ -2161,10 +2301,10 @@
 
                 <!-- 🚜 Krishi Yanthradhare Farm Machinery & Drone Hub -->
                 ${data.nearest_chc_machinery ? `
-                <div style="margin-bottom:14px;padding:12px 14px;border-radius:14px;background:var(--card-bg);border:1px solid var(--glass-border);backdrop-filter:blur(20px);box-shadow:0 8px 24px rgba(0,0,0,0.12);">
+                <div style="margin-bottom:14px;padding: var(--space-md) var(--space-lg);border-radius: var(--radius-md);background:var(--card-bg);border:1px solid var(--glass-border);backdrop-filter:blur(20px);box-shadow:0 8px 24px rgba(0,0,0,0.12);">
                     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
                         <div style="display:flex;align-items:center;gap:8px;">
-                            <div style="width:28px;height:28px;border-radius:8px;background:rgba(245,158,11,0.14);color:#f59e0b;display:flex;align-items:center;justify-content:center;font-size:0.85rem;border:1px solid rgba(245,158,11,0.25);">
+                            <div style="width:28px;height:28px;border-radius: var(--radius-sm);background:rgba(245,158,11,0.14);color:#f59e0b;display:flex;align-items:center;justify-content:center;font-size:0.85rem;border:1px solid rgba(245,158,11,0.25);">
                                 <i class="fa-solid fa-tractor"></i>
                             </div>
                             <div>
@@ -2172,15 +2312,15 @@
                                 <div style="font-size:0.65rem;color:var(--text-muted);font-weight:600;">${data.nearest_chc_machinery.chc_name}</div>
                             </div>
                         </div>
-                        <span style="font-size:0.62rem;font-weight:800;padding:3px 8px;border-radius:20px;background:rgba(245,158,11,0.12);color:#f59e0b;border:1px solid rgba(245,158,11,0.28);white-space:nowrap;">
+                        <span style="font-size:0.62rem;font-weight:800;padding:3px 8px;border-radius: var(--radius-lg);background:rgba(245,158,11,0.12);color:#f59e0b;border:1px solid rgba(245,158,11,0.28);white-space:nowrap;">
                             ${data.nearest_chc_machinery.distance_km} km • ${currentLang === 'kn' ? 'ಸಬ್ಸಿಡಿ ದರ' : 'Subsidized'}
                         </span>
                     </div>
                     <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;padding-top:8px;border-top:1px solid var(--border-light);font-size:0.72rem;">
-                        <a href="tel:${data.nearest_chc_machinery.phone}" style="color:var(--primary);text-decoration:none;font-weight:700;display:flex;align-items:center;gap:5px;background:rgba(16,185,129,0.08);padding:4px 9px;border-radius:7px;border:1px solid rgba(16,185,129,0.2);">
+                        <a href="tel:${data.nearest_chc_machinery.phone}" style="color:var(--primary);text-decoration:none;font-weight:700;display:flex;align-items:center;gap:5px;background:rgba(16,185,129,0.08);padding:4px 9px;border-radius: var(--radius-sm);border:1px solid rgba(16,185,129,0.2);">
                             <i class="fa-solid fa-phone"></i> ${data.nearest_chc_machinery.phone}
                         </a>
-                        <a href="${data.nearest_chc_machinery.booking_portal}" target="_blank" rel="noopener noreferrer" style="color:#fff;background:linear-gradient(135deg, #10b981, #0ea5e9);text-decoration:none;font-weight:700;padding:4px 11px;border-radius:7px;box-shadow:0 2px 8px rgba(16,185,129,0.3);display:flex;align-items:center;gap:4px;">
+                        <a href="${data.nearest_chc_machinery.booking_portal}" target="_blank" rel="noopener noreferrer" style="color:#fff;background:linear-gradient(135deg, #10b981, #0ea5e9);text-decoration:none;font-weight:700;padding:4px 11px;border-radius: var(--radius-sm);box-shadow:0 2px 8px rgba(16,185,129,0.3);display:flex;align-items:center;gap:4px;">
                             ${currentLang === 'kn' ? 'ಬುಕಿಂಗ್' : 'Book Machinery'} <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.6rem;"></i>
                         </a>
                     </div>
@@ -2227,7 +2367,7 @@
                     
                     const nlText = topRec ? (currentLang === 'kn' ? `
                         <div style="display:flex;align-items:flex-start;gap:10px;">
-                            <div style="width:30px;height:30px;border-radius:8px;background:rgba(16,185,129,0.14);color:var(--primary);display:flex;align-items:center;justify-content:center;font-size:0.88rem;flex-shrink:0;border:1px solid rgba(16,185,129,0.25);">
+                            <div style="width:30px;height:30px;border-radius: var(--radius-sm);background:rgba(16,185,129,0.14);color:var(--primary);display:flex;align-items:center;justify-content:center;font-size:0.88rem;flex-shrink:0;border:1px solid rgba(16,185,129,0.25);">
                                 <i class="fa-solid fa-wand-magic-sparkles"></i>
                             </div>
                             <div style="flex:1;font-size:0.78rem;line-height:1.55;color:var(--text-main);">
@@ -2236,7 +2376,7 @@
                         </div>
                     ` : `
                         <div style="display:flex;align-items:flex-start;gap:10px;">
-                            <div style="width:30px;height:30px;border-radius:8px;background:rgba(16,185,129,0.14);color:var(--primary);display:flex;align-items:center;justify-content:center;font-size:0.88rem;flex-shrink:0;border:1px solid rgba(16,185,129,0.25);">
+                            <div style="width:30px;height:30px;border-radius: var(--radius-sm);background:rgba(16,185,129,0.14);color:var(--primary);display:flex;align-items:center;justify-content:center;font-size:0.88rem;flex-shrink:0;border:1px solid rgba(16,185,129,0.25);">
                                 <i class="fa-solid fa-wand-magic-sparkles"></i>
                             </div>
                             <div style="flex:1;font-size:0.78rem;line-height:1.55;color:var(--text-main);">
@@ -2446,17 +2586,17 @@
                                 </div>
 
                                 <!-- Micro-Irrigation & Water Requirement Estimator -->
-                                <div style="margin-top: 12px; padding: 12px; background: rgba(59, 130, 246, 0.04); border-radius: 9px; border: 1px solid rgba(59, 130, 246, 0.18);">
+                                <div style="margin-top: 12px; padding: var(--space-md); background: rgba(59, 130, 246, 0.04); border-radius: var(--radius-sm); border: 1px solid rgba(59, 130, 246, 0.18);">
                                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 6px;">
                                         <span style="font-size: 0.74rem; font-weight: 700; color: #93c5fd;"><i class="fa-solid fa-faucet-drip" style="margin-right:5px;"></i> ${i18n[currentLang]['micro_irrig_title']}</span>
-                                        <span style="font-size: 0.62rem; background: rgba(59,130,246,0.15); color:#93c5fd; padding: 2px 7px; border-radius: 12px; font-weight: 700;">${i18n[currentLang]['water_optimized']}</span>
+                                        <span style="font-size: 0.62rem; background: rgba(59,130,246,0.15); color:#93c5fd; padding: 2px 7px; border-radius: var(--radius-md); font-weight: 700;">${i18n[currentLang]['water_optimized']}</span>
                                     </div>
                                     <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-top: 8px;">
-                                        <div style="background:rgba(255,255,255,0.03); padding: 7px 9px; border-radius: 7px; border:1px solid var(--glass-border);">
+                                        <div style="background:rgba(255,255,255,0.03); padding: var(--space-sm) var(--space-md); border-radius: var(--radius-sm); border:1px solid var(--glass-border);">
                                             <div style="font-size: 0.58rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600;">${i18n[currentLang]['daily_water']}</div>
                                             <div style="font-size: 0.86rem; font-weight: 800; color: var(--text-main); margin-top: 2px;">~${new Intl.NumberFormat('en-IN').format(dailyWaterLiters)} <span style="font-size:0.62rem;font-weight:600;color:var(--text-muted);">${i18n[currentLang]['water_unit']}</span></div>
                                         </div>
-                                        <div style="background:rgba(255,255,255,0.03); padding: 7px 9px; border-radius: 7px; border:1px solid var(--glass-border);">
+                                        <div style="background:rgba(255,255,255,0.03); padding: var(--space-sm) var(--space-md); border-radius: var(--radius-sm); border:1px solid var(--glass-border);">
                                             <div style="font-size: 0.58rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600;">${i18n[currentLang]['rec_delivery']}</div>
                                             <div style="font-size: 0.78rem; font-weight: 700; color: #38bdf8; margin-top: 2px;">${irrigMethod}</div>
                                         </div>
@@ -2464,24 +2604,24 @@
                                 </div>
 
                                 <!-- 🌾 ML Predictive Yield & Gross APMC Revenue Estimator -->
-                                <div id="yield-box-${groupId}-${index}" style="margin-top: 12px; padding: 12px; background: rgba(16, 185, 129, 0.05); border-radius: 9px; border: 1px solid rgba(16, 185, 129, 0.25);">
+                                <div id="yield-box-${groupId}-${index}" style="margin-top: 12px; padding: var(--space-md); background: rgba(16, 185, 129, 0.05); border-radius: var(--radius-sm); border: 1px solid rgba(16, 185, 129, 0.25);">
                                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
                                         <span style="font-size: 0.74rem; font-weight: 800; color: #10b981; display:flex; align-items:center; gap:5px;">
                                             <i class="fa-solid fa-chart-line"></i> ${currentLang==='kn' ? 'ನಿರೀಕ್ಷಿತ ಇಳುವರಿ & APMC ಆದಾಯ (ML)' : 'Predictive Yield & APMC Revenue'}
                                         </span>
-                                        <span style="font-size: 0.6rem; background: rgba(16,185,129,0.15); color:#10b981; padding: 2px 7px; border-radius: 10px; font-weight: 700;">
+                                        <span style="font-size: 0.6rem; background: rgba(16,185,129,0.15); color:#10b981; padding: 2px 7px; border-radius: var(--radius-md); font-weight: 700;">
                                             ${rec.predicted_yield ? rec.predicted_yield.confidence_index : '88%'} ${currentLang==='kn' ? 'ವಿಶ್ವಾಸಾರ್ಹತೆ' : 'Confidence'}
                                         </span>
                                     </div>
                                     <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-bottom: 8px;">
-                                        <div style="background:rgba(0,0,0,0.22); padding: 7px 9px; border-radius: 7px; border:1px solid var(--border-light);">
+                                        <div style="background:var(--bg-filter); padding: var(--space-sm) var(--space-md); border-radius: var(--radius-sm); border:1px solid var(--border-light);">
                                             <div style="font-size: 0.58rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600;">${currentLang==='kn' ? 'ಎಕರೆಗೆ ನಿರೀಕ್ಷಿತ ಇಳುವರಿ' : 'Expected Yield / Acre'}</div>
                                             <div id="yield-val-${groupId}-${index}" style="font-size: 0.92rem; font-weight: 800; color: var(--text-main); margin-top: 2px;">
                                                 ${rec.predicted_yield ? rec.predicted_yield.expected_yield_per_acre : '--'} <span style="font-size:0.62rem;font-weight:600;color:var(--text-muted);">${rec.predicted_yield ? rec.predicted_yield.unit : 'Q'}</span>
                                             </div>
                                             <div id="yield-range-${groupId}-${index}" style="font-size:0.58rem;color:var(--text-muted);margin-top:1px;">${rec.predicted_yield ? `Min ${rec.predicted_yield.yield_range_min} - Max ${rec.predicted_yield.yield_range_max}` : ''}</div>
                                         </div>
-                                        <div style="background:rgba(0,0,0,0.22); padding: 7px 9px; border-radius: 7px; border:1px solid var(--border-light);">
+                                        <div style="background:var(--bg-filter); padding: var(--space-sm) var(--space-md); border-radius: var(--radius-sm); border:1px solid var(--border-light);">
                                             <div style="font-size: 0.58rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600;">${currentLang==='kn' ? 'APMC ಒಟ್ಟು ಆದಾಯ' : 'APMC Gross Market Return'}</div>
                                             <div id="rev-val-${groupId}-${index}" style="font-size: 0.95rem; font-weight: 800; color: #10b981; margin-top: 2px;">
                                                 ₹${rec.predicted_yield ? new Intl.NumberFormat('en-IN').format(rec.predicted_yield.expected_gross_revenue) : '--'}
@@ -2493,32 +2633,32 @@
                                     <div style="display:flex;align-items:center;justify-content:space-between;gap:5px;font-size:0.66rem;color:var(--text-muted);">
                                         <span>${currentLang==='kn' ? 'ಕೃಷಿ ವಿಧಾನ:' : 'Management Intensity:'}</span>
                                         <div style="display:flex;gap:4px;">
-                                            <button type="button" onclick="adjustYieldScenario(this, '${rec.species}', ${lat}, ${lon}, 'organic', ${rec.predicted_yield ? rec.predicted_yield.expected_yield_per_acre : 10}, ${rec.predicted_yield ? rec.predicted_yield.apmc_unit_price : 4000}, '${rec.predicted_yield ? rec.predicted_yield.unit : 'Q'}', '${groupId}-${index}')" style="padding:3px 7px;border-radius:6px;border:1px solid var(--glass-border);background:rgba(255,255,255,0.05);color:var(--text-muted);cursor:pointer;font-size:0.62rem;font-weight:700;font-family:inherit;">🌿 ${currentLang==='kn' ? 'ಸಾವಯವ' : 'Organic'}</button>
-                                            <button type="button" onclick="adjustYieldScenario(this, '${rec.species}', ${lat}, ${lon}, 'standard', ${rec.predicted_yield ? rec.predicted_yield.expected_yield_per_acre : 10}, ${rec.predicted_yield ? rec.predicted_yield.apmc_unit_price : 4000}, '${rec.predicted_yield ? rec.predicted_yield.unit : 'Q'}', '${groupId}-${index}')" style="padding:3px 7px;border-radius:6px;border:1px solid var(--primary);background:rgba(16,185,129,0.18);color:#10b981;cursor:pointer;font-size:0.62rem;font-weight:700;font-family:inherit;">⚖️ ${currentLang==='kn' ? 'ಶಿಫಾರಸು' : 'Standard'}</button>
-                                            <button type="button" onclick="adjustYieldScenario(this, '${rec.species}', ${lat}, ${lon}, 'precision', ${rec.predicted_yield ? rec.predicted_yield.expected_yield_per_acre : 10}, ${rec.predicted_yield ? rec.predicted_yield.apmc_unit_price : 4000}, '${rec.predicted_yield ? rec.predicted_yield.unit : 'Q'}', '${groupId}-${index}')" style="padding:3px 7px;border-radius:6px;border:1px solid var(--glass-border);background:rgba(255,255,255,0.05);color:var(--text-muted);cursor:pointer;font-size:0.62rem;font-weight:700;font-family:inherit;">⚡ ${currentLang==='kn' ? 'ಅಧಿಕ ಇಳುವರಿ' : 'High Precision'}</button>
+                                            <button type="button" onclick="adjustYieldScenario(this, '${rec.species}', ${lat}, ${lon}, 'organic', ${rec.predicted_yield ? rec.predicted_yield.expected_yield_per_acre : 10}, ${rec.predicted_yield ? rec.predicted_yield.apmc_unit_price : 4000}, '${rec.predicted_yield ? rec.predicted_yield.unit : 'Q'}', '${groupId}-${index}')" style="padding:3px 7px;border-radius: var(--radius-sm);border:1px solid var(--glass-border);background:rgba(255,255,255,0.05);color:var(--text-muted);cursor:pointer;font-size:0.62rem;font-weight:700;font-family:inherit;">🌿 ${currentLang==='kn' ? 'ಸಾವಯವ' : 'Organic'}</button>
+                                            <button type="button" onclick="adjustYieldScenario(this, '${rec.species}', ${lat}, ${lon}, 'standard', ${rec.predicted_yield ? rec.predicted_yield.expected_yield_per_acre : 10}, ${rec.predicted_yield ? rec.predicted_yield.apmc_unit_price : 4000}, '${rec.predicted_yield ? rec.predicted_yield.unit : 'Q'}', '${groupId}-${index}')" style="padding:3px 7px;border-radius: var(--radius-sm);border:1px solid var(--primary);background:rgba(16,185,129,0.18);color:#10b981;cursor:pointer;font-size:0.62rem;font-weight:700;font-family:inherit;">⚖️ ${currentLang==='kn' ? 'ಶಿಫಾರಸು' : 'Standard'}</button>
+                                            <button type="button" onclick="adjustYieldScenario(this, '${rec.species}', ${lat}, ${lon}, 'precision', ${rec.predicted_yield ? rec.predicted_yield.expected_yield_per_acre : 10}, ${rec.predicted_yield ? rec.predicted_yield.apmc_unit_price : 4000}, '${rec.predicted_yield ? rec.predicted_yield.unit : 'Q'}', '${groupId}-${index}')" style="padding:3px 7px;border-radius: var(--radius-sm);border:1px solid var(--glass-border);background:rgba(255,255,255,0.05);color:var(--text-muted);cursor:pointer;font-size:0.62rem;font-weight:700;font-family:inherit;">⚡ ${currentLang==='kn' ? 'ಅಧಿಕ ಇಳುವರಿ' : 'High Precision'}</button>
                                         </div>
                                     </div>
                                 </div>
 
                                 <!-- 🏛️ Matching Karnataka & Central Government Schemes -->
                                 ${(rec.matched_subsidies && rec.matched_subsidies.length > 0) ? `
-                                <div style="margin-top: 10px; padding: 12px; background: linear-gradient(135deg, rgba(16,185,129,0.05), rgba(59,130,246,0.04)); border-radius: 9px; border: 1px solid rgba(16,185,129,0.22);">
+                                <div style="margin-top: 10px; padding: var(--space-md); background: linear-gradient(135deg, rgba(16,185,129,0.05), rgba(59,130,246,0.04)); border-radius: var(--radius-sm); border: 1px solid rgba(16,185,129,0.22);">
                                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 6px;">
                                         <span style="font-size: 0.74rem; font-weight: 800; color: var(--text-main); display:flex; align-items:center; gap:5px;">
                                             <i class="fa-solid fa-landmark" style="color:var(--primary);"></i> ${currentLang==='kn' ? 'ಅನ್ವಯವಾಗುವ ಸರ್ಕಾರಿ ಯೋಜನೆಗಳು' : 'Eligible Government Schemes'}
                                         </span>
-                                        <span style="font-size: 0.6rem; background: rgba(16,185,129,0.18); color:#34d399; padding: 2px 7px; border-radius: 12px; font-weight: 800;">${rec.matched_subsidies.length} ${currentLang==='kn' ? 'ಯೋಜನೆಗಳು' : 'Schemes'}</span>
+                                        <span style="font-size: 0.6rem; background: rgba(16,185,129,0.18); color:#34d399; padding: 2px 7px; border-radius: var(--radius-md); font-weight: 800;">${rec.matched_subsidies.length} ${currentLang==='kn' ? 'ಯೋಜನೆಗಳು' : 'Schemes'}</span>
                                     </div>
                                     ${rec.matched_subsidies.map(sch => `
-                                    <div style="background:rgba(0,0,0,0.18); padding: 8px 10px; border-radius: 8px; border:1px solid var(--border-light); margin-top: 6px;">
+                                    <div style="background:var(--bg-filter); padding: var(--space-sm) var(--space-md); border-radius: var(--radius-sm); border:1px solid var(--border-light); margin-top: 6px;">
                                         <div style="display:flex;justify-content:space-between;align-items:center;">
                                             <strong style="font-size:0.75rem;color:var(--text-main);"><i class="fa-solid ${sch.icon}" style="color:${sch.badge_color};margin-right:4px;"></i>${currentLang==='kn' ? sch.name_kn : sch.name}</strong>
-                                            <span style="font-size:0.6rem;padding:1px 6px;border-radius:6px;background:${sch.badge_color}22;color:${sch.badge_color};font-weight:800;">${sch.subsidy_pct}</span>
+                                            <span style="font-size:0.6rem;padding:1px 6px;border-radius: var(--radius-sm);background:${sch.badge_color}22;color:${sch.badge_color};font-weight:800;">${sch.subsidy_pct}</span>
                                         </div>
                                         <div style="font-size:0.68rem;color:#10b981;font-weight:700;margin-top:2px;">${currentLang==='kn' ? sch.financial_support_kn : sch.financial_support}</div>
                                         <div style="font-size:0.64rem;color:var(--text-muted);margin-top:3px;line-height:1.4;">${currentLang==='kn' ? sch.eligibility_kn : sch.eligibility}</div>
                                         <div style="margin-top:5px;display:flex;justify-content:flex-end;">
-                                            <a href="${sch.portal_url}" target="_blank" rel="noopener noreferrer" style="font-size:0.62rem;color:var(--accent-blue);text-decoration:none;display:inline-flex;align-items:center;gap:3px;font-weight:700;background:rgba(59,130,246,0.1);padding:2px 7px;border-radius:5px;border:1px solid rgba(59,130,246,0.25);">
+                                            <a href="${sch.portal_url}" target="_blank" rel="noopener noreferrer" style="font-size:0.62rem;color:var(--accent-blue);text-decoration:none;display:inline-flex;align-items:center;gap:3px;font-weight:700;background:rgba(59,130,246,0.1);padding:2px 7px;border-radius: var(--radius-sm);border:1px solid rgba(59,130,246,0.25);">
                                                 ${sch.portal_label} <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.55rem;"></i>
                                             </a>
                                         </div>
@@ -2529,22 +2669,22 @@
 
                                 <!-- 📈 Karnataka APMC Mandi Market Live Board -->
                                 ${rec.apmc_mandi ? `
-                                <div style="margin-top: 10px; padding: 12px; background: rgba(59,130,246,0.05); border-radius: 9px; border: 1px solid rgba(59,130,246,0.25);">
+                                <div style="margin-top: 10px; padding: var(--space-md); background: rgba(59,130,246,0.05); border-radius: var(--radius-sm); border: 1px solid rgba(59,130,246,0.25);">
                                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 6px;">
                                         <span style="font-size: 0.74rem; font-weight: 800; color: #60a5fa; display:flex; align-items:center; gap:5px;">
                                             <i class="fa-solid fa-store"></i> ${currentLang==='kn' ? 'ಲೈವ್ APMC ಮಾರುಕಟ್ಟೆ ದರ' : 'Live APMC Mandi Price Board'}
                                         </span>
-                                        <span style="font-size: 0.6rem; background: rgba(59,130,246,0.15); color:#60a5fa; padding: 2px 7px; border-radius: 10px; font-weight: 700;">
+                                        <span style="font-size: 0.6rem; background: rgba(59,130,246,0.15); color:#60a5fa; padding: 2px 7px; border-radius: var(--radius-md); font-weight: 700;">
                                             ${rec.apmc_mandi.distance_km} km • ${rec.apmc_mandi.nearest_mandi_name.split('(')[0]}
                                         </span>
                                     </div>
                                     <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-bottom: 6px;">
-                                        <div style="background:rgba(0,0,0,0.22); padding: 7px 9px; border-radius: 7px; border:1px solid var(--border-light);">
+                                        <div style="background:var(--bg-filter); padding: var(--space-sm) var(--space-md); border-radius: var(--radius-sm); border:1px solid var(--border-light);">
                                             <div style="font-size: 0.58rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600;">${currentLang==='kn' ? 'ಮಾದರಿ ಬೆಲೆ (Modal Rate)' : 'Current Modal Price'}</div>
                                             <div style="font-size: 0.92rem; font-weight: 800; color: #60a5fa; margin-top: 2px;">${rec.apmc_mandi.modal_price}</div>
                                             <div style="font-size:0.58rem;color:var(--text-muted);margin-top:1px;">${rec.apmc_mandi.price_range}</div>
                                         </div>
-                                        <div style="background:rgba(0,0,0,0.22); padding: 7px 9px; border-radius: 7px; border:1px solid var(--border-light);">
+                                        <div style="background:var(--bg-filter); padding: var(--space-sm) var(--space-md); border-radius: var(--radius-sm); border:1px solid var(--border-light);">
                                             <div style="font-size: 0.58rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600;">${currentLang==='kn' ? 'ದೈನಂದಿನ ಆವಕ & ಸಾಗಾಟ ವೆಚ್ಚ' : 'Arrivals & Freight'}</div>
                                             <div style="font-size: 0.82rem; font-weight: 800; color: var(--text-main); margin-top: 2px;">${rec.apmc_mandi.daily_arrivals}</div>
                                             <div style="font-size:0.58rem;color:#10b981;margin-top:1px;">Freight: ${rec.apmc_mandi.est_freight_cost_per_q}</div>
@@ -2558,33 +2698,33 @@
 
                                 <!-- 🧪 Precision NPK Fertilizer & Split Schedule -->
                                 ${rec.fertilizer_dosage ? `
-                                <div style="margin-top: 10px; padding: 12px; background: rgba(168,85,247,0.05); border-radius: 9px; border: 1px solid rgba(168,85,247,0.25);">
+                                <div style="margin-top: 10px; padding: var(--space-md); background: rgba(168,85,247,0.05); border-radius: var(--radius-sm); border: 1px solid rgba(168,85,247,0.25);">
                                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 6px;">
                                         <span style="font-size: 0.74rem; font-weight: 800; color: #c084fc; display:flex; align-items:center; gap:5px;">
                                             <i class="fa-solid fa-flask-vial"></i> ${currentLang==='kn' ? 'ರಸಗೊಬ್ಬರ ಪ್ರಮಾಣ & ಹಂತಗಳು (NPK)' : 'Precision Fertilizer & NPK Schedule'}
                                         </span>
-                                        <span style="font-size: 0.6rem; background: rgba(168,85,247,0.18); color:#c084fc; padding: 2px 7px; border-radius: 10px; font-weight: 700;">
+                                        <span style="font-size: 0.6rem; background: rgba(168,85,247,0.18); color:#c084fc; padding: 2px 7px; border-radius: var(--radius-md); font-weight: 700;">
                                             ${rec.fertilizer_dosage.total_fertilizer_budget} / acre
                                         </span>
                                     </div>
                                     <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 8px;">
-                                        <div style="background:rgba(0,0,0,0.25); padding: 6px 7px; border-radius: 7px; text-align:center; border:1px solid var(--border-light);">
+                                        <div style="background:var(--bg-filter); padding: var(--space-sm); border-radius: var(--radius-sm); text-align:center; border:1px solid var(--border-light);">
                                             <div style="font-size:0.58rem;color:var(--text-muted);font-weight:700;">UREA (46% N)</div>
                                             <div style="font-size:0.86rem;font-weight:800;color:var(--text-main);">${rec.fertilizer_dosage.commercial_fertilizers.urea.kg_per_acre} kg</div>
                                             <div style="font-size:0.56rem;color:#c084fc;">${rec.fertilizer_dosage.commercial_fertilizers.urea.bags_45kg} bags</div>
                                         </div>
-                                        <div style="background:rgba(0,0,0,0.25); padding: 6px 7px; border-radius: 7px; text-align:center; border:1px solid var(--border-light);">
+                                        <div style="background:var(--bg-filter); padding: var(--space-sm); border-radius: var(--radius-sm); text-align:center; border:1px solid var(--border-light);">
                                             <div style="font-size:0.58rem;color:var(--text-muted);font-weight:700;">DAP (18-46-0)</div>
                                             <div style="font-size:0.86rem;font-weight:800;color:var(--text-main);">${rec.fertilizer_dosage.commercial_fertilizers.dap.kg_per_acre} kg</div>
                                             <div style="font-size:0.56rem;color:#c084fc;">${rec.fertilizer_dosage.commercial_fertilizers.dap.bags_50kg} bags</div>
                                         </div>
-                                        <div style="background:rgba(0,0,0,0.25); padding: 6px 7px; border-radius: 7px; text-align:center; border:1px solid var(--border-light);">
+                                        <div style="background:var(--bg-filter); padding: var(--space-sm); border-radius: var(--radius-sm); text-align:center; border:1px solid var(--border-light);">
                                             <div style="font-size:0.58rem;color:var(--text-muted);font-weight:700;">MOP (60% K₂O)</div>
                                             <div style="font-size:0.86rem;font-weight:800;color:var(--text-main);">${rec.fertilizer_dosage.commercial_fertilizers.mop.kg_per_acre} kg</div>
                                             <div style="font-size:0.56rem;color:#c084fc;">${rec.fertilizer_dosage.commercial_fertilizers.mop.bags_50kg} bags</div>
                                         </div>
                                     </div>
-                                    <div style="background:rgba(0,0,0,0.18); padding: 6px 8px; border-radius: 7px; font-size:0.65rem; color:var(--text-muted); line-height:1.4;">
+                                    <div style="background:var(--bg-filter); padding: var(--space-sm); border-radius: var(--radius-sm); font-size:0.65rem; color:var(--text-muted); line-height:1.4;">
                                         <i class="fa-solid fa-seedling" style="color:#10b981;margin-right:4px;"></i><strong>${currentLang==='kn' ? 'ಸಾವಯವ ಬೆಂಬಲ:' : 'Organic Support:'}</strong> ${rec.fertilizer_dosage.organic_package.fym_compost_tons} Tons FYM + ${rec.fertilizer_dosage.organic_package.biofertilizer_support}
                                     </div>
                                 </div>
@@ -2592,22 +2732,22 @@
 
                                 <!-- ⚡ Solar Agri-PV Dual-Income Modeler -->
                                 ${rec.agri_pv ? `
-                                <div style="margin-top: 10px; padding: 12px; background: rgba(245,158,11,0.05); border-radius: 9px; border: 1px solid rgba(245,158,11,0.25);">
+                                <div style="margin-top: 10px; padding: var(--space-md); background: rgba(245,158,11,0.05); border-radius: var(--radius-sm); border: 1px solid rgba(245,158,11,0.25);">
                                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 6px;">
                                         <span style="font-size: 0.74rem; font-weight: 800; color: #fbbf24; display:flex; align-items:center; gap:5px;">
                                             <i class="fa-solid fa-solar-panel"></i> ${currentLang==='kn' ? 'ಸೌರ ಕೃಷಿ ದ್ವಿ-ಆದಾಯ (Agri-PV Modeler)' : 'Solar Agri-PV Dual-Income Modeler'}
                                         </span>
-                                        <span style="font-size: 0.6rem; background: rgba(245,158,11,0.18); color:#fbbf24; padding: 2px 7px; border-radius: 10px; font-weight: 800;">
+                                        <span style="font-size: 0.6rem; background: rgba(245,158,11,0.18); color:#fbbf24; padding: 2px 7px; border-radius: var(--radius-md); font-weight: 800;">
                                             ${rec.agri_pv.dual_revenue_multiplier} Cashflow Boost
                                         </span>
                                     </div>
                                     <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-bottom: 6px;">
-                                        <div style="background:rgba(0,0,0,0.22); padding: 7px 9px; border-radius: 7px; border:1px solid var(--border-light);">
+                                        <div style="background:var(--bg-filter); padding: var(--space-sm) var(--space-md); border-radius: var(--radius-sm); border:1px solid var(--border-light);">
                                             <div style="font-size: 0.58rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600;">${currentLang==='kn' ? 'ವಾರ್ಷಿಕ ಸೌರ ಉತ್ಪಾದನೆ' : 'Solar Generation (Annual)'}</div>
                                             <div style="font-size: 0.88rem; font-weight: 800; color: var(--text-main); margin-top: 2px;">${rec.agri_pv.annual_clean_electricity_kwh}</div>
                                             <div style="font-size:0.58rem;color:#10b981;margin-top:1px;">${rec.agri_pv.feed_in_tariff_rate}</div>
                                         </div>
-                                        <div style="background:rgba(0,0,0,0.22); padding: 7px 9px; border-radius: 7px; border:1px solid var(--border-light);">
+                                        <div style="background:var(--bg-filter); padding: var(--space-sm) var(--space-md); border-radius: var(--radius-sm); border:1px solid var(--border-light);">
                                             <div style="font-size: 0.58rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600;">${currentLang==='kn' ? 'ಒಟ್ಟು ದ್ವಿ-ಆದಾಯ (ಬೆಳೆ + ಸೌರ)' : 'Total Dual Income'}</div>
                                             <div style="font-size: 0.95rem; font-weight: 800; color: #fbbf24; margin-top: 2px;">₹${new Intl.NumberFormat('en-IN').format(rec.agri_pv.total_dual_revenue)}</div>
                                             <div style="font-size:0.58rem;color:var(--text-muted);margin-top:1px;">Solar: ₹${new Intl.NumberFormat('en-IN').format(rec.agri_pv.annual_solar_revenue)}/yr</div>
@@ -2621,32 +2761,32 @@
 
                                 <!-- 🌲 20-Year Carbon Credit Monetization -->
                                 ${rec.carbon_credits_20yr ? `
-                                <div style="margin-top: 10px; padding: 12px; background: rgba(16,185,129,0.05); border-radius: 9px; border: 1px solid rgba(16,185,129,0.25);">
+                                <div style="margin-top: 10px; padding: var(--space-md); background: rgba(16,185,129,0.05); border-radius: var(--radius-sm); border: 1px solid rgba(16,185,129,0.25);">
                                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 6px;">
                                         <span style="font-size: 0.74rem; font-weight: 800; color: #34d399; display:flex; align-items:center; gap:5px;">
                                             <i class="fa-solid fa-tree"></i> ${currentLang==='kn' ? '೨೦-ವರ್ಷದ ಕಾರ್ಬನ್ ಕ್ರೆಡಿಟ್ ಆದಾಯ (VCM)' : '20-Year Carbon Credit Cashflow'}
                                         </span>
-                                        <span style="font-size: 0.6rem; background: rgba(16,185,129,0.18); color:#34d399; padding: 2px 7px; border-radius: 10px; font-weight: 800;">
+                                        <span style="font-size: 0.6rem; background: rgba(16,185,129,0.18); color:#34d399; padding: 2px 7px; border-radius: var(--radius-md); font-weight: 800;">
                                             ${rec.carbon_credits_20yr.total_20yr_carbon_wealth} (20-Yr Wealth)
                                         </span>
                                     </div>
                                     <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-bottom: 6px; font-size:0.65rem;">
-                                        <div style="background:rgba(0,0,0,0.22); padding: 5px; border-radius: 6px; text-align:center;">
+                                        <div style="background:var(--bg-filter); padding: var(--space-sm); border-radius: var(--radius-sm); text-align:center;">
                                             <div style="color:var(--text-muted);font-size:0.56rem;">YEAR 1</div>
                                             <div style="font-weight:800;color:var(--text-main);">${rec.carbon_credits_20yr.milestones.year_1.co2_sequestered}</div>
                                             <div style="color:#10b981;font-weight:700;">${rec.carbon_credits_20yr.milestones.year_1.cumulative_revenue}</div>
                                         </div>
-                                        <div style="background:rgba(0,0,0,0.22); padding: 5px; border-radius: 6px; text-align:center;">
+                                        <div style="background:var(--bg-filter); padding: var(--space-sm); border-radius: var(--radius-sm); text-align:center;">
                                             <div style="color:var(--text-muted);font-size:0.56rem;">YEAR 5</div>
                                             <div style="font-weight:800;color:var(--text-main);">${rec.carbon_credits_20yr.milestones.year_5.co2_sequestered}</div>
                                             <div style="color:#10b981;font-weight:700;">${rec.carbon_credits_20yr.milestones.year_5.cumulative_revenue}</div>
                                         </div>
-                                        <div style="background:rgba(0,0,0,0.22); padding: 5px; border-radius: 6px; text-align:center;">
+                                        <div style="background:var(--bg-filter); padding: var(--space-sm); border-radius: var(--radius-sm); text-align:center;">
                                             <div style="color:var(--text-muted);font-size:0.56rem;">YEAR 10</div>
                                             <div style="font-weight:800;color:var(--text-main);">${rec.carbon_credits_20yr.milestones.year_10.co2_sequestered}</div>
                                             <div style="color:#10b981;font-weight:700;">${rec.carbon_credits_20yr.milestones.year_10.cumulative_revenue}</div>
                                         </div>
-                                        <div style="background:rgba(0,0,0,0.22); padding: 5px; border-radius: 6px; text-align:center;">
+                                        <div style="background:var(--bg-filter); padding: var(--space-sm); border-radius: var(--radius-sm); text-align:center;">
                                             <div style="color:var(--text-muted);font-size:0.56rem;">YEAR 20</div>
                                             <div style="font-weight:800;color:var(--text-main);">${rec.carbon_credits_20yr.milestones.year_20.co2_sequestered}</div>
                                             <div style="color:#10b981;font-weight:700;">${rec.carbon_credits_20yr.milestones.year_20.cumulative_revenue}</div>
@@ -2660,22 +2800,22 @@
 
                                 <!-- 🛡️ PMFBY Crop Insurance & Risk Coverage -->
                                 ${rec.pmfby_insurance ? `
-                                <div style="margin-top: 10px; padding: 12px; background: rgba(239,68,68,0.05); border-radius: 9px; border: 1px solid rgba(239,68,68,0.22);">
+                                <div style="margin-top: 10px; padding: var(--space-md); background: rgba(239,68,68,0.05); border-radius: var(--radius-sm); border: 1px solid rgba(239,68,68,0.22);">
                                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 6px;">
                                         <span style="font-size: 0.74rem; font-weight: 800; color: #f87171; display:flex; align-items:center; gap:5px;">
                                             <i class="fa-solid fa-shield-halved"></i> ${currentLang==='kn' ? 'ಪ್ರಧಾನ ಮಂತ್ರಿ ಫಸಲ್ ಬಿಮಾ ಯೋಜನೆ (PMFBY)' : 'PMFBY Crop Insurance Coverage'}
                                         </span>
-                                        <span style="font-size: 0.6rem; background: rgba(239,68,68,0.18); color:#f87171; padding: 2px 7px; border-radius: 10px; font-weight: 800;">
+                                        <span style="font-size: 0.6rem; background: rgba(239,68,68,0.18); color:#f87171; padding: 2px 7px; border-radius: var(--radius-md); font-weight: 800;">
                                             ${rec.pmfby_insurance.farmer_premium_rate} Premium
                                         </span>
                                     </div>
                                     <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-bottom: 6px;">
-                                        <div style="background:rgba(0,0,0,0.22); padding: 7px 9px; border-radius: 7px; border:1px solid var(--border-light);">
+                                        <div style="background:var(--bg-filter); padding: var(--space-sm) var(--space-md); border-radius: var(--radius-sm); border:1px solid var(--border-light);">
                                             <div style="font-size: 0.58rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600;">${currentLang==='kn' ? 'ವಿಮಾ ಮೊತ್ತ (Sum Insured)' : 'Sum Insured / Acre'}</div>
                                             <div style="font-size: 0.92rem; font-weight: 800; color: var(--text-main); margin-top: 2px;">${rec.pmfby_insurance.sum_insured_per_acre}</div>
                                             <div style="font-size:0.58rem;color:var(--text-muted);margin-top:1px;">Category: ${rec.pmfby_insurance.category}</div>
                                         </div>
-                                        <div style="background:rgba(0,0,0,0.22); padding: 7px 9px; border-radius: 7px; border:1px solid var(--border-light);">
+                                        <div style="background:var(--bg-filter); padding: var(--space-sm) var(--space-md); border-radius: var(--radius-sm); border:1px solid var(--border-light);">
                                             <div style="font-size: 0.58rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600;">${currentLang==='kn' ? 'ರೈತರು ಪಾವತಿಸಬೇಕಾದ ಕಂತು' : 'Farmer Payable Share'}</div>
                                             <div style="font-size: 0.95rem; font-weight: 800; color: #10b981; margin-top: 2px;">${rec.pmfby_insurance.farmer_payable_premium}</div>
                                             <div style="font-size:0.58rem;color:var(--text-muted);margin-top:1px;">${rec.pmfby_insurance.govt_subsidy_absorbed}</div>
@@ -2683,7 +2823,7 @@
                                     </div>
                                     <div style="display:flex; justify-content:space-between; align-items:center; margin-top: 5px;">
                                         <span style="font-size:0.64rem;color:var(--text-muted);"><i class="fa-solid fa-umbrella" style="color:#f87171;margin-right:4px;"></i>Auto-claim for drought >21 days</span>
-                                        <a href="${rec.pmfby_insurance.portal_url}" target="_blank" rel="noopener noreferrer" style="font-size:0.62rem;color:var(--accent-blue);text-decoration:none;font-weight:700;background:rgba(59,130,246,0.1);padding:2px 7px;border-radius:5px;border:1px solid rgba(59,130,246,0.25);">
+                                        <a href="${rec.pmfby_insurance.portal_url}" target="_blank" rel="noopener noreferrer" style="font-size:0.62rem;color:var(--accent-blue);text-decoration:none;font-weight:700;background:rgba(59,130,246,0.1);padding:2px 7px;border-radius: var(--radius-sm);border:1px solid rgba(59,130,246,0.25);">
                                             ${rec.pmfby_insurance.portal_name} <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.55rem;"></i>
                                         </a>
                                     </div>
@@ -2691,7 +2831,7 @@
                                 ` : ''}
                                 
                                 <!-- Yield vs Rainfall Chart -->
-                                <div style="margin-top:12px;padding:12px;background:rgba(255,255,255,0.02);border-radius:9px;border:1px solid var(--glass-border);">
+                                <div style="margin-top:12px;padding: var(--space-md);background:rgba(255,255,255,0.02);border-radius: var(--radius-sm);border:1px solid var(--glass-border);">
                                     <div style="font-size:0.72rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;"><i class="fa-solid fa-chart-scatter" style="margin-right:4px;"></i>Yield vs Rainfall (5-yr simulated)</div>
                                     <div style="position:relative;height:90px;"><canvas id="yield-chart-${groupId}-${index}"></canvas></div>
                                 </div>
@@ -2707,21 +2847,21 @@
                                     </div>
                                 </div>
                                 
-                                <div style="margin-top: 16px; padding: 12px; background: rgba(255,255,255,0.03); border-radius: 8px; border: 1px solid var(--glass-border); font-size: 0.85rem; color: var(--text-muted); line-height: 1.4;">
+                                <div style="margin-top: 16px; padding: var(--space-md); background: rgba(255,255,255,0.03); border-radius: var(--radius-sm); border: 1px solid var(--glass-border); font-size: 0.85rem; color: var(--text-muted); line-height: 1.4;">
                                     <strong style="color: var(--text-main);"><i class="fa-solid fa-chart-line"></i> <span data-i18n="market_prof">${i18n[currentLang]['market_prof']}</span>: ${rec.commercial_value}</strong><br>
                                     ${i18n[currentLang][rec.commercial_explanation] || rec.commercial_explanation}
                                 </div>
                                 
                                 ${rec.type === 'Tree' ? `
-                                <div style="margin-top: 12px; padding: 12px; background: rgba(16, 185, 129, 0.05); border-radius: 8px; border: 1px solid rgba(16, 185, 129, 0.2); font-size: 0.85rem; color: var(--text-muted); line-height: 1.4;">
+                                <div style="margin-top: 12px; padding: var(--space-md); background: rgba(16, 185, 129, 0.05); border-radius: var(--radius-sm); border: 1px solid rgba(16, 185, 129, 0.2); font-size: 0.85rem; color: var(--text-muted); line-height: 1.4;">
                                     <strong style="color: var(--primary);"><i class="fa-solid fa-leaf"></i> ${i18n[currentLang]['carbon_rev']}</strong><br>
                                     Carbon Sink rating: <strong style="color:var(--primary)">${rec.carbon_rating}/10</strong> &bull; ${rec.species}-specific REDD+ credit rate applied.
                                     <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px;">
-                                        <div style="background:rgba(16,185,129,0.08);border-radius:6px;padding:6px 8px;">
+                                        <div style="background:rgba(16,185,129,0.08);border-radius: var(--radius-sm);padding: var(--space-sm);">
                                             <div style="font-size:0.65rem;color:var(--text-muted);text-transform:uppercase;">${i18n[currentLang]['per_year']}</div>
                                             <div style="font-weight:800;color:#10b981;font-size:0.95rem;">₹${new Intl.NumberFormat('en-IN').format(carbonPerYr)}<span style="font-size:0.65rem">/acre</span></div>
                                         </div>
-                                        <div style="background:rgba(16,185,129,0.08);border-radius:6px;padding:6px 8px;">
+                                        <div style="background:rgba(16,185,129,0.08);border-radius: var(--radius-sm);padding: var(--space-sm);">
                                             <div style="font-size:0.65rem;color:var(--text-muted);text-transform:uppercase;">${i18n[currentLang]['ten_year']}</div>
                                             <div style="font-weight:800;color:#10b981;font-size:0.95rem;">₹${new Intl.NumberFormat('en-IN').format(carbonTotal)}<span style="font-size:0.65rem">/acre</span></div>
                                         </div>
@@ -2879,32 +3019,6 @@ multiCropModels.forEach((model, mIdx) => {
                 html += `</div>`;
                 feed.innerHTML = html;
 
-                // Render Sparkline (canvas removed from UI — skip silently)
-                if (false && data.environmental_context.monthly_rainfall && data.environmental_context.monthly_rainfall.length > 0) {
-                    const sparkEl = document.getElementById(`sparkline-${groupId}`);
-                    if (!sparkEl) return;
-                    const ctx = sparkEl.getContext('2d');
-                    new Chart(ctx, {
-                        type: 'line',
-                        data: {
-                            labels: ['1','2','3','4','5','6','7','8','9','10','11','12'],
-                            datasets: [{
-                                data: data.environmental_context.monthly_rainfall,
-                                borderColor: '#059669',
-                                borderWidth: 2,
-                                tension: 0.4,
-                                pointRadius: 0
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            plugins: { legend: { display: false }, tooltip: { enabled: false } },
-                            scales: { x: { display: false }, y: { display: false, min: 0 } }
-                        }
-                    });
-                }
-
                 // ── Animate metric counters ────────────────────────────────
                 setTimeout(() => {
                     document.querySelectorAll('.metric-val[data-count]').forEach(el => {
@@ -2996,7 +3110,7 @@ multiCropModels.forEach((model, mIdx) => {
             const scannerUi = document.getElementById('regional-scanner-ui');
             if(scannerUi) scannerUi.style.display = 'none';
             const instantPlaceName = getKarnatakaPlaceName(lat, lon);
-            const searchInput = document.getElementById('search-input');
+            const searchInput = document.getElementById('location-search');
             if (searchInput) searchInput.value = instantPlaceName;
 
             diagFeed.innerHTML = `
@@ -3011,7 +3125,7 @@ multiCropModels.forEach((model, mIdx) => {
                         </div>
                         <span style="font-size:0.68rem;background:rgba(59,130,246,0.12);color:#3b82f6;border:1px solid rgba(59,130,246,0.3);padding:2px 8px;border-radius:12px;font-weight:700;">Drought Scan</span>
                     </div>
-                    <div class="skeleton" style="padding: 16px; background: rgba(0,0,0,0.2); border-radius: 12px; border: 1px solid var(--border-light);">
+                    <div class="skeleton" style="padding: var(--space-lg); background: var(--card-bg); border-radius: var(--radius-lg); border: 1px solid var(--glass-border); box-shadow: var(--shadow-card);">
                         <div class="skel-line" style="width: 40%"></div>
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 20px 0;">
                             <div class="skel-box" style="height: 80px;"></div>
@@ -3079,8 +3193,13 @@ multiCropModels.forEach((model, mIdx) => {
                         </div>
                         
                         <!-- Water Stress Gauge -->
-                        <div class="stress-gauge-wrap" style="margin-bottom:16px;">
-                            <div style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-muted);margin-bottom:8px;display:flex;align-items:center;gap:6px;"><i class="fa-solid fa-gauge-high"></i> ${i18n[currentLang]['water_stress_index']} <span class="trend-arrow ${data.is_degrading ? 'trend-up' : 'trend-down'}">${data.is_degrading ? '&#8593;' : '&#8595;'}</span></div>
+                        <div class="stress-gauge-wrap" style="background: var(--card-bg); border-radius: var(--radius-lg); border: 1px solid var(--glass-border); box-shadow: var(--shadow-card); padding: var(--space-lg); margin-bottom:16px;">
+                            <div style="font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-muted);margin-bottom:8px;display:flex;align-items:center;gap:6px;">
+                                <div style="width: 28px; height: 28px; border-radius: var(--radius-sm); background: rgba(59,130,246,0.1); display: flex; align-items: center; justify-content: center; color: var(--primary);">
+                                    <i class="fa-solid fa-gauge-high"></i>
+                                </div>
+                                ${i18n[currentLang]['water_stress_index']} <span class="trend-arrow ${data.is_degrading ? 'trend-up' : 'trend-down'}">${data.is_degrading ? '&#8593;' : '&#8595;'}</span>
+                            </div>
                             <svg width="120" height="120" viewBox="0 0 100 100">
                                 <circle class="gauge-track" cx="50" cy="50" r="42" stroke-dasharray="263.9" stroke-dashoffset="0"/>
                                 <circle class="gauge-fill" cx="50" cy="50" r="42" stroke="${(100-data.current_moisture)>70?'#ef4444':(100-data.current_moisture)>40?'#f59e0b':'#10b981'}" stroke-dasharray="263.9" style="--gauge-offset:${263.9*(data.current_moisture/100)}" stroke-dashoffset="263.9"/>
@@ -3091,12 +3210,12 @@ multiCropModels.forEach((model, mIdx) => {
                         </div>
 
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px;">
-                            <div class="metric-card" style="border-radius: 12px; padding: 20px 16px;">
+                            <div class="metric-card" style="background: var(--card-bg); border-radius: var(--radius-lg); border: 1px solid var(--glass-border); box-shadow: var(--shadow-card); padding: var(--space-lg);">
                                 <div style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">${i18n[currentLang]['live_ndvi']}</div>
                                 <div style="font-size: 2.2rem; font-weight: 700; color: ${data.current_ndvi < 0.5 ? '#ef4444' : '#10b981'}; margin: 10px 0;" class="metric-val" data-count="${data.current_ndvi}" data-suffix="">${data.current_ndvi}</div>
                                 <div style="font-size: 0.8rem; color: var(--text-muted);">${i18n[currentLang]['veg_index']}</div>
                             </div>
-                            <div class="metric-card" style="border-radius: 12px; padding: 20px 16px;">
+                            <div class="metric-card" style="background: var(--card-bg); border-radius: var(--radius-lg); border: 1px solid var(--glass-border); box-shadow: var(--shadow-card); padding: var(--space-lg);">
                                 <div style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">${i18n[currentLang]['soil_moisture']}</div>
                                 <div style="font-size: 2.2rem; font-weight: 700; color: ${data.current_moisture < 40 ? '#ef4444' : '#3b82f6'}; margin: 10px 0;" class="metric-val" data-count="${data.current_moisture}" data-suffix="%">${data.current_moisture}%</div>
                                 <div style="font-size: 0.8rem; color: var(--text-muted);">${i18n[currentLang]['volumetric_index']}</div>
@@ -3105,19 +3224,34 @@ multiCropModels.forEach((model, mIdx) => {
                         
                         <!-- Added Water Source & Anomaly Cards -->
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px;">
-                            <div style="background: var(--glass-bg); border-radius: 12px; padding: 16px; border: 1px solid var(--glass-border); box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
-                                <h4 style="margin: 0 0 8px 0; font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;"><i class="fa-solid fa-water"></i> ${i18n[currentLang]['nearest_water']}</h4>
+                            <div style="background: var(--card-bg); border-radius: var(--radius-lg); padding: var(--space-lg); border: 1px solid var(--glass-border); box-shadow: var(--shadow-card);">
+                                <h4 style="margin: 0 0 8px 0; font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; display: flex; align-items: center; gap: 6px;">
+                                    <div style="width: 28px; height: 28px; border-radius: var(--radius-sm); background: rgba(59,130,246,0.1); display: flex; align-items: center; justify-content: center; color: var(--primary);">
+                                        <i class="fa-solid fa-water"></i>
+                                    </div>
+                                    ${i18n[currentLang]['nearest_water']}
+                                </h4>
                                 <div style="font-size: 0.95rem; font-weight: 700; color: var(--text-main); word-break: break-word; line-height: 1.35;">${(data.nearest_water || data.water_source || {}).name || 'KRS Dam'}</div>
                                 <div style="font-size: 0.85rem; color: var(--primary); font-weight: 600; margin-top: 4px;">${(data.nearest_water || data.water_source || {}).distance_km || 15}km ${currentLang==='kn' ? (knDirections[(data.nearest_water || data.water_source || {}).direction] || (data.nearest_water || data.water_source || {}).direction || '') : ((data.nearest_water || data.water_source || {}).direction || '')}</div>
                             </div>
-                            <div style="background: var(--glass-bg); border-radius: 12px; padding: 16px; border: 1px solid var(--glass-border); box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
-                                <h4 style="margin: 0 0 8px 0; font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;"><i class="fa-solid fa-temperature-half"></i> ${i18n[currentLang]['climate_anomaly']}</h4>
+                            <div style="background: var(--card-bg); border-radius: var(--radius-lg); padding: var(--space-lg); border: 1px solid var(--glass-border); box-shadow: var(--shadow-card);">
+                                <h4 style="margin: 0 0 8px 0; font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; display: flex; align-items: center; gap: 6px;">
+                                    <div style="width: 28px; height: 28px; border-radius: var(--radius-sm); background: rgba(245,158,11,0.1); display: flex; align-items: center; justify-content: center; color: #f59e0b;">
+                                        <i class="fa-solid fa-temperature-half"></i>
+                                    </div>
+                                    ${i18n[currentLang]['climate_anomaly']}
+                                </h4>
                                 <div style="font-size: 1.1rem; font-weight: 700; color: ${((data.climate_anomaly || data.anomaly || {}).temp_delta || 0) > 2 ? '#ef4444' : '#f59e0b'};">${((data.climate_anomaly || data.anomaly || {}).temp_delta || 0) > 0 ? '+' : ''}${((data.climate_anomaly || data.anomaly || {}).temp_delta || 0)}°C</div>
                                 <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;">${(data.climate_anomaly || data.anomaly || {}).dry_days || 0} ${i18n[currentLang]['dry_days_label']}</div>
                             </div>
                         </div>
                         
-                        <h4 style="margin: 0 0 12px 0; color: var(--text-main); font-size: 0.95rem;"><i class="fa-solid fa-cloud-sun-rain"></i> ${i18n[currentLang]['forecast_7day']}</h4>
+                        <h4 style="margin: 0 0 12px 0; color: var(--text-main); font-size: 0.95rem; display: flex; align-items: center; gap: 8px;">
+                            <div style="width: 28px; height: 28px; border-radius: var(--radius-sm); background: rgba(59,130,246,0.1); display: flex; align-items: center; justify-content: center; color: var(--primary);">
+                                <i class="fa-solid fa-cloud-sun-rain"></i>
+                            </div>
+                            ${i18n[currentLang]['forecast_7day']}
+                        </h4>
                         <div style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 24px;">
                         ${(data.live_weather || data.live_forecast || []).map(day => {
                             let icon = "fa-cloud-sun";
@@ -3126,22 +3260,34 @@ multiCropModels.forEach((model, mIdx) => {
                             else if(day.precip > 0) { icon = "fa-cloud-rain"; color = "#60a5fa"; }
                             else if(day.max_t > 35) { icon = "fa-sun"; color = "#ef4444"; }
                             return `
-                            <div style="min-width: 80px; flex: 1; background: var(--glass-bg); border-radius: 12px; padding: 12px 8px; border: 1px solid var(--glass-border); text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+                            <div style="min-width: 80px; flex: 1; background: var(--bg-filter); border-radius: var(--radius-md); padding: var(--space-md) 8px; border: 1px solid var(--border-light); text-align: center;">
                                 <div style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600; margin-bottom: 8px;">${currentLang==='kn' ? (knDays[day.day]||day.day) : day.day}</div>
-                                <i class="fa-solid ${icon}" style="font-size: 1.5rem; color: ${color}; margin-bottom: 8px;"></i>
+                                <div style="width: 32px; height: 32px; border-radius: var(--radius-sm); background: var(--card-bg); border: 1px solid var(--border-light); display: flex; align-items: center; justify-content: center; margin: 0 auto 8px;">
+                                    <i class="fa-solid ${icon}" style="font-size: 1.1rem; color: ${color};"></i>
+                                </div>
                                 <div style="font-size: 0.9rem; font-weight: 700; color: var(--text-main);">${day.max_t}°</div>
                                 <div style="font-size: 0.75rem; color: var(--text-muted);">${day.precip > 0 ? `<i class="fa-solid fa-droplet" style="color:#3b82f6;"></i> ${day.precip}mm` : '0mm'}</div>
                             </div>`;
                         }).join('')}
                         </div>
                         
-                        <h4 style="margin: 0 0 12px 0; color: var(--text-main); font-size: 0.95rem;"><i class="fa-solid fa-chart-line"></i> ${i18n[currentLang]['trend_9month']}</h4>
-                        <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--glass-border); border-radius: 16px; padding: 16px; height: 260px; position: relative;">
+                        <h4 style="margin: 0 0 12px 0; color: var(--text-main); font-size: 0.95rem; display: flex; align-items: center; gap: 8px;">
+                            <div style="width: 28px; height: 28px; border-radius: var(--radius-sm); background: rgba(16,185,129,0.1); display: flex; align-items: center; justify-content: center; color: #10b981;">
+                                <i class="fa-solid fa-chart-line"></i>
+                            </div>
+                            ${i18n[currentLang]['trend_9month']}
+                        </h4>
+                        <div style="background: var(--card-bg); border: 1px solid var(--glass-border); border-radius: var(--radius-lg); padding: var(--space-lg); height: 260px; position: relative; box-shadow: var(--shadow-card);">
                             <canvas id="diag-chart"></canvas>
                         </div>
 
-                        <h4 style="margin: 24px 0 12px 0; color: var(--text-main); font-size: 0.95rem;"><i class="fa-solid fa-clipboard-list"></i> ${i18n[currentLang]['emergency_protocols']}</h4>
-<div style="background: var(--glass-bg); border-radius: 12px; padding: 16px; border: 1px solid var(--glass-border); box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+                        <h4 style="margin: 24px 0 12px 0; color: var(--text-main); font-size: 0.95rem; display: flex; align-items: center; gap: 8px;">
+                            <div style="width: 28px; height: 28px; border-radius: var(--radius-sm); background: rgba(239,68,68,0.1); display: flex; align-items: center; justify-content: center; color: #ef4444;">
+                                <i class="fa-solid fa-clipboard-list"></i>
+                            </div>
+                            ${i18n[currentLang]['emergency_protocols']}
+                        </h4>
+                        <div style="background: var(--card-bg); border-radius: var(--radius-lg); padding: var(--space-lg); border: 1px solid var(--glass-border); box-shadow: var(--shadow-card);">
                             <ul style="margin: 0; padding-left: 20px; color: var(--text-main); line-height: 1.6; font-size: 0.9rem;">
                                 ${(data.remediation_protocols || data.protocols || []).map(p => {
                                     let translatedP = p;
@@ -3289,7 +3435,7 @@ multiCropModels.forEach((model, mIdx) => {
             const fireScannerUi = document.getElementById('fire-scanner-ui');
             if(fireScannerUi) fireScannerUi.style.display = 'none';
             const instantPlaceName = getKarnatakaPlaceName(lat, lon);
-            const searchInput = document.getElementById('search-input');
+            const searchInput = document.getElementById('location-search');
             if (searchInput) searchInput.value = instantPlaceName;
             
             fireFeed.innerHTML = `
@@ -3304,7 +3450,7 @@ multiCropModels.forEach((model, mIdx) => {
                         </div>
                         <span style="font-size:0.68rem;background:rgba(239,68,68,0.12);color:#ef4444;border:1px solid rgba(239,68,68,0.3);padding:2px 8px;border-radius:12px;font-weight:700;">Fire Engine</span>
                     </div>
-                    <div class="skeleton" style="padding: 16px; background: rgba(0,0,0,0.2); border-radius: 12px; border: 1px solid var(--border-light);">
+                    <div class="skeleton" style="padding: var(--space-lg); background: var(--card-bg); border-radius: var(--radius-lg); border: 1px solid var(--glass-border); box-shadow: var(--shadow-card);">
                         <div class="skel-line" style="width: 50%; margin-bottom: 12px;"></div>
                         <div class="skel-box" style="height: 90px; margin-bottom: 12px;"></div>
                         <div class="skel-box" style="height: 120px;"></div>
@@ -3427,12 +3573,12 @@ multiCropModels.forEach((model, mIdx) => {
                         </div>
                         
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px;">
-                            <div class="metric-card" style="border-radius: 12px; padding: 14px; border: 1px solid ${data.fwi > 50 ? 'rgba(239, 68, 68, 0.3)' : 'var(--glass-border)'};">
+                            <div class="metric-card" style="background: var(--card-bg); border-radius: var(--radius-lg); padding: var(--space-lg); border: 1px solid ${data.fwi > 50 ? 'rgba(239, 68, 68, 0.3)' : 'var(--glass-border)'}; box-shadow: var(--shadow-card);">
                                 <div style="font-size: 0.68rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">${i18n[currentLang]['fwi_title']}</div>
                                 <div style="font-size: 1.8rem; font-weight: 800; color: ${data.fwi > 50 ? '#ef4444' : '#f59e0b'}; margin: 6px 0;">${data.fwi}</div>
                                 <div style="font-size: 0.68rem; color: var(--text-muted);">${i18n[currentLang]['fwi_score']}</div>
                             </div>
-                            <div class="metric-card" style="border-radius: 12px; padding: 14px;">
+                            <div class="metric-card" style="background: var(--card-bg); border-radius: var(--radius-lg); padding: var(--space-lg); border: 1px solid var(--glass-border); box-shadow: var(--shadow-card);">
                                 <div style="font-size: 0.68rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">${i18n[currentLang]['wind_spread_axis']}</div>
                                 <div style="font-size: 1.8rem; font-weight: 800; color: #ef4444; margin: 6px 0;">${data.burn_radius_m}m</div>
                                 <div style="font-size: 0.68rem; color: var(--text-muted);">${i18n[currentLang]['downwind_ellipse']}</div>
@@ -3440,44 +3586,53 @@ multiCropModels.forEach((model, mIdx) => {
                         </div>
                         
                         <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 16px;">
-                            <div style="background: var(--glass-bg); border-radius: 10px; padding: 10px; border: 1px solid var(--glass-border); text-align: center;">
-                                <i class="fa-solid fa-temperature-full" style="color: #ef4444; font-size: 1rem; margin-bottom: 2px;"></i>
+                            <div style="background: var(--bg-filter); border-radius: var(--radius-md); padding: var(--space-md); border: 1px solid var(--border-light); text-align: center;">
+                                <div style="width: 28px; height: 28px; border-radius: var(--radius-sm); background: rgba(239,68,68,0.1); display: flex; align-items: center; justify-content: center; margin: 0 auto 6px;">
+                                    <i class="fa-solid fa-temperature-full" style="color: #ef4444; font-size: 1rem;"></i>
+                                </div>
                                 <div style="font-size: 1rem; font-weight: 800; color: var(--text-main);">${data.temp}°C</div>
                                 <div style="font-size: 0.65rem; color: var(--text-muted);">Temp</div>
                             </div>
-                            <div style="background: var(--glass-bg); border-radius: 10px; padding: 10px; border: 1px solid var(--glass-border); text-align: center;">
-                                <i class="fa-solid fa-droplet" style="color: #3b82f6; font-size: 1rem; margin-bottom: 2px;"></i>
+                            <div style="background: var(--bg-filter); border-radius: var(--radius-md); padding: var(--space-md); border: 1px solid var(--border-light); text-align: center;">
+                                <div style="width: 28px; height: 28px; border-radius: var(--radius-sm); background: rgba(59,130,246,0.1); display: flex; align-items: center; justify-content: center; margin: 0 auto 6px;">
+                                    <i class="fa-solid fa-droplet" style="color: #3b82f6; font-size: 1rem;"></i>
+                                </div>
                                 <div style="font-size: 1rem; font-weight: 800; color: var(--text-main);">${data.humidity}%</div>
                                 <div style="font-size: 0.65rem; color: var(--text-muted);">Humidity</div>
                             </div>
-                            <div style="background: var(--glass-bg); border-radius: 10px; padding: 10px; border: 1px solid var(--glass-border); text-align: center;">
-                                <i class="fa-solid fa-wind" style="color: #38bdf8; font-size: 1rem; margin-bottom: 2px;"></i>
+                            <div style="background: var(--bg-filter); border-radius: var(--radius-md); padding: var(--space-md); border: 1px solid var(--border-light); text-align: center;">
+                                <div style="width: 28px; height: 28px; border-radius: var(--radius-sm); background: rgba(56,189,248,0.1); display: flex; align-items: center; justify-content: center; margin: 0 auto 6px;">
+                                    <i class="fa-solid fa-wind" style="color: #38bdf8; font-size: 1rem;"></i>
+                                </div>
                                 <div style="font-size: 1rem; font-weight: 800; color: var(--text-main);">${data.wind_speed} <span style="font-size:0.65rem;">km/h</span></div>
                                 <div style="font-size: 0.65rem; color: #38bdf8; font-weight: 700;">${i18n[currentLang]['vector_label']}: ${currentLang==='kn' ? (knDirections[windDirStr]||windDirStr) : windDirStr}</div>
                             </div>
                         </div>
 
                         <!-- 1. Nearest Forest Range Office (KFD) -->
-                        <div style="background: linear-gradient(135deg, rgba(239,68,68,0.06), rgba(245,158,11,0.04)); border-radius: 12px; padding: 14px; border: 1px solid rgba(239,68,68,0.25); margin-bottom: 12px;">
-                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
+                        <div style="background: var(--card-bg); border-radius: var(--radius-lg); padding: var(--space-lg); border: 1px solid var(--glass-border); box-shadow: var(--shadow-card); margin-bottom: 16px;">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px;">
                                 <span style="font-size: 0.78rem; font-weight: 800; color: var(--accent-red); display:flex; align-items:center; gap:6px;">
-                                    <i class="fa-solid fa-tower-broadcast"></i> ${i18n[currentLang]['nearest_kfd']}
+                                    <div style="width: 28px; height: 28px; border-radius: var(--radius-sm); background: rgba(239,68,68,0.1); display: flex; align-items: center; justify-content: center; color: var(--accent-red);">
+                                        <i class="fa-solid fa-tower-broadcast"></i>
+                                    </div>
+                                    ${i18n[currentLang]['nearest_kfd']}
                                 </span>
                                 <span style="font-size: 0.64rem; background: rgba(239,68,68,0.14); color:var(--accent-red); padding: 2px 8px; border-radius: 12px; font-weight: 700; border: 1px solid rgba(239,68,68,0.22);">${i18n[currentLang]['active_beat']}</span>
                             </div>
                             <div style="font-size: 0.92rem; font-weight: 800; color: var(--text-main);">${nearestKfd.name}</div>
                             <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 1px; font-weight: 600;">${nearestKfd.division} • VHF ${nearestKfd.vhf}</div>
-                            <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px;">
-                                <div style="background:var(--bg-filter); padding: 7px 9px; border-radius: 7px; border:1px solid var(--border-light);">
+                            <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px;">
+                                <div style="background:var(--bg-filter); padding: var(--space-md); border-radius: var(--radius-md); border:1px solid var(--border-light);">
                                     <div style="font-size: 0.58rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">${i18n[currentLang]['direct_dist']}</div>
-                                    <div style="font-size: 0.88rem; font-weight: 800; color: var(--text-main); margin-top: 1px;">${nearestKfd.distKm} km</div>
+                                    <div style="font-size: 0.88rem; font-weight: 800; color: var(--text-main); margin-top: 2px;">${nearestKfd.distKm} km</div>
                                 </div>
-                                <div style="background:var(--bg-filter); padding: 7px 9px; border-radius: 7px; border:1px solid var(--border-light);">
+                                <div style="background:var(--bg-filter); padding: var(--space-md); border-radius: var(--radius-md); border:1px solid var(--border-light);">
                                     <div style="font-size: 0.58rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">${i18n[currentLang]['est_dispatch']}</div>
-                                    <div style="font-size: 0.88rem; font-weight: 800; color: #10b981; margin-top: 1px;">~${estDispatchMins} mins</div>
+                                    <div style="font-size: 0.88rem; font-weight: 800; color: #10b981; margin-top: 2px;">~${estDispatchMins} mins</div>
                                 </div>
                             </div>
-                            <div style="margin-top: 10px; display:flex; gap:8px;">
+                            <div style="margin-top: 12px; display:flex; gap:8px;">
                                 <a href="tel:${nearestKfd.phone.replace(/[^\d+]/g,'')}" style="flex:1; text-decoration:none; background: linear-gradient(135deg, #ef4444, #dc2626); color:#fff; text-align:center; padding: 7px 10px; border-radius: 8px; font-size: 0.74rem; font-weight: 700; display:flex; align-items:center; justify-content:center; gap:5px; box-shadow:0 2px 8px rgba(239,68,68,0.35);">
                                     <i class="fa-solid fa-phone-volume"></i> ${i18n[currentLang]['call_rfo']} (${nearestKfd.phone})
                                 </a>
@@ -3488,26 +3643,29 @@ multiCropModels.forEach((model, mIdx) => {
                         </div>
 
                         <!-- 2. Nearest Fire & Emergency Services Station (KSFES) -->
-                        <div style="background: linear-gradient(135deg, rgba(239,68,68,0.06), rgba(249,115,22,0.04)); border-radius: 12px; padding: 14px; border: 1px solid rgba(249,115,22,0.25); margin-bottom: 16px;">
-                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
+                        <div style="background: var(--card-bg); border-radius: var(--radius-lg); padding: var(--space-lg); border: 1px solid var(--glass-border); box-shadow: var(--shadow-card); margin-bottom: 16px;">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px;">
                                 <span style="font-size: 0.78rem; font-weight: 800; color: var(--accent-amber); display:flex; align-items:center; gap:6px;">
-                                    <i class="fa-solid fa-fire-extinguisher"></i> ${i18n[currentLang]['nearest_ksfes']}
+                                    <div style="width: 28px; height: 28px; border-radius: var(--radius-sm); background: rgba(249,115,22,0.1); display: flex; align-items: center; justify-content: center; color: var(--accent-amber);">
+                                        <i class="fa-solid fa-fire-extinguisher"></i>
+                                    </div>
+                                    ${i18n[currentLang]['nearest_ksfes']}
                                 </span>
                                 <span style="font-size: 0.64rem; background: rgba(249,115,22,0.14); color:var(--accent-amber); padding: 2px 8px; border-radius: 12px; font-weight: 700; border: 1px solid rgba(249,115,22,0.22);">KSFES Unit</span>
                             </div>
                             <div style="font-size: 0.92rem; font-weight: 800; color: var(--text-main);">${nearestFireStation.name}</div>
                             <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 1px; font-weight: 600;">${nearestFireStation.district} • ${nearestFireStation.tender}</div>
-                            <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px;">
-                                <div style="background:var(--bg-filter); padding: 7px 9px; border-radius: 7px; border:1px solid var(--border-light);">
+                            <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px;">
+                                <div style="background:var(--bg-filter); padding: var(--space-md); border-radius: var(--radius-md); border:1px solid var(--border-light);">
                                     <div style="font-size: 0.58rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">${i18n[currentLang]['direct_dist']}</div>
-                                    <div style="font-size: 0.88rem; font-weight: 800; color: var(--text-main); margin-top: 1px;">${nearestFireStation.distKm} km</div>
+                                    <div style="font-size: 0.88rem; font-weight: 800; color: var(--text-main); margin-top: 2px;">${nearestFireStation.distKm} km</div>
                                 </div>
-                                <div style="background:var(--bg-filter); padding: 7px 9px; border-radius: 7px; border:1px solid var(--border-light);">
+                                <div style="background:var(--bg-filter); padding: var(--space-md); border-radius: var(--radius-md); border:1px solid var(--border-light);">
                                     <div style="font-size: 0.58rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">${i18n[currentLang]['est_dispatch']}</div>
-                                    <div style="font-size: 0.88rem; font-weight: 800; color: #f59e0b; margin-top: 1px;">~${estFireMins} mins</div>
+                                    <div style="font-size: 0.88rem; font-weight: 800; color: #f59e0b; margin-top: 2px;">~${estFireMins} mins</div>
                                 </div>
                             </div>
-                            <div style="margin-top: 10px; display:flex; gap:8px;">
+                            <div style="margin-top: 12px; display:flex; gap:8px;">
                                 <a href="tel:${nearestFireStation.phone.replace(/[^\d+]/g,'')}" style="flex:1; text-decoration:none; background: linear-gradient(135deg, #ea580c, #c2410c); color:#fff; text-align:center; padding: 7px 10px; border-radius: 8px; font-size: 0.74rem; font-weight: 700; display:flex; align-items:center; justify-content:center; gap:5px; box-shadow:0 2px 8px rgba(234,88,12,0.35);">
                                     <i class="fa-solid fa-phone-volume"></i> ${i18n[currentLang]['call_fire']} (${nearestFireStation.phone})
                                 </a>
@@ -3517,8 +3675,13 @@ multiCropModels.forEach((model, mIdx) => {
                             </div>
                         </div>
 
-                        <h4 style="margin: 16px 0 10px 0; color: var(--text-main); font-size: 0.88rem;"><i class="fa-solid fa-shield-halved"></i> ${i18n[currentLang]['containment_protocols']}</h4>
-<div style="background: var(--glass-bg); border-radius: 12px; padding: 14px; border: 1px solid var(--glass-border); box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+                        <h4 style="margin: 16px 0 10px 0; color: var(--text-main); font-size: 0.88rem; display: flex; align-items: center; gap: 8px;">
+                            <div style="width: 28px; height: 28px; border-radius: var(--radius-sm); background: rgba(16,185,129,0.1); display: flex; align-items: center; justify-content: center; color: #10b981;">
+                                <i class="fa-solid fa-shield-halved"></i>
+                            </div>
+                            ${i18n[currentLang]['containment_protocols']}
+                        </h4>
+                        <div style="background: var(--card-bg); border-radius: var(--radius-lg); padding: var(--space-lg); border: 1px solid var(--glass-border); box-shadow: var(--shadow-card);">
                             <ul style="margin: 0; padding-left: 18px; color: var(--text-main); line-height: 1.55; font-size: 0.82rem;">
                                 ${(data.protocols || []).map(p => {
                                     let translated = p;
@@ -3611,7 +3774,7 @@ multiCropModels.forEach((model, mIdx) => {
             clearFireMarkers();
             const pestContent = document.getElementById('pest-content');
             const instantPlaceName = getKarnatakaPlaceName(lat, lon);
-            const searchInput = document.getElementById('search-input');
+            const searchInput = document.getElementById('location-search');
             if (searchInput) searchInput.value = instantPlaceName;
 
             pestContent.innerHTML = `
@@ -3626,7 +3789,7 @@ multiCropModels.forEach((model, mIdx) => {
                         </div>
                         <span style="font-size:0.68rem;background:rgba(245,158,11,0.12);color:#f59e0b;border:1px solid rgba(245,158,11,0.3);padding:2px 8px;border-radius:12px;font-weight:700;">Pest Scan</span>
                     </div>
-                    <div style="padding:16px;background:rgba(0,0,0,0.15);border-radius:12px;">
+                    <div style="padding:var(--space-lg);background:var(--card-bg);border-radius:var(--radius-lg);">
                         <div class="skel-line" style="width:55%;margin-bottom:12px;"></div>
                         <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px;">
                             ${[...Array(4)].map(()=>`<div class="skel-box" style="height:64px;"></div>`).join('')}
@@ -3675,7 +3838,7 @@ multiCropModels.forEach((model, mIdx) => {
                 const weatherStrip = `
                     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px;">
                         ${metrics.map(m=>`
-                        <div style="background:${m.bg};border:1px solid ${m.bc};border-radius:10px;padding:10px 6px;text-align:center;">
+                        <div style="background:${m.bg};border:1px solid ${m.bc};border-radius:var(--radius-md);padding:var(--space-md);text-align:center;">
                             <div style="font-size:0.58rem;font-weight:700;text-transform:uppercase;color:var(--text-muted);letter-spacing:0.05em;">${m.label}</div>
                             <div style="font-size:1.25rem;font-weight:800;color:${m.vc};margin:4px 0 2px;">${m.val}</div>
                             <div style="font-size:0.62rem;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${m.sub}</div>
@@ -3741,25 +3904,25 @@ multiCropModels.forEach((model, mIdx) => {
 
                             <!-- Category Filter Pills -->
                             <div style="display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;" class="custom-scroll">
-                                <button onclick="filterPestCategory('all', this)" class="pest-cat-pill" style="background:var(--primary);color:#fff;border:1px solid var(--primary);padding:4px 10px;border-radius:14px;font-size:0.65rem;font-weight:700;cursor:pointer;white-space:nowrap;font-family:inherit;">
+                                <button onclick="filterPestCategory('all', this)" class="pest-cat-pill" style="background:var(--primary);color:#fff;border:1px solid var(--primary);padding:4px 10px;border-radius:var(--radius-md);font-size:0.65rem;font-weight:700;cursor:pointer;white-space:nowrap;font-family:inherit;">
                                     ${catLabels.all} (${count})
                                 </button>
-                                <button onclick="filterPestCategory('plantation_spices', this)" class="pest-cat-pill" style="background:rgba(255,255,255,0.06);color:var(--text-muted);border:1px solid var(--glass-border);padding:4px 10px;border-radius:14px;font-size:0.65rem;font-weight:700;cursor:pointer;white-space:nowrap;font-family:inherit;">
+                                <button onclick="filterPestCategory('plantation_spices', this)" class="pest-cat-pill" style="background:rgba(255,255,255,0.06);color:var(--text-muted);border:1px solid var(--glass-border);padding:4px 10px;border-radius:var(--radius-md);font-size:0.65rem;font-weight:700;cursor:pointer;white-space:nowrap;font-family:inherit;">
                                     🌴 ${catLabels.plantation_spices}
                                 </button>
-                                <button onclick="filterPestCategory('cereals_millets', this)" class="pest-cat-pill" style="background:rgba(255,255,255,0.06);color:var(--text-muted);border:1px solid var(--glass-border);padding:4px 10px;border-radius:14px;font-size:0.65rem;font-weight:700;cursor:pointer;white-space:nowrap;font-family:inherit;">
+                                <button onclick="filterPestCategory('cereals_millets', this)" class="pest-cat-pill" style="background:rgba(255,255,255,0.06);color:var(--text-muted);border:1px solid var(--glass-border);padding:4px 10px;border-radius:var(--radius-md);font-size:0.65rem;font-weight:700;cursor:pointer;white-space:nowrap;font-family:inherit;">
                                     🌾 ${catLabels.cereals_millets}
                                 </button>
-                                <button onclick="filterPestCategory('fruits_horticulture', this)" class="pest-cat-pill" style="background:rgba(255,255,255,0.06);color:var(--text-muted);border:1px solid var(--glass-border);padding:4px 10px;border-radius:14px;font-size:0.65rem;font-weight:700;cursor:pointer;white-space:nowrap;font-family:inherit;">
+                                <button onclick="filterPestCategory('fruits_horticulture', this)" class="pest-cat-pill" style="background:rgba(255,255,255,0.06);color:var(--text-muted);border:1px solid var(--glass-border);padding:4px 10px;border-radius:var(--radius-md);font-size:0.65rem;font-weight:700;cursor:pointer;white-space:nowrap;font-family:inherit;">
                                     🍎 ${catLabels.fruits_horticulture}
                                 </button>
-                                <button onclick="filterPestCategory('vegetables', this)" class="pest-cat-pill" style="background:rgba(255,255,255,0.06);color:var(--text-muted);border:1px solid var(--glass-border);padding:4px 10px;border-radius:14px;font-size:0.65rem;font-weight:700;cursor:pointer;white-space:nowrap;font-family:inherit;">
+                                <button onclick="filterPestCategory('vegetables', this)" class="pest-cat-pill" style="background:rgba(255,255,255,0.06);color:var(--text-muted);border:1px solid var(--glass-border);padding:4px 10px;border-radius:var(--radius-md);font-size:0.65rem;font-weight:700;cursor:pointer;white-space:nowrap;font-family:inherit;">
                                     🥦 ${catLabels.vegetables}
                                 </button>
-                                <button onclick="filterPestCategory('pulses_oilseeds', this)" class="pest-cat-pill" style="background:rgba(255,255,255,0.06);color:var(--text-muted);border:1px solid var(--glass-border);padding:4px 10px;border-radius:14px;font-size:0.65rem;font-weight:700;cursor:pointer;white-space:nowrap;font-family:inherit;">
+                                <button onclick="filterPestCategory('pulses_oilseeds', this)" class="pest-cat-pill" style="background:rgba(255,255,255,0.06);color:var(--text-muted);border:1px solid var(--glass-border);padding:4px 10px;border-radius:var(--radius-md);font-size:0.65rem;font-weight:700;cursor:pointer;white-space:nowrap;font-family:inherit;">
                                     🌱 ${catLabels.pulses_oilseeds}
                                 </button>
-                                <button onclick="filterPestCategory('cash_crops', this)" class="pest-cat-pill" style="background:rgba(255,255,255,0.06);color:var(--text-muted);border:1px solid var(--glass-border);padding:4px 10px;border-radius:14px;font-size:0.65rem;font-weight:700;cursor:pointer;white-space:nowrap;font-family:inherit;">
+                                <button onclick="filterPestCategory('cash_crops', this)" class="pest-cat-pill" style="background:rgba(255,255,255,0.06);color:var(--text-muted);border:1px solid var(--glass-border);padding:4px 10px;border-radius:var(--radius-md);font-size:0.65rem;font-weight:700;cursor:pointer;white-space:nowrap;font-family:inherit;">
                                     🚜 ${catLabels.cash_crops}
                                 </button>
                             </div>
@@ -3789,7 +3952,7 @@ multiCropModels.forEach((model, mIdx) => {
                         const safeVoiceText = voiceText.replace(/'/g, "\\'").replace(/"/g, "&quot;");
 
                         riskHtml += `
-                        <div class="pest-risk-item" data-category="${category}" style="background:var(--card-bg);border:1px solid var(--glass-border);border-radius:14px;padding:14px;margin-bottom:12px;backdrop-filter:blur(16px);box-shadow:0 8px 24px rgba(0,0,0,0.08);">
+                        <div class="pest-risk-item" data-category="${category}" style="background:var(--card-bg);border:1px solid var(--glass-border);border-radius:var(--radius-md);padding:14px;margin-bottom:12px;backdrop-filter:blur(16px);box-shadow:0 8px 24px rgba(0,0,0,0.08);">
                             <!-- Header row -->
                             <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:10px;">
                                 <div style="display:flex;align-items:center;gap:10px;">
@@ -3881,7 +4044,7 @@ multiCropModels.forEach((model, mIdx) => {
                         </h4>
 
                         <!-- 1. Nearest Agriculture Office & Plant Health Clinic (KSDA) -->
-                        <div style="background: linear-gradient(135deg, rgba(16,185,129,0.06), rgba(59,130,246,0.04)); border-radius: 12px; padding: 14px; border: 1px solid rgba(16,185,129,0.25); margin-bottom: 12px;">
+                        <div style="background: var(--card-bg); border-radius: var(--radius-lg); padding: var(--space-lg); border: 1px solid var(--glass-border); margin-bottom: 12px;">
                             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
                                 <span style="font-size: 0.78rem; font-weight: 800; color: #10b981; display:flex; align-items:center; gap:6px;">
                                     <i class="fa-solid fa-building-columns"></i> ${i18n[currentLang]['nearest_plant_office']}
@@ -3891,11 +4054,11 @@ multiCropModels.forEach((model, mIdx) => {
                             <div style="font-size: 0.92rem; font-weight: 800; color: var(--text-main);">${nearestOffice.name}</div>
                             <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 1px; font-weight: 600;">${nearestOffice.division} • ${nearestOffice.facility}</div>
                             <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px;">
-                                <div style="background:var(--bg-filter); padding: 7px 9px; border-radius: 7px; border:1px solid var(--border-light);">
+                                <div style="background:var(--bg-filter); padding: var(--space-md); border-radius: var(--radius-md); border:1px solid var(--border-light);">
                                     <div style="font-size: 0.58rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">${i18n[currentLang]['direct_dist']}</div>
                                     <div style="font-size: 0.88rem; font-weight: 800; color: var(--text-main); margin-top: 1px;">${nearestOffice.distance_km} km</div>
                                 </div>
-                                <div style="background:var(--bg-filter); padding: 7px 9px; border-radius: 7px; border:1px solid var(--border-light);">
+                                <div style="background:var(--bg-filter); padding: var(--space-md); border-radius: var(--radius-md); border:1px solid var(--border-light);">
                                     <div style="font-size: 0.58rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">${i18n[currentLang]['est_reach']}</div>
                                     <div style="font-size: 0.88rem; font-weight: 800; color: #10b981; margin-top: 1px;">~${estOfficeMins} mins</div>
                                 </div>
@@ -3911,7 +4074,7 @@ multiCropModels.forEach((model, mIdx) => {
                         </div>
 
                         <!-- 2. Nearest Certified Agri-Input & Bio-Pesticide Depot (KSSC) -->
-                        <div style="background: linear-gradient(135deg, rgba(245,158,11,0.06), rgba(16,185,129,0.04)); border-radius: 12px; padding: 14px; border: 1px solid rgba(245,158,11,0.25); margin-bottom: 16px;">
+                        <div style="background: var(--card-bg); border-radius: var(--radius-lg); padding: var(--space-lg); border: 1px solid var(--glass-border); margin-bottom: 16px;">
                             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
                                 <span style="font-size: 0.78rem; font-weight: 800; color: var(--accent-amber); display:flex; align-items:center; gap:6px;">
                                     <i class="fa-solid fa-store"></i> ${i18n[currentLang]['nearest_kssc_store']}
@@ -3921,11 +4084,11 @@ multiCropModels.forEach((model, mIdx) => {
                             <div style="font-size: 0.92rem; font-weight: 800; color: var(--text-main);">${primaryShop.name}</div>
                             <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 1px; font-weight: 600;">${primaryShop.district} District • ${primaryShop.address}</div>
                             <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px;">
-                                <div style="background:var(--bg-filter); padding: 7px 9px; border-radius: 7px; border:1px solid var(--border-light);">
+                                <div style="background:var(--bg-filter); padding: var(--space-md); border-radius: var(--radius-md); border:1px solid var(--border-light);">
                                     <div style="font-size: 0.58rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">${i18n[currentLang]['direct_dist']}</div>
                                     <div style="font-size: 0.88rem; font-weight: 800; color: var(--text-main); margin-top: 1px;">${primaryShop.distance_km} km</div>
                                 </div>
-                                <div style="background:var(--bg-filter); padding: 7px 9px; border-radius: 7px; border:1px solid var(--border-light);">
+                                <div style="background:var(--bg-filter); padding: var(--space-md); border-radius: var(--radius-md); border:1px solid var(--border-light);">
                                     <div style="font-size: 0.58rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">${i18n[currentLang]['est_travel']}</div>
                                     <div style="font-size: 0.88rem; font-weight: 800; color: #f59e0b; margin-top: 1px;">~${estShopMins} mins</div>
                                 </div>
@@ -3947,7 +4110,7 @@ multiCropModels.forEach((model, mIdx) => {
                                 <i class="fa-solid fa-list-check"></i> ${currentLang === 'kn' ? 'ಇತರ ಅಧಿಕೃತ ವಿತರಕರು' : 'Other Authorized Input Distributors'}
                             </div>
                             ${data.nearest_shops.slice(1).map(shop => `
-                            <div style="background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:10px; padding:10px 12px; margin-bottom:7px; display:flex; justify-content:space-between; align-items:center; gap:10px;">
+                            <div style="background:var(--card-bg); border:1px solid var(--glass-border); border-radius:var(--radius-md); padding:var(--space-md); margin-bottom:7px; display:flex; justify-content:space-between; align-items:center; gap:10px;">
                                 <div style="min-width:0; flex:1;">
                                     <div style="font-weight:700; font-size:0.82rem; color:var(--text-main); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${shop.name}</div>
                                     <div style="font-size:0.7rem; color:var(--text-muted); margin-top:2px;">
@@ -3983,12 +4146,12 @@ multiCropModels.forEach((model, mIdx) => {
 
                 const dualCards = `
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px;">
-                        <div style="background: var(--glass-bg); border-radius: 12px; padding: 16px; border: 1px solid var(--glass-border); box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+                        <div style="background: var(--card-bg); border-radius: var(--radius-lg); padding: var(--space-lg); border: 1px solid var(--glass-border); box-shadow: var(--shadow-card);">
                             <h4 style="margin: 0 0 8px 0; font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;"><i class="fa-solid fa-store" style="color: var(--primary);"></i> ${i18n[currentLang]['nearest_agri_store']}</h4>
                             <div style="font-size: 0.95rem; font-weight: 700; color: var(--text-main); word-break: break-word; line-height: 1.35;">${primaryShop.name}</div>
                             <div style="font-size: 0.85rem; color: var(--primary); font-weight: 600; margin-top: 4px;">${primaryShop.distance_km}km ${currentLang==='kn' ? (knDirections[primaryShop.direction] || primaryShop.direction || '') : (primaryShop.direction || '')}</div>
                         </div>
-                        <div style="background: var(--glass-bg); border-radius: 12px; padding: 16px; border: 1px solid var(--glass-border); box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+                        <div style="background: var(--card-bg); border-radius: var(--radius-lg); padding: var(--space-lg); border: 1px solid var(--glass-border); box-shadow: var(--shadow-card);">
                             <h4 style="margin: 0 0 8px 0; font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;"><i class="fa-solid fa-shield-virus" style="color: ${threatColor};"></i> ${i18n[currentLang]['pest_threat_index']}</h4>
                             <div style="font-size: 1.1rem; font-weight: 700; color: ${threatColor};">${threatTitle}</div>
                             <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;">${threatSub}</div>
@@ -4097,8 +4260,10 @@ multiCropModels.forEach((model, mIdx) => {
             // Toggle star icons
             const agroStar = document.getElementById(`star-agro-${lat.toString().replace('.','')}`);
             const diagStar = document.getElementById(`star-diag-${lat.toString().replace('.','')}`);
+            const fireStar = document.getElementById(`star-fire-${lat.toString().replace('.','')}`);
             if(agroStar) agroStar.className = exists >= 0 ? "fa-regular fa-star" : "fa-solid fa-star";
             if(diagStar) diagStar.className = exists >= 0 ? "fa-regular fa-star" : "fa-solid fa-star";
+            if(fireStar) fireStar.className = exists >= 0 ? "fa-regular fa-star" : "fa-solid fa-star";
             
             renderSavedLocations();
         }
