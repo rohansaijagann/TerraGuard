@@ -617,14 +617,19 @@ body.dark-theme .ai-window-header{background:rgba(0,0,0,0.15)}
             }
         }
         #floating-ai-fab {
-            width: 52px; height: 52px; border-radius: 16px;
-            background: linear-gradient(135deg, #059669 0%, #0d9488 50%, #0284c7 100%);
-            border: 1.5px solid rgba(255,255,255,0.3);
-            color: #fff; cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.3rem;
-            box-shadow: 0 10px 28px rgba(16,185,129,0.5), 0 0 0 1px rgba(255,255,255,0.2) inset;
-            transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.25s ease;
+            width: 54px !important;
+            height: 54px !important;
+            border-radius: 50% !important;
+            background: linear-gradient(135deg, #059669 0%, #0d9488 50%, #0284c7 100%) !important;
+            border: 2px solid rgba(255,255,255,0.4) !important;
+            color: #fff !important;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.35rem;
+            box-shadow: 0 10px 28px rgba(16,185,129,0.5), 0 0 0 1px rgba(255,255,255,0.2) inset !important;
+            transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.25s ease !important;
             flex-shrink: 0;
         }
         #floating-ai-fab:hover {
@@ -5161,7 +5166,7 @@ multiCropModels.forEach((model, mIdx) => {
         }
         
                 // ── 🤖 Raitha Sahayaka AI Conversational Agronomist Engine ────
-        const CHAT_STORAGE_KEY = 'terraguard_ai_chat_v3';
+        const CHAT_STORAGE_KEY = 'terraguard_ai_chat_v5';
         let aiChatHistory = [];
         let currentFarmContext = {
             location_name: "Karnataka Farm",
@@ -5230,7 +5235,13 @@ multiCropModels.forEach((model, mIdx) => {
 
         function formatAiMarkdown(text) {
             if (!text) return "";
-            let str = text
+            let str = text;
+
+            // Strip any remaining or cached informal text emojis
+            str = str.replace(/[🔬⚠️🔍🧪🌿🏛️🌾💧🌲🌱💡📸✨🙏🐛🔥🚒⚡🌦️🌧️🚨🏪]/g, '');
+
+            // Escape basic HTML
+            str = str
                 .replace(/&/g, "&amp;")
                 .replace(/</g, "&lt;")
                 .replace(/>/g, "&gt;");
@@ -5245,7 +5256,6 @@ multiCropModels.forEach((model, mIdx) => {
                 const line = lines[i].trim();
                 if (line.startsWith('|') && line.endsWith('|')) {
                     const cells = line.slice(1, -1).split('|').map(c => c.trim());
-                    // Check separator line |--|--|
                     if (cells.every(c => /^[-:]+$/.test(c))) {
                         continue;
                     }
@@ -5275,18 +5285,27 @@ multiCropModels.forEach((model, mIdx) => {
             }
             str = newLines.join('\n');
 
-            // Bold & Italic
+            // Format bold section headers as styled UI badges with FontAwesome icons
+            str = str.replace(/\*\*(?:1\.|೧\.)\s*(Diagnosis.*?|ರೋಗ ನಿದಾನ.*?)\*\*/gi, '<div class="ai-section-badge"><i class="fa-solid fa-microscope" style="color:#10b981;"></i> <span>$1</span></div>');
+            str = str.replace(/\*\*(?:2\.|೨\.)\s*(Etiology.*?|ರೋಗ ಪ್ರೇರಕ.*?)\*\*/gi, '<div class="ai-section-badge"><i class="fa-solid fa-triangle-exclamation" style="color:#f59e0b;"></i> <span>$1</span></div>');
+            str = str.replace(/\*\*(?:3\.|೩\.)\s*(Clinical Diagnostic Symptoms.*?|ಪ್ರಮುಖ ರೋಗ ಲಕ್ಷಣಗಳು.*?)\*\*/gi, '<div class="ai-section-badge"><i class="fa-solid fa-magnifying-glass" style="color:#0ea5e9;"></i> <span>$1</span></div>');
+            str = str.replace(/\*\*(?:4\.|೪\.)\s*(Prescribed Chemical Treatment.*?|ಶಿಫಾರಸು ಮಾಡಿದ ರಾಸಾಯನಿಕ.*?)\*\*/gi, '<div class="ai-section-badge"><i class="fa-solid fa-flask" style="color:#8b5cf6;"></i> <span>$1</span></div>');
+            str = str.replace(/\*\*(?:5\.|೫\.)\s*(Biological & Organic.*?|ಸಾವಯವ & ಜೈವಿಕ.*?)\*\*/gi, '<div class="ai-section-badge"><i class="fa-solid fa-leaf" style="color:#10b981;"></i> <span>$1</span></div>');
+            str = str.replace(/\*\*(?:6\.|೬\.)\s*(Agricultural Extension.*?|ತಾಲ್ಲೂಕು ಕೃಷಿ ವಿಸ್ತರಣೆ.*?)\*\*/gi, '<div class="ai-section-badge"><i class="fa-solid fa-building-columns" style="color:#06b6d4;"></i> <span>$1</span></div>');
+            str = str.replace(/\*\*(Computer Vision.*?|ದೃಶ್ಯ ಸಂವೇದಕ.*?)\*\*/gi, '<div class="ai-telemetry-badge"><i class="fa-solid fa-camera" style="color:#10b981;"></i> <span>$1</span></div>');
+
+            // General bold & italic
             str = str.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
             str = str.replace(/\*(.*?)\*/g, '<em>$1</em>');
-            
+
             // Blockquote callouts
             str = str.replace(/^&gt;\s*(.*)$/gm, '<div style="border-left:3px solid var(--primary);background:var(--bg-filter);padding:4px 8px;border-radius:4px;margin:6px 0;font-size:0.75rem;color:var(--text-main);">$1</div>');
-            
+
             // Lists
             str = str.replace(/^\s*[-•]\s+(.*)$/gm, '<li style="margin-bottom:3px;">$1</li>');
             str = str.replace(/^\s*(\d+)\.\s+(.*)$/gm, '<li style="margin-bottom:3px;" value="$1">$2</li>');
             str = str.replace(/(<li.*<\/li>)/s, '<ul style="margin:6px 0;padding-left:18px;">$1</ul>');
-            
+
             // Line breaks
             str = str.replace(/\n\n/g, '<br><br>').replace(/\n/g, '<br>');
 
@@ -5399,7 +5418,7 @@ multiCropModels.forEach((model, mIdx) => {
                                             <div style="margin-bottom:6px;">${formattedHtml}</div>
                                             <div class="ai-msg-footer">
                                                 <div style="display:flex;align-items:center;gap:4px;">
-                                                    <span><i class="fa-solid fa-brain" style="color:var(--primary);margin-right:3px;"></i>Raitha Sahayaka</span>
+                                                    <span><i class="fa-solid fa-leaf" style="color:var(--primary);margin-right:4px;"></i>Raitha Sahayaka</span>
                                                     <span class="ai-msg-time">${msg.time || ''}</span>
                                                 </div>
                                                 <div class="ai-msg-actions">
@@ -5512,7 +5531,7 @@ multiCropModels.forEach((model, mIdx) => {
                         ${followUpHtml}
                         <div class="ai-msg-footer">
                             <div style="display:flex;align-items:center;gap:4px;">
-                                <span><i class="fa-solid fa-brain" style="color:var(--primary);margin-right:3px;"></i>${data.source || 'Raitha Sahayaka AI'}</span>
+                                <span><i class="fa-solid fa-leaf" style="color:var(--primary);margin-right:4px;"></i>${data.source || 'Raitha Sahayaka'}</span>
                                 <span class="ai-msg-time">${botTime}</span>
                             </div>
                             <div class="ai-msg-actions">
@@ -5587,12 +5606,14 @@ multiCropModels.forEach((model, mIdx) => {
             if (chatMessagesContainer) {
                 chatMessagesContainer.innerHTML = `
                     <div style="display:flex; gap:9px; align-items:flex-start; max-width:92%;">
-                        <div style="width:28px; height:28px; border-radius:8px; background:linear-gradient(135deg, #10b981, #0ea5e9); display:flex; align-items:center; justify-content:center; color:#fff; font-size:0.8rem; flex-shrink:0; margin-top:2px;">
+                        <div class="ai-bot-avatar">
                             <i class="fa-solid fa-leaf"></i>
                         </div>
                         <div style="background:var(--card-bg); border:1px solid var(--glass-border); border-radius:12px 12px 12px 2px; padding:10px 12px; font-size:0.82rem; color:var(--text-main); line-height:1.55; box-shadow:0 4px 14px rgba(0,0,0,0.15);">
-                            <div style="font-weight:700; color:var(--primary); margin-bottom:4px;">${currentLang==='kn' ? 'ನಮಸ್ಕಾರ ರೈತ ಬಾಂಧವರೇ! 🙏' : 'Namaskara! 🙏'}</div>
-                            <div>${currentLang==='kn' ? 'ನಾನು <strong>ರೈತ ಸಹಾಯಕ (Raitha Sahayaka)</strong>. ನಿಮ್ಮ ಜಮೀನಿನ ಮಣ್ಣು, ಮಳೆ ಮತ್ತು ಅಂತರ್ಜಲಕ್ಕೆ ಅನುಗುಣವಾಗಿ ರಸಗೊಬ್ಬರ ಪ್ರಮಾಣ, ನೀರಿನ ನಿರ್ವಹಣೆ, ಬೆಳೆ ವಿನ್ಯಾಸ ಹಾಗೂ ಸರ್ಕಾರಿ ಸಬ್ಸಿಡಿಗಳ ಬಗ್ಗೆ ಯಾವುದೇ ಪ್ರಶ್ನೆ ಕೇಳಿ ಅಥವಾ ಎಲೆಯ ಫೋಟೋ ಅಪ್ಲೋಡ್ ಮಾಡಿ!' : 'I am <strong>Raitha Sahayaka</strong>, your AI Agronomist. Ask me anything about fertilizer schedules, drought crops, government subsidies, or upload a leaf photo for disease diagnosis!'}</div>
+                            <div style="font-weight:800; color:var(--text-main); font-size:0.86rem; margin-bottom:4px; display:flex; align-items:center; gap:6px;">
+                                <i class="fa-solid fa-leaf" style="color:var(--primary);"></i> <span>${currentLang==='kn' ? 'ರೈತ ಸಹಾಯಕ ಕೃಷಿ ಸಲಹಾ ಸೇವೆ' : 'Raitha Sahayaka Agronomic Intelligence'}</span>
+                            </div>
+                            <div style="font-size:0.75rem; color:var(--text-muted); line-height:1.45;">${currentLang==='kn' ? 'ನಿಮ್ಮ ಜಮೀನಿನ ಮಣ್ಣು, ಮಳೆ ಮತ್ತು ಅಂತರ್ಜಲಕ್ಕೆ ಅನುಗುಣವಾಗಿ ರಸಗೊಬ್ಬರ ಪ್ರಮಾಣ, ನೀರಿನ ನಿರ್ವಹಣೆ, ಬೆಳೆ ವಿನ್ಯಾಸ ಹಾಗೂ ಸರ್ಕಾರಿ ಸಬ್ಸಿಡಿಗಳ ಬಗ್ಗೆ ಯಾವುದೇ ಪ್ರಶ್ನೆ ಕೇಳಿ ಅಥವಾ ಎಲೆಯ ಫೋಟೋ ಅಪ್ಲೋಡ್ ಮಾಡಿ.' : 'Agricultural decision support grounded in Karnataka soil telemetry. Ask about crop pathology, precision NPK schedules, aquifer status, or upload a leaf photo for computer vision analysis.'}</div>
                         </div>
                     </div>
                 `;
