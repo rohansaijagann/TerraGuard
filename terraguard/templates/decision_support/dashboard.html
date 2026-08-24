@@ -316,10 +316,43 @@
             box-shadow: 0 0 14px rgba(239,68,68,0.9);
             animation: hotspotRadar 1.8s infinite;
         }
-        @keyframes hotspotRadar {
-            0% { box-shadow: 0 0 0 0 rgba(239,68,68,0.8); transform: scale(0.95); }
-            70% { box-shadow: 0 0 0 18px rgba(239,68,68,0); transform: scale(1.1); }
-            100% { box-shadow: 0 0 0 0 rgba(239,68,68,0); transform: scale(0.95); }
+        /* ══ AI CHAT STYLING & TYPING ANIMATIONS ══ */
+        .typing-dot {
+            width: 6px; height: 6px; border-radius: 50%;
+            background: var(--primary); display: inline-block;
+            animation: typingBounce 1.4s infinite ease-in-out both;
+        }
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes typingBounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+        .ai-mic-active {
+            background: #ef4444 !important;
+            color: #fff !important;
+            animation: micPulse 1.2s infinite;
+        }
+        @keyframes micPulse {
+            0% { box-shadow: 0 0 0 0 rgba(239,68,68,0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(239,68,68,0); }
+            100% { box-shadow: 0 0 0 0 rgba(239,68,68,0); }
+        }
+        .ai-chat-user-bubble {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: #fff; border-radius: 12px 12px 2px 12px;
+            padding: 9px 13px; font-size: 0.82rem; font-weight: 500;
+            max-width: 86%; align-self: flex-end; line-height: 1.45;
+            box-shadow: 0 4px 12px rgba(16,185,129,0.25);
+            word-break: break-word;
+        }
+        .ai-chat-bot-bubble {
+            background: var(--card-bg);
+            color: var(--text-main); border: 1px solid var(--glass-border);
+            border-radius: 12px 12px 12px 2px; padding: 11px 13px;
+            font-size: 0.82rem; line-height: 1.55; max-width: 92%;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+            word-break: break-word;
         }
 </style>
 
@@ -464,6 +497,64 @@
                     <div class="alert-box alert-info"><i class="fa-solid fa-circle-info"></i><span data-i18n="fire_prompt">Click a forest polygon on the map to run the Dual-Phase fire modeling and spread simulation.</span></div>
                 </div>
             </div>
+
+            <!-- 🤖 Raitha Sahayaka AI Conversational Agronomist -->
+            <div id="ai-feed" class="tab-content" style="display:none; flex-direction:column; height:100%; padding:0; overflow:hidden;">
+                <!-- AI Chat Header -->
+                <div style="padding:12px 14px; background:rgba(0,0,0,0.15); border-bottom:1px solid var(--glass-border); display:flex; align-items:center; justify-content:space-between; flex-shrink:0;">
+                    <div style="display:flex; align-items:center; gap:9px;">
+                        <div style="width:34px; height:34px; border-radius:10px; background:linear-gradient(135deg, #10b981, #0ea5e9); display:flex; align-items:center; justify-content:center; color:#fff; font-size:1.05rem; box-shadow:0 4px 12px rgba(16,185,129,0.35);">
+                            <i class="fa-solid fa-robot"></i>
+                        </div>
+                        <div>
+                            <div style="font-weight:800; font-size:0.88rem; color:var(--text-main); display:flex; align-items:center; gap:5px;">
+                                <span data-i18n="ai_name">ರೈತ ಸಹಾಯಕ AI</span>
+                                <span style="font-size:0.56rem; background:rgba(16,185,129,0.18); color:#10b981; border:1px solid rgba(16,185,129,0.3); padding:1px 6px; border-radius:8px; font-weight:800;">LIVE</span>
+                            </div>
+                            <div id="ai-farm-badge" style="font-size:0.64rem; color:var(--text-muted); margin-top:1px;">
+                                📍 <span id="ai-farm-loc-name">Karnataka Farm</span> • Live Agronomic Grounding
+                            </div>
+                        </div>
+                    </div>
+                    <button type="button" onclick="clearAiChat()" style="background:rgba(255,255,255,0.05); border:1px solid var(--glass-border); color:var(--text-muted); padding:4px 8px; border-radius:7px; cursor:pointer; font-size:0.66rem; font-weight:700; transition:0.2s;" title="Clear Chat">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                </div>
+
+                <!-- Chat Messages Scroll Area -->
+                <div id="ai-chat-messages" style="flex:1; overflow-y:auto; padding:14px; display:flex; flex-direction:column; gap:10px;">
+                    <!-- Initial Welcome Message from Raitha Sahayaka -->
+                    <div style="display:flex; gap:9px; align-items:flex-start; max-width:92%;">
+                        <div style="width:28px; height:28px; border-radius:8px; background:linear-gradient(135deg, #10b981, #0ea5e9); display:flex; align-items:center; justify-content:center; color:#fff; font-size:0.8rem; flex-shrink:0; margin-top:2px;">
+                            <i class="fa-solid fa-robot"></i>
+                        </div>
+                        <div style="background:var(--card-bg); border:1px solid var(--glass-border); border-radius:12px 12px 12px 2px; padding:10px 12px; font-size:0.82rem; color:var(--text-main); line-height:1.55; box-shadow:0 4px 14px rgba(0,0,0,0.15);">
+                            <div style="font-weight:700; color:var(--primary); margin-bottom:4px;" data-i18n="ai_greeting_title">ನಮಸ್ಕಾರ ರೈತ ಬಾಂಧವರೇ! 🙏</div>
+                            <div id="ai-greeting-body">ನಾನು <strong>ರೈತ ಸಹಾಯಕ (Raitha Sahayaka)</strong>. ನಿಮ್ಮ ಜಮೀನಿನ ಮಣ್ಣು, ಮಳೆ ಮತ್ತು ಅಂತರ್ಜಲಕ್ಕೆ ಅನುಗುಣವಾಗಿ ರಸಗೊಬ್ಬರ ಪ್ರಮಾಣ, ನೀರಿನ ನಿರ್ವಹಣೆ, ಬೆಳೆ ವಿನ್ಯಾಸ ಹಾಗೂ ಸರ್ಕಾರಿ ಸಬ್ಸಿಡಿಗಳ ಬಗ್ಗೆ ಯಾವುದೇ ಪ್ರಶ್ನೆ ಕೇಳಿ!</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Prompt Chips -->
+                <div style="padding:6px 12px; background:rgba(0,0,0,0.08); border-top:1px solid var(--border-light); display:flex; gap:5px; overflow-x:auto; white-space:nowrap; flex-shrink:0;">
+                    <button type="button" onclick="handleAiQuickPrompt(this)" data-q="ಎಕರೆಗೆ ಎಷ್ಟು ಗೊಬ್ಬರ (NPK) ಹಾಕಬೇಕು?" style="padding:4px 9px; border-radius:12px; background:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.25); color:var(--primary); font-size:0.66rem; font-weight:700; cursor:pointer; font-family:inherit; flex-shrink:0;">🌾 ರಸಗೊಬ್ಬರ ಲೆಕ್ಕ</button>
+                    <button type="button" onclick="handleAiQuickPrompt(this)" data-q="ಕಡಿಮೆ ನೀರಿಗೆ ಯಾವ ಬೆಳೆಗಳು ಸೂಕ್ತ?" style="padding:4px 9px; border-radius:12px; background:rgba(59,130,246,0.08); border:1px solid rgba(59,130,246,0.25); color:#60a5fa; font-size:0.66rem; font-weight:700; cursor:pointer; font-family:inherit; flex-shrink:0;">💧 ಕಡಿಮೆ ನೀರಿನ ಬೆಳೆ</button>
+                    <button type="button" onclick="handleAiQuickPrompt(this)" data-q="ರೈತ ಸಿರಿ & ಕೃಷಿ ಭಾಗ್ಯ ಸಬ್ಸಿಡಿ ಪಡೆಯುವುದು ಹೇಗೆ?" style="padding:4px 9px; border-radius:12px; background:rgba(245,158,11,0.08); border:1px solid rgba(245,158,11,0.25); color:#fbbf24; font-size:0.66rem; font-weight:700; cursor:pointer; font-family:inherit; flex-shrink:0;">🏛️ ಸರ್ಕಾರಿ ಸಬ್ಸಿಡಿ</button>
+                    <button type="button" onclick="handleAiQuickPrompt(this)" data-q="೪-ಹಂತದ ಕೃಷಿ ಅರಣ್ಯ ಸಾಲಿನ ಅಂತರ ತಿಳಿಸಿ" style="padding:4px 9px; border-radius:12px; background:rgba(168,85,247,0.08); border:1px solid rgba(168,85,247,0.25); color:#c084fc; font-size:0.66rem; font-weight:700; cursor:pointer; font-family:inherit; flex-shrink:0;">🌲 ಸಾಲಿನ ಅಂತರ</button>
+                    <button type="button" onclick="handleAiQuickPrompt(this)" data-q="ಸೌರ ಕೃಷಿ (Agri-PV) ದ್ವಿ-ಆದಾಯ ಎಷ್ಟು ಸಿಗುತ್ತದೆ?" style="padding:4px 9px; border-radius:12px; background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.25); color:#f87171; font-size:0.66rem; font-weight:700; cursor:pointer; font-family:inherit; flex-shrink:0;">⚡ ಸೌರ ಕೃಷಿ (Agri-PV)</button>
+                </div>
+
+                <!-- Input Box with Voice Mic & Send Button -->
+                <div style="padding:10px 12px; background:var(--glass-bg); border-top:1px solid var(--glass-border); display:flex; gap:7px; align-items:center; flex-shrink:0;">
+                    <button type="button" id="btn-ai-mic" onclick="toggleAiVoiceInput()" style="width:36px; height:36px; border-radius:10px; background:rgba(255,255,255,0.06); border:1px solid var(--border-light); color:var(--text-muted); cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:0.9rem; transition:all 0.2s;" title="Speak in Kannada / English">
+                        <i class="fa-solid fa-microphone"></i>
+                    </button>
+                    <input type="text" id="ai-chat-input" placeholder="ಕೃಷಿ ಪ್ರಶ್ನೆ ಕೇಳಿ... / Ask a question..." onkeydown="if(event.key==='Enter') sendAiChatMessage()" style="flex:1; padding:9px 12px; border-radius:10px; border:1px solid var(--border-light); background:var(--glass-bg); color:var(--text-main); font-family:inherit; font-size:0.82rem; outline:none; transition:border-color 0.2s;">
+                    <button type="button" id="btn-ai-send" onclick="sendAiChatMessage()" style="width:36px; height:36px; border-radius:10px; background:linear-gradient(135deg, #10b981, #0ea5e9); border:none; color:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:0.88rem; box-shadow:0 4px 10px rgba(16,185,129,0.3); transition:all 0.2s;">
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
             
         </div>
         </div> <!-- End of panel-content -->
@@ -472,6 +563,9 @@
         <div class="vertical-tabs">
             <button class="v-tab-btn active" onclick="switchTab('agro')" id="tab-agro" title="Agroforestry">
                 <i class="fa-solid fa-seedling"></i><span data-i18n="tab_agro">Agro</span>
+            </button>
+            <button class="v-tab-btn" onclick="switchTab('ai')" id="tab-ai" title="Raitha Sahayaka AI Chat">
+                <i class="fa-solid fa-robot" style="color:#10b981;"></i><span data-i18n="tab_ai">AI Chat</span>
             </button>
             <button class="v-tab-btn" onclick="switchTab('diag')" id="tab-diag" title="Drought Diagnostics">
                 <i class="fa-solid fa-satellite-dish"></i><span data-i18n="tab_diag">Diag</span>
@@ -599,6 +693,7 @@
 
             document.getElementById('agro-tab').style.display = 'none';
             document.getElementById('feed').style.display = 'none';
+            document.getElementById('ai-feed').style.display = 'none';
             document.getElementById('diag-feed').style.display = 'none';
             document.getElementById('fire-feed').style.display = 'none';
             document.getElementById('pest-feed').style.display = 'none';
@@ -624,6 +719,14 @@
                         fetchRecommendations(lat, lon);
                     }
                 }
+            } else if(tabId === 'ai') {
+                document.getElementById('ai-feed').style.display = 'flex';
+                if(map && map.hasLayer(thermalLayer)) map.removeLayer(thermalLayer);
+                if(map && map.hasLayer(ndviLayer)) map.removeLayer(ndviLayer);
+                if(map && burnRadiusLayer && map.hasLayer(burnRadiusLayer)) map.removeLayer(burnRadiusLayer);
+                if(map && burnRadiusLayer?._windArrow && map.hasLayer(burnRadiusLayer._windArrow)) map.removeLayer(burnRadiusLayer._windArrow);
+                clearDroughtMarkers();
+                clearFireMarkers();
             } else if(tabId === 'diag') {
                 document.getElementById('diag-feed').style.display = 'block';
                 if(map && !map.hasLayer(thermalLayer)) map.addLayer(thermalLayer);
@@ -1084,9 +1187,11 @@
                 'multi_crop_calc': 'Multi-Crop Synergistic ROI Calculator',
                 'combined_gross': 'Combined Gross Return:',
                 'tab_agro': 'Agro',
+                'tab_ai': 'AI Chat',
                 'tab_diag': 'Diag',
                 'tab_fire': 'Fire',
                 'tab_saved': 'Saved',
+                'ai_name': 'Raitha Sahayaka AI',
                 'diag_title': 'Regional Drought Scanner',
                 'diag_desc': 'Scan Karnataka for systemic drought signatures using live satellite telemetry.',
                 'diag_prompt': 'Click anywhere on the Karnataka map or tap a monitoring beacon to run live drought diagnostics.',
@@ -1247,9 +1352,11 @@
                 'multi_crop_calc': 'ಬಹು-ಬೆಳೆ ಸಂಯೋಜಿತ ROI ಕ್ಯಾಲ್ಕುಲೇಟರ್',
                 'combined_gross': 'ಒಟ್ಟು ಸಂಯೋಜಿತ ಆದಾಯ:',
                 'tab_agro': 'ಕೃಷಿ',
+                'tab_ai': 'ರೈತ AI',
                 'tab_diag': 'ಡಯಾಗ್',
                 'tab_fire': 'ಬೆಂಕಿ',
                 'tab_saved': 'ಉಳಿಸಿ',
+                'ai_name': 'ರೈತ ಸಹಾಯಕ AI',
                 'diag_title': 'ಪ್ರಾದೇಶಿಕ ಬರ ಸ್ಕ್ಯಾನರ್',
                 'diag_desc': 'ಲೈವ್ ಉಪಗ್ರಹ ಟೆಲಿಮೆಟ್ರಿ ಬಳಸಿ ಕರ್ನಾಟಕದ ಬರ ಸಂಕೇತಗಳನ್ನು ಸ್ಕ್ಯಾನ್ ಮಾಡಿ.',
                 'diag_prompt': 'ಲೈವ್ ಉಪಗ್ರಹ ಡಯಾಗ್ನೋಸ್ಟಿಕ್ಸ್ ಚಲಾಯಿಸಲು ಕರ್ನಾಟಕ ನಕ್ಷೆಯ ಮೇಲೆ ಕ್ಲಿಕ್ ಮಾಡಿ ಅಥವಾ ಕೆಳಗಿನ ನಿಲ್ದಾಣವನ್ನು ಆರಿಸಿ.',
@@ -1832,6 +1939,7 @@
                 if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
                 const data = await response.json();
+                updateAiFarmContextFromData(data);
                 if (data.location_name) {
                     setLocationMarker(lat, lon, data.location_name);
                 }
@@ -4377,6 +4485,296 @@ multiCropModels.forEach((model, mIdx) => {
             }
         }
         
+        // ── 🤖 Raitha Sahayaka AI Conversational Agronomist Engine ────
+        let aiChatHistory = [];
+        let currentFarmContext = {
+            location_name: "Karnataka Farm",
+            district: "Karnataka",
+            lat: 13.0,
+            lon: 77.0,
+            rainfall: 850,
+            ph: 6.5,
+            nitrogen: 180,
+            soc: 0.6,
+            cgwb_depth: "18.5",
+            cgwb_status: "Safe",
+            top_crops: "Ragi, Melia Dubia, Turmeric, Black Pepper",
+            subsidies: "Raita Siri, Krishi Bhagya, PMKSY Drip",
+            nearest_mandi: "APMC Yard",
+            nearest_chc: "Krishi Yanthradhare Hub"
+        };
+        let isAiSpeaking = false;
+        let aiSpeechRecognition = null;
+        let isAiVoiceListening = false;
+
+        function updateAiFarmContextFromData(data) {
+            if (!data) return;
+            currentFarmContext.location_name = data.location_name || currentFarmContext.location_name;
+            currentFarmContext.district = data.district || currentFarmContext.district;
+            if (data.coordinates) {
+                currentFarmContext.lat = data.coordinates.lat;
+                currentFarmContext.lon = data.coordinates.lon;
+            }
+            if (data.environmental_context) {
+                currentFarmContext.rainfall = data.environmental_context.rainfall || 850;
+                currentFarmContext.ph = data.environmental_context.ph || 6.5;
+                currentFarmContext.nitrogen = data.environmental_context.nitrogen || 180;
+                currentFarmContext.soc = data.environmental_context.soc || 0.6;
+            }
+            if (data.cgwb_groundwater) {
+                currentFarmContext.cgwb_depth = data.cgwb_groundwater.depth_mbgl || "18.5";
+                currentFarmContext.cgwb_status = data.cgwb_groundwater.status || "Safe";
+            }
+            if (data.recommendations && data.recommendations.length > 0) {
+                currentFarmContext.top_crops = data.recommendations.slice(0, 4).map(r => r.species).join(", ");
+                const firstRec = data.recommendations[0];
+                if (firstRec.matched_subsidies) {
+                    currentFarmContext.subsidies = firstRec.matched_subsidies.map(s => s.name).join(", ");
+                }
+                if (firstRec.apmc_mandi) {
+                    currentFarmContext.nearest_mandi = firstRec.apmc_mandi.nearest_mandi_name;
+                }
+            }
+            if (data.nearest_chc_machinery) {
+                currentFarmContext.nearest_chc = data.nearest_chc_machinery.chc_name;
+            }
+
+            const badgeLoc = document.getElementById('ai-farm-loc-name');
+            if (badgeLoc) {
+                badgeLoc.textContent = `${currentFarmContext.location_name} (pH ${currentFarmContext.ph}, ${currentFarmContext.rainfall}mm)`;
+            }
+        }
+
+        function formatAiMarkdown(text) {
+            if (!text) return "";
+            let html = text
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;");
+
+            html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+            html = html.replace(/^\s*[-•]\s+(.*)$/gm, '<li style="margin-bottom:3px;">$1</li>');
+            html = html.replace(/(<li.*<\/li>)/s, '<ul style="margin:6px 0;padding-left:18px;">$1</ul>');
+            html = html.replace(/^\s*(\d+)\.\s+(.*)$/gm, '<li style="margin-bottom:3px;" value="$1">$2</li>');
+            html = html.replace(/\n\n/g, '<br><br>').replace(/\n/g, '<br>');
+
+            return html;
+        }
+
+        async function sendAiChatMessage(promptOverride = null) {
+            const inputEl = document.getElementById('ai-chat-input');
+            const query = promptOverride || (inputEl ? inputEl.value.trim() : '');
+            if (!query) return;
+
+            if (inputEl && !promptOverride) inputEl.value = '';
+
+            const chatMessagesContainer = document.getElementById('ai-chat-messages');
+            if (!chatMessagesContainer) return;
+
+            // 1. Render User Message Bubble
+            const userBubble = document.createElement('div');
+            userBubble.className = 'ai-chat-user-bubble';
+            userBubble.textContent = query;
+            chatMessagesContainer.appendChild(userBubble);
+            chatMessagesContainer.scrollTop = chatMessagesContainer.scrollHeight;
+
+            // 2. Render Typing Indicator
+            const typingId = `typing-${Date.now()}`;
+            const typingBubble = document.createElement('div');
+            typingBubble.id = typingId;
+            typingBubble.style.display = 'flex';
+            typingBubble.style.gap = '9px';
+            typingBubble.style.alignItems = 'flex-start';
+            typingBubble.style.maxWidth = '92%';
+            typingBubble.innerHTML = `
+                <div style="width:28px; height:28px; border-radius:8px; background:linear-gradient(135deg, #10b981, #0ea5e9); display:flex; align-items:center; justify-content:center; color:#fff; font-size:0.8rem; flex-shrink:0; margin-top:2px;">
+                    <i class="fa-solid fa-robot"></i>
+                </div>
+                <div class="ai-chat-bot-bubble" style="display:flex; align-items:center; gap:4px; padding:10px 14px;">
+                    <span class="typing-dot"></span>
+                    <span class="typing-dot"></span>
+                    <span class="typing-dot"></span>
+                </div>
+            `;
+            chatMessagesContainer.appendChild(typingBubble);
+            chatMessagesContainer.scrollTop = chatMessagesContainer.scrollHeight;
+
+            aiChatHistory.push({ sender: 'user', text: query });
+
+            try {
+                const response = await fetch('/api/raitha-sahayaka/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        query: query,
+                        chat_history: aiChatHistory,
+                        farm_context: currentFarmContext,
+                        language: currentLang
+                    })
+                });
+
+                const data = await response.json();
+                const typingEl = document.getElementById(typingId);
+                if (typingEl) typingEl.remove();
+
+                const replyText = data.reply || (currentLang === 'kn' ? 'ಕ್ಷಮಿಸಿ, ಉತ್ತರಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ.' : 'Could not generate a response.');
+                aiChatHistory.push({ sender: 'bot', text: replyText });
+
+                // Render Bot Message Card
+                const botCard = document.createElement('div');
+                botCard.style.display = 'flex';
+                botCard.style.gap = '9px';
+                botCard.style.alignItems = 'flex-start';
+                botCard.style.maxWidth = '94%';
+                botCard.style.animation = 'slideUp 0.3s ease';
+
+                const formattedHtml = formatAiMarkdown(replyText);
+                const safeSpeechText = replyText.replace(/[*#_`]/g, ' ').replace(/'/g, "\\'");
+
+                botCard.innerHTML = `
+                    <div style="width:28px; height:28px; border-radius:8px; background:linear-gradient(135deg, #10b981, #0ea5e9); display:flex; align-items:center; justify-content:center; color:#fff; font-size:0.8rem; flex-shrink:0; margin-top:2px;">
+                        <i class="fa-solid fa-robot"></i>
+                    </div>
+                    <div class="ai-chat-bot-bubble" style="flex:1;">
+                        <div style="margin-bottom:8px;">${formattedHtml}</div>
+                        <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px dashed var(--border-light); padding-top:6px; margin-top:6px; font-size:0.64rem; color:var(--text-muted);">
+                            <span><i class="fa-solid fa-brain" style="color:var(--primary);margin-right:3px;"></i>${data.source || 'Raitha Sahayaka AI'}</span>
+                            <button type="button" onclick="speakAiResponse('${safeSpeechText}', this)" style="background:rgba(16,185,129,0.1); border:1px solid rgba(16,185,129,0.25); color:#10b981; padding:2px 7px; border-radius:5px; cursor:pointer; font-size:0.64rem; font-weight:700; display:inline-flex; align-items:center; gap:3px;">
+                                <i class="fa-solid fa-volume-high"></i> <span>${currentLang==='kn' ? 'ಕೇಳಿ' : 'Listen'}</span>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                chatMessagesContainer.appendChild(botCard);
+                chatMessagesContainer.scrollTop = chatMessagesContainer.scrollHeight;
+
+            } catch (err) {
+                console.error("Raitha Sahayaka AI Chat error:", err);
+                const typingEl = document.getElementById(typingId);
+                if (typingEl) typingEl.remove();
+
+                const errCard = document.createElement('div');
+                errCard.className = 'ai-chat-bot-bubble';
+                errCard.style.borderColor = 'rgba(239,68,68,0.3)';
+                errCard.innerHTML = `<span style="color:#ef4444;"><i class="fa-solid fa-triangle-exclamation"></i> ${currentLang === 'kn' ? 'ಸಂಪರ್ಕ ದೋಷ. ದಯವಿಟ್ಟು ಪುನಃ ಪ್ರಯತ್ನಿಸಿ.' : 'Network error. Please try again.'}</span>`;
+                chatMessagesContainer.appendChild(errCard);
+                chatMessagesContainer.scrollTop = chatMessagesContainer.scrollHeight;
+            }
+        }
+
+        function handleAiQuickPrompt(btn) {
+            const promptText = btn.getAttribute('data-q');
+            if (promptText) {
+                sendAiChatMessage(promptText);
+            }
+        }
+
+        function clearAiChat() {
+            aiChatHistory = [];
+            const chatMessagesContainer = document.getElementById('ai-chat-messages');
+            if (chatMessagesContainer) {
+                chatMessagesContainer.innerHTML = `
+                    <div style="display:flex; gap:9px; align-items:flex-start; max-width:92%;">
+                        <div style="width:28px; height:28px; border-radius:8px; background:linear-gradient(135deg, #10b981, #0ea5e9); display:flex; align-items:center; justify-content:center; color:#fff; font-size:0.8rem; flex-shrink:0; margin-top:2px;">
+                            <i class="fa-solid fa-robot"></i>
+                        </div>
+                        <div style="background:var(--card-bg); border:1px solid var(--glass-border); border-radius:12px 12px 12px 2px; padding:10px 12px; font-size:0.82rem; color:var(--text-main); line-height:1.55; box-shadow:0 4px 14px rgba(0,0,0,0.15);">
+                            <div style="font-weight:700; color:var(--primary); margin-bottom:4px;">${currentLang==='kn' ? 'ನಮಸ್ಕಾರ ರೈತ ಬಾಂಧವರೇ! 🙏' : 'Namaskara! 🙏'}</div>
+                            <div>${currentLang==='kn' ? 'ನಾನು <strong>ರೈತ ಸಹಾಯಕ (Raitha Sahayaka)</strong>. ನಿಮ್ಮ ಜಮೀನಿನ ಮಣ್ಣು, ಮಳೆ ಮತ್ತು ಅಂತರ್ಜಲಕ್ಕೆ ಅನುಗುಣವಾಗಿ ರಸಗೊಬ್ಬರ ಪ್ರಮಾಣ, ನೀರಿನ ನಿರ್ವಹಣೆ, ಬೆಳೆ ವಿನ್ಯಾಸ ಹಾಗೂ ಸರ್ಕಾರಿ ಸಬ್ಸಿಡಿಗಳ ಬಗ್ಗೆ ಯಾವುದೇ ಪ್ರಶ್ನೆ ಕೇಳಿ!' : 'I am <strong>Raitha Sahayaka</strong>, your AI Agronomist. Ask me anything about fertilizer schedules, drought crops, or government subsidies!'}</div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        function toggleAiVoiceInput() {
+            const micBtn = document.getElementById('btn-ai-mic');
+            const inputEl = document.getElementById('ai-chat-input');
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+            if (!SpeechRecognition) {
+                alert(currentLang === 'kn' ? 'ನಿಮ್ಮ ಬ್ರೌಸರ್ ಧ್ವನಿ ಗುರುತಿಸುವಿಕೆಯನ್ನು ಬೆಂಬಲಿಸುವುದಿಲ್ಲ.' : 'Your browser does not support Web Speech Recognition.');
+                return;
+            }
+
+            if (isAiVoiceListening && aiSpeechRecognition) {
+                aiSpeechRecognition.stop();
+                isAiVoiceListening = false;
+                if (micBtn) micBtn.classList.remove('ai-mic-active');
+                return;
+            }
+
+            try {
+                aiSpeechRecognition = new SpeechRecognition();
+                aiSpeechRecognition.lang = currentLang === 'kn' ? 'kn-IN' : 'en-IN';
+                aiSpeechRecognition.interimResults = false;
+                aiSpeechRecognition.maxAlternatives = 1;
+
+                aiSpeechRecognition.onstart = () => {
+                    isAiVoiceListening = true;
+                    if (micBtn) micBtn.classList.add('ai-mic-active');
+                    if (inputEl) inputEl.placeholder = currentLang === 'kn' ? 'ಮಾತನಾಡಿ, ಕೇಳುತ್ತಿದ್ದೇವೆ...' : 'Listening... Speak now.';
+                };
+
+                aiSpeechRecognition.onresult = (event) => {
+                    const transcript = event.results[0][0].transcript;
+                    if (inputEl) {
+                        inputEl.value = transcript;
+                        sendAiChatMessage(transcript);
+                    }
+                };
+
+                aiSpeechRecognition.onerror = (event) => {
+                    console.error("Speech recognition error:", event.error);
+                    isAiVoiceListening = false;
+                    if (micBtn) micBtn.classList.remove('ai-mic-active');
+                    if (inputEl) inputEl.placeholder = currentLang === 'kn' ? 'ಕೃಷಿ ಪ್ರಶ್ನೆ ಕೇಳಿ...' : 'Ask a farming question...';
+                };
+
+                aiSpeechRecognition.onend = () => {
+                    isAiVoiceListening = false;
+                    if (micBtn) micBtn.classList.remove('ai-mic-active');
+                    if (inputEl) inputEl.placeholder = currentLang === 'kn' ? 'ಕೃಷಿ ಪ್ರಶ್ನೆ ಕೇಳಿ...' : 'Ask a farming question...';
+                };
+
+                aiSpeechRecognition.start();
+            } catch (e) {
+                console.error("Voice recognition start error:", e);
+            }
+        }
+
+        function speakAiResponse(text, btnEl) {
+            if (!('speechSynthesis' in window)) {
+                alert(currentLang === 'kn' ? 'ನಿಮ್ಮ ಬ್ರೌಸರ್ ಧ್ವನಿ ಓದುವಿಕೆಯನ್ನು ಬೆಂಬಲಿಸುವುದಿಲ್ಲ.' : 'Text-to-speech not supported on this browser.');
+                return;
+            }
+
+            if (window.speechSynthesis.speaking) {
+                window.speechSynthesis.cancel();
+                if (btnEl) btnEl.innerHTML = `<i class="fa-solid fa-volume-high"></i> <span>${currentLang==='kn' ? 'ಕೇಳಿ' : 'Listen'}</span>`;
+                return;
+            }
+
+            const cleanText = text.replace(/[*#_`\n]/g, ' ');
+            const utterance = new SpeechSynthesisUtterance(cleanText);
+            utterance.lang = currentLang === 'kn' ? 'kn-IN' : 'en-IN';
+            utterance.rate = 0.92;
+            utterance.pitch = 1.0;
+
+            if (btnEl) btnEl.innerHTML = `<i class="fa-solid fa-circle-stop" style="color:#ef4444;"></i> <span>Stop</span>`;
+
+            utterance.onend = () => {
+                if (btnEl) btnEl.innerHTML = `<i class="fa-solid fa-volume-high"></i> <span>${currentLang==='kn' ? 'ಕೇಳಿ' : 'Listen'}</span>`;
+            };
+
+            utterance.onerror = () => {
+                if (btnEl) btnEl.innerHTML = `<i class="fa-solid fa-volume-high"></i> <span>${currentLang==='kn' ? 'ಕೇಳಿ' : 'Listen'}</span>`;
+            };
+
+            window.speechSynthesis.speak(utterance);
+        }
+
         // Initialize Bookmarks on load
         renderSavedLocations();
 

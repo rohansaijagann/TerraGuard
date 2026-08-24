@@ -5,6 +5,7 @@ from .views import (
     YieldEstimatorAPI, ThermalHotspotsAPI,
     FertilizerCalcAPI, AgriPVModelerAPI, APMCMarketAPI, 
     CarbonCreditAPI, MachineryRentalAPI, PMFBYInsuranceAPI,
+    RaithaSahayakaAPI,
     dashboard_view
 )
 
@@ -26,4 +27,5 @@ urlpatterns = [
     path('api/carbon-credits/', CarbonCreditAPI.as_view(), name='api_carbon_credits'),
     path('api/machinery-rental/', MachineryRentalAPI.as_view(), name='api_machinery_rental'),
     path('api/pmfby-insurance/', PMFBYInsuranceAPI.as_view(), name='api_pmfby_insurance'),
+    path('api/raitha-sahayaka/', RaithaSahayakaAPI.as_view(), name='api_raitha_sahayaka'),
 ]

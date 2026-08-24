@@ -2360,3 +2360,23 @@ class PMFBYInsuranceAPI(APIView):
 
         data = calculate_pmfby_crop_insurance(species, acres)
         return Response(data)
+
+
+# 17. "Raitha Sahayaka" AI Conversational Agronomist API
+class RaithaSahayakaAPI(APIView):
+    authentication_classes = []
+    permission_classes = []
+
+    def post(self, request):
+        from .ml_utils.ai_agronomist import generate_agronomist_reply
+
+        query = request.data.get('query', '')
+        chat_history = request.data.get('chat_history', [])
+        farm_context = request.data.get('farm_context', {})
+        language = request.data.get('language', 'kn')
+
+        if not query.strip():
+            return Response({"reply": "ದಯವಿಟ್ಟು ನಿಮ್ಮ ಕೃಷಿ ಪ್ರಶ್ನೆಯನ್ನು ಕೇಳಿ... / Please ask your farming question.", "source": "Raitha Sahayaka"})
+
+        data = generate_agronomist_reply(query, chat_history, farm_context, language)
+        return Response(data)
