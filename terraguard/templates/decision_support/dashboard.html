@@ -418,29 +418,96 @@
             70% { box-shadow: 0 0 0 10px rgba(239,68,68,0); }
             100% { box-shadow: 0 0 0 0 rgba(239,68,68,0); }
         }
+        @keyframes userBubbleIn {
+            from { opacity: 0; transform: translateY(12px) scale(0.96); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        @keyframes botBubbleIn {
+            from { opacity: 0; transform: translateX(-12px) scale(0.96); }
+            to { opacity: 1; transform: translateX(0) scale(1); }
+        }
         .ai-chat-user-bubble {
             background: linear-gradient(135deg, #10b981, #059669);
-            color: #fff; border-radius: 12px 12px 2px 12px;
+            color: #fff; border-radius: 14px 14px 2px 14px;
             padding: 9px 13px; font-size: 0.82rem; font-weight: 500;
             max-width: 86%; align-self: flex-end; line-height: 1.45;
             box-shadow: 0 4px 12px rgba(16,185,129,0.25);
             word-break: break-word;
+            animation: userBubbleIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
         .ai-chat-bot-bubble {
             background: var(--card-bg);
             color: var(--text-main); border: 1px solid var(--glass-border);
-            border-radius: 12px 12px 12px 2px; padding: 11px 13px;
+            border-radius: 14px 14px 14px 2px; padding: 11px 13px;
             font-size: 0.82rem; line-height: 1.55; max-width: 92%;
-            box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+            box-shadow: 0 4px 14px rgba(0,0,0,0.12);
             word-break: break-word;
         }
+        .ai-bot-msg-wrap {
+            display: flex; gap: 9px; align-items: flex-start; max-width: 94%;
+            animation: botBubbleIn 0.32s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        .ai-photo-preview {
+            max-width: 170px; max-height: 130px; border-radius: var(--radius-md);
+            border: 2px solid rgba(255,255,255,0.4); margin-top: 5px;
+            object-fit: cover; display: block; box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        .ai-followup-chips {
+            display: flex; gap: 5px; flex-wrap: wrap; margin-top: 8px;
+            padding-top: 6px; border-top: 1px dashed var(--border-light);
+        }
+        .ai-followup-btn {
+            background: var(--primary-light); border: 1px solid rgba(16,185,129,0.3);
+            color: var(--primary); padding: 3px 8px; border-radius: var(--radius-pill);
+            font-size: 0.63rem; font-weight: 700; cursor: pointer; font-family: inherit;
+            transition: all 0.18s; display: inline-flex; align-items: center; gap: 3px;
+        }
+        .ai-followup-btn:hover {
+            background: var(--primary); color: #fff; transform: translateY(-1px);
+        }
+        .ai-msg-footer {
+            display: flex; justify-content: space-between; align-items: center;
+            border-top: 1px dashed var(--border-light); padding-top: 5px;
+            margin-top: 7px; font-size: 0.62rem; color: var(--text-muted);
+        }
+        .ai-msg-actions { display: flex; gap: 4px; align-items: center; }
+        .ai-msg-action-btn {
+            background: var(--bg-filter); border: 1px solid var(--border-light);
+            color: var(--text-muted); padding: 2px 6px; border-radius: 4px;
+            cursor: pointer; font-size: 0.62rem; transition: all 0.15s;
+        }
+        .ai-msg-action-btn:hover { color: var(--primary); border-color: var(--primary); }
+        .ai-msg-action-btn.active { background: var(--primary-light); color: var(--primary); border-color: var(--primary); }
+        .ai-msg-time { font-size: 0.58rem; color: var(--text-muted); margin-left: 6px; }
+
+        /* AI Markdown Table Styles */
+        .ai-chat-bot-bubble table {
+            width: 100%; border-collapse: collapse; margin: 8px 0;
+            font-size: 0.72rem; border-radius: var(--radius-sm);
+            overflow: hidden; border: 1px solid var(--border-light);
+        }
+        .ai-chat-bot-bubble th {
+            background: var(--bg-filter); color: var(--text-main);
+            font-weight: 800; padding: 6px 8px; border-bottom: 1px solid var(--border-light);
+            text-align: left;
+        }
+        .ai-chat-bot-bubble td {
+            padding: 5px 8px; border-bottom: 1px solid var(--border-light); color: var(--text-main);
+        }
+        .ai-chat-bot-bubble tr:last-child td { border-bottom: none; }
+        .ai-chat-bot-bubble tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+
         /* ══ FLOATING RAITHA SAHAYAKA AI WIDGET ══ */
 #floating-ai-window {
     display:none;position:absolute;bottom:calc(100% + 12px);right:0;
-    width:380px;max-height:520px;background:var(--glass-gradient);
-    backdrop-filter:blur(32px);border:1px solid var(--glass-border);
+    width:390px;max-height:540px;background:var(--glass-gradient);
+    backdrop-filter:blur(32px);-webkit-backdrop-filter:blur(32px);border:1px solid var(--glass-border);
     border-radius:var(--radius-xl);box-shadow:var(--shadow-glass);
-    flex-direction:column;overflow:hidden;
+    flex-direction:column;overflow:hidden;transition:width 0.3s cubic-bezier(0.16, 1, 0.3, 1), max-height 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+#floating-ai-window.maximized {
+    width: 540px !important;
+    max-height: 82vh !important;
 }
 .ai-window-header {
     display:flex;align-items:center;justify-content:space-between;
@@ -979,6 +1046,9 @@ body.dark-theme .ai-window-header{background:rgba(0,0,0,0.15)}
                     </div>
                 </div>
                 <div class="ai-header-actions">
+                    <button type="button" onclick="toggleAiMaximize()" class="ai-header-btn" title="Expand / Shrink Window">
+                        <i id="ai-max-icon" class="fa-solid fa-expand"></i>
+                    </button>
                     <button type="button" onclick="clearAiChat()" class="ai-header-btn" title="Clear Chat">
                         <i class="fa-solid fa-trash-can"></i>
                     </button>
@@ -996,7 +1066,7 @@ body.dark-theme .ai-window-header{background:rgba(0,0,0,0.15)}
                     </div>
                     <div class="ai-welcome-card">
                         <div style="font-weight:700; color:var(--primary); margin-bottom:4px;" id="ai-welcome-title">Hi! How can I help you today? 🙏</div>
-                        <div id="ai-welcome-desc">I am <strong>Raitha Sahayaka</strong>, your AI Agronomist. Ask me anything about crop suitability, fertilizer dosages, water/drought management, or government subsidies!</div>
+                        <div id="ai-welcome-desc">I am <strong>Raitha Sahayaka</strong>, your AI Agronomist. Ask me anything about crop suitability, fertilizer dosages, water/drought management, or upload a leaf photo for disease diagnosis!</div>
                     </div>
                 </div>
             </div>
@@ -1006,8 +1076,12 @@ body.dark-theme .ai-window-header{background:rgba(0,0,0,0.15)}
                 <!-- Populated dynamically via renderAiQuickChips -->
             </div>
 
-            <!-- Input Box with Voice Mic & Send Button -->
+            <!-- Input Box with Camera, Voice Mic & Send Button -->
             <div class="ai-input-area">
+                <input type="file" id="ai-photo-upload" accept="image/*" style="display:none;" onchange="handleAiPhotoUpload(event)">
+                <button type="button" onclick="document.getElementById('ai-photo-upload').click()" class="ai-action-btn" title="Upload Crop/Leaf Photo for AI Diagnosis">
+                    <i class="fa-solid fa-camera"></i>
+                </button>
                 <button type="button" id="btn-ai-mic" onclick="toggleAiVoiceInput()" class="ai-action-btn" title="Speak in Kannada / English">
                     <i class="fa-solid fa-microphone"></i>
                 </button>
@@ -1117,6 +1191,13 @@ body.dark-theme .ai-window-header{background:rgba(0,0,0,0.15)}
             if (typeof updatePageLocationTitle === 'function') updatePageLocationTitle(name);
             const searchInput = document.getElementById('location-search');
             if (searchInput) searchInput.value = name;
+            
+            currentFarmContext.location_name = name;
+            currentFarmContext.lat = parseFloat(latStr);
+            currentFarmContext.lon = parseFloat(lonStr);
+            const badgeLoc = document.getElementById('ai-farm-loc-name');
+            if (badgeLoc) badgeLoc.textContent = name;
+            if (typeof renderAiQuickChips === 'function') renderAiQuickChips();
             
             // Mark loading state
             loadedLocationForTab.agro = null;
@@ -1229,6 +1310,10 @@ body.dark-theme .ai-window-header{background:rgba(0,0,0,0.15)}
             } else if(tabId === 'saved') {
                 document.getElementById('saved-feed').style.display = 'block';
                 renderSavedLocations();
+            }
+
+            if (typeof renderAiQuickChips === 'function') {
+                renderAiQuickChips();
             }
         }
 
@@ -5036,7 +5121,8 @@ multiCropModels.forEach((model, mIdx) => {
             }
         }
         
-        // ── 🤖 Raitha Sahayaka AI Conversational Agronomist Engine ────
+                // ── 🤖 Raitha Sahayaka AI Conversational Agronomist Engine ────
+        const CHAT_STORAGE_KEY = 'terraguard_ai_chat_v3';
         let aiChatHistory = [];
         let currentFarmContext = {
             location_name: "Karnataka Farm",
@@ -5094,64 +5180,246 @@ multiCropModels.forEach((model, mIdx) => {
             if (badgeLoc) {
                 badgeLoc.textContent = `${currentFarmContext.location_name} (pH ${currentFarmContext.ph}, ${currentFarmContext.rainfall}mm)`;
             }
+
+            renderAiQuickChips();
+        }
+
+        function getAiMessageTimestamp() {
+            const d = new Date();
+            return d.toLocaleTimeString('en-IN', { hour: 'numeric', minute: '2-digit', hour12: true });
         }
 
         function formatAiMarkdown(text) {
             if (!text) return "";
-            let html = text
+            let str = text
                 .replace(/&/g, "&amp;")
                 .replace(/</g, "&lt;")
                 .replace(/>/g, "&gt;");
 
-            html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-            html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
-            html = html.replace(/^\s*[-•]\s+(.*)$/gm, '<li style="margin-bottom:3px;">$1</li>');
-            html = html.replace(/(<li.*<\/li>)/s, '<ul style="margin:6px 0;padding-left:18px;">$1</ul>');
-            html = html.replace(/^\s*(\d+)\.\s+(.*)$/gm, '<li style="margin-bottom:3px;" value="$1">$2</li>');
-            html = html.replace(/\n\n/g, '<br><br>').replace(/\n/g, '<br>');
+            // Format markdown tables: | col1 | col2 |
+            const lines = str.split('\n');
+            let inTable = false;
+            let tableHtml = '';
+            let newLines = [];
 
-            return html;
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i].trim();
+                if (line.startsWith('|') && line.endsWith('|')) {
+                    const cells = line.slice(1, -1).split('|').map(c => c.trim());
+                    // Check separator line |--|--|
+                    if (cells.every(c => /^[-:]+$/.test(c))) {
+                        continue;
+                    }
+                    if (!inTable) {
+                        inTable = true;
+                        tableHtml = '<div style="overflow-x:auto;margin:8px 0;"><table><thead><tr>';
+                        cells.forEach(c => { tableHtml += `<th>${c}</th>`; });
+                        tableHtml += '</tr></thead><tbody>';
+                    } else {
+                        tableHtml += '<tr>';
+                        cells.forEach(c => { tableHtml += `<td>${c}</td>`; });
+                        tableHtml += '</tr>';
+                    }
+                } else {
+                    if (inTable) {
+                        tableHtml += '</tbody></table></div>';
+                        newLines.push(tableHtml);
+                        inTable = false;
+                        tableHtml = '';
+                    }
+                    newLines.push(lines[i]);
+                }
+            }
+            if (inTable) {
+                tableHtml += '</tbody></table></div>';
+                newLines.push(tableHtml);
+            }
+            str = newLines.join('\n');
+
+            // Bold & Italic
+            str = str.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            str = str.replace(/\*(.*?)\*/g, '<em>$1</em>');
+            
+            // Blockquote callouts
+            str = str.replace(/^&gt;\s*(.*)$/gm, '<div style="border-left:3px solid var(--primary);background:var(--bg-filter);padding:4px 8px;border-radius:4px;margin:6px 0;font-size:0.75rem;color:var(--text-main);">$1</div>');
+            
+            // Lists
+            str = str.replace(/^\s*[-•]\s+(.*)$/gm, '<li style="margin-bottom:3px;">$1</li>');
+            str = str.replace(/^\s*(\d+)\.\s+(.*)$/gm, '<li style="margin-bottom:3px;" value="$1">$2</li>');
+            str = str.replace(/(<li.*<\/li>)/s, '<ul style="margin:6px 0;padding-left:18px;">$1</ul>');
+            
+            // Line breaks
+            str = str.replace(/\n\n/g, '<br><br>').replace(/\n/g, '<br>');
+
+            return str;
         }
 
-        async function sendAiChatMessage(promptOverride = null) {
+        function generateFollowUpSuggestions(query, replyText) {
+            const isKn = currentLang === 'kn';
+            const text = ((query || '') + ' ' + (replyText || '')).toLowerCase();
+            
+            if (text.includes('teak') || text.includes('sandalwood') || text.includes('mahogany') || text.includes('areca') || text.includes('pepper') || text.includes('coffee') || text.includes('crop') || text.includes('tree') || text.includes('ಬೆಳೆ') || text.includes('ಮರ')) {
+                return isKn ? [
+                    { label: "💰 ನಿರೀಕ್ಷಿತ ಆದಾಯ (ROI)", q: "ಈ ಬೆಳೆಗೆ ಎಕರೆಗೆ ಎಷ್ಟು ನಿರೀಕ್ಷಿತ ಆದಾಯ (ROI) ಸಿಗುತ್ತದೆ?" },
+                    { label: "📅 ಬಿತ್ತನೆಗೆ ಸೂಕ್ತ ಸಮಯ", q: "ಈ ಬೆಳೆಯನ್ನು ನೆಡಲು ಅತ್ಯುತ್ತಮ ತಿಂಗಳು ಮತ್ತು ಹವಾಮಾನ ಯಾವುದು?" },
+                    { label: "🏛️ ಸರ್ಕಾರಿ ಸಬ್ಸಿಡಿ", q: "ಈ ಕೃಷಿಗೆ ಸಿಗುವ ಸರ್ಕಾರಿ ಯೋಜನೆಗಳು ಮತ್ತು ಸಹಾಯಧನ ಯಾವುವು?" }
+                ] : [
+                    { label: "💰 Expected ROI", q: "What is the expected annual ROI per acre for this crop?" },
+                    { label: "📅 Planting Season", q: "What is the optimal planting month and soil preparation?" },
+                    { label: "🏛️ Govt Subsidies", q: "What government subsidies (DBT/KAPY/MIDH) are available for this?" }
+                ];
+            } else if (text.includes('pest') || text.includes('disease') || text.includes('fungal') || text.includes('blast') || text.includes('rot') || text.includes('photo') || text.includes('ರೋಗ') || text.includes('ಕೀಟ') || text.includes('ಔಷಧ')) {
+                return isKn ? [
+                    { label: "🌿 ಸಾವಯವ ಜೈವಿಕ ಔಷಧ", q: "ರಾಸಾಯನಿಕವಿಲ್ಲದೆ ಸಾವಯವ ಪದ್ಧತಿಯಲ್ಲಿ ಈ ರೋಗವನ್ನು ಹೇಗೆ ತಡೆಗಟ್ಟಬಹುದು?" },
+                    { label: "🏪 ಹತ್ತಿರದ ಕೃಷಿ ಮಳಿಗೆ", q: "ನನ್ನ ತಾಲ್ಲೂಕಿನಲ್ಲಿ ಅಧಿಕೃತ ಕೃಷಿ ಔಷಧ ಸಿಗುವ ಕೇಂದ್ರ ಯಾವುದು?" },
+                    { label: "💧 ಸಿಂಪರಣೆ ಪ್ರಮಾಣ", q: "೧ ಲೀಟರ್ ನೀರಿಗೆ ಎಷ್ಟು ಪ್ರಮಾಣದ ಔಷಧ ಬೆರೆಸಿ ಸಿಂಪಡಿಸಬೇಕು?" }
+                ] : [
+                    { label: "🌿 Organic Bio-Control", q: "What organic bio-fungicides (like Trichoderma) can prevent this?" },
+                    { label: "🏪 Nearest Agri Dealer", q: "Where is the nearest verified KSSC/agri-input store for these inputs?" },
+                    { label: "💧 Spray Dosage", q: "What is the exact dosage per liter and spraying interval?" }
+                ];
+            } else if (text.includes('drought') || text.includes('water') || text.includes('rain') || text.includes('borewell') || text.includes('ಬರ') || text.includes('ನೀರು') || text.includes('ಬೋರ್')) {
+                return isKn ? [
+                    { label: "💧 ಹನಿ ನೀರಾವರಿ ಸಬ್ಸಿಡಿ", q: "PMKSY ಅಡಿಯಲ್ಲಿ ೯೦% ಹನಿ ನೀರಾವರಿ ಸಬ್ಸಿಡಿ ಪಡೆಯುವುದು ಹೇಗೆ?" },
+                    { label: "🌾 ಕಡಿಮೆ ನೀರಿನ ಬೆಳೆಗಳು", q: "ಬರಗಾಲದಲ್ಲಿ ಕಡಿಮೆ ನೀರಿಗೆ ಅಧಿಕ ಇಳುವರಿ ಕೊಡುವ ಬೆಳೆಗಳಾವುವು?" },
+                    { label: "🌧️ ಮಳೆ ಮುನ್ಸೂಚನೆ", q: "ಮುಂದಿನ ತಿಂಗಳುಗಳಲ್ಲಿ ಮಳೆ ಪ್ರಮಾಣ ಎಷ್ಟಿರಬಹುದು?" }
+                ] : [
+                    { label: "💧 Drip Irrigation Subsidy", q: "How do I claim the 90% PMKSY micro-drip subsidy in Karnataka?" },
+                    { label: "🌾 Drought-Resilient Crops", q: "Which short-duration drought crops survive on minimal water?" },
+                    { label: "🌧️ 9-Month Rain Forecast", q: "What is the seasonal rainfall outlook for my district?" }
+                ];
+            } else {
+                return isKn ? [
+                    { label: "🌾 ರಸಗೊಬ್ಬರ ಲೆಕ್ಕ", q: "ನನ್ನ ಜಮೀನಿಗೆ ಎಷ್ಟು NPK ಗೊಬ್ಬರ ಶಿಫಾರಸು ಮಾಡಲಾಗಿದೆ?" },
+                    { label: "🏛️ ರೈತ ಸಿರಿ DBT", q: "ರೈತ ಸಿರಿ ಯೋಜನೆಯಡಿ ₹೧೦,೦೦೦ ಸಹಾಯಧನ ಪಡೆಯುವುದು ಹೇಗೆ?" },
+                    { label: "⚡ ಸೌರ ಕೃಷಿ ಆದಾಯ", q: "ಸೌರ ಕೃಷಿ (Agri-PV) ಅಡಿಯಲ್ಲಿ ವಾರ್ಷಿಕ ಎಷ್ಟು ಆದಾಯ ಪಡೆಯಬಹುದು?" }
+                ] : [
+                    { label: "🌾 NPK Fertilizer Dosage", q: "What is the exact NPK fertilizer schedule for my soil pH?" },
+                    { label: "🏛️ Raitha Siri Scheme", q: "How do I apply for the Raitha Siri ₹10,000/ha DBT incentive?" },
+                    { label: "⚡ Solar Agri-PV Income", q: "How much dual income can Solar Agri-PV generate on 1 acre?" }
+                ];
+            }
+        }
+
+        function copyAiMessageText(btn, text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showToast(currentLang === 'kn' ? 'ಸಂದೇಶ ನಕಲಿಸಲಾಗಿದೆ!' : 'Message copied to clipboard!', 'fa-copy');
+            });
+        }
+
+        function rateAiResponse(btn, rating) {
+            const parent = btn.parentElement;
+            parent.querySelectorAll('.ai-thumb-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            showToast(currentLang === 'kn' ? 'ನಿಮ್ಮ ಪ್ರತಿಕ್ರಿಯೆಗೆ ಧನ್ಯವಾದಗಳು!' : 'Thank you for your feedback!', rating === 'up' ? 'fa-thumbs-up' : 'fa-thumbs-down');
+        }
+
+        function toggleAiMaximize() {
+            const win = document.getElementById('floating-ai-window');
+            const icon = document.getElementById('ai-max-icon');
+            if (!win) return;
+            win.classList.toggle('maximized');
+            if (icon) {
+                icon.className = win.classList.contains('maximized') ? 'fa-solid fa-compress' : 'fa-solid fa-expand';
+            }
+        }
+
+        function saveAiChatHistoryToStorage() {
+            try {
+                localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(aiChatHistory));
+            } catch(e){}
+        }
+
+        function loadAiChatHistoryFromStorage() {
+            try {
+                const saved = localStorage.getItem(CHAT_STORAGE_KEY);
+                if (saved) {
+                    const list = JSON.parse(saved);
+                    if (Array.isArray(list) && list.length > 0) {
+                        aiChatHistory = list;
+                        const chatContainer = document.getElementById('ai-chat-messages');
+                        if (chatContainer) {
+                            list.forEach(msg => {
+                                if (msg.sender === 'user') {
+                                    const uBubble = document.createElement('div');
+                                    uBubble.className = 'ai-chat-user-bubble';
+                                    uBubble.innerHTML = `${msg.imageUrl ? `<img src="${msg.imageUrl}" class="ai-photo-preview"><br>` : ''}${msg.text} <div class="ai-msg-time" style="text-align:right;opacity:0.8;">${msg.time || ''}</div>`;
+                                    chatContainer.appendChild(uBubble);
+                                } else if (msg.sender === 'bot') {
+                                    const bCard = document.createElement('div');
+                                    bCard.className = 'ai-bot-msg-wrap';
+                                    const formattedHtml = formatAiMarkdown(msg.text);
+                                    const safeSpeechText = msg.text.replace(/[*#_`]/g, ' ').replace(/'/g, "\'");
+                                    const safeCopyText = msg.text.replace(/"/g, '&quot;').replace(/'/g, "\'");
+
+                                    bCard.innerHTML = `
+                                        <div style="width:28px; height:28px; border-radius:8px; background:linear-gradient(135deg, #10b981, #0ea5e9); display:flex; align-items:center; justify-content:center; color:#fff; font-size:0.8rem; flex-shrink:0; margin-top:2px;">
+                                            <i class="fa-solid fa-wand-magic-sparkles"></i>
+                                        </div>
+                                        <div class="ai-chat-bot-bubble" style="flex:1;">
+                                            <div style="margin-bottom:6px;">${formattedHtml}</div>
+                                            <div class="ai-msg-footer">
+                                                <div style="display:flex;align-items:center;gap:4px;">
+                                                    <span><i class="fa-solid fa-brain" style="color:var(--primary);margin-right:3px;"></i>Raitha Sahayaka</span>
+                                                    <span class="ai-msg-time">${msg.time || ''}</span>
+                                                </div>
+                                                <div class="ai-msg-actions">
+                                                    <button type="button" onclick="copyAiMessageText(this, '${safeCopyText}')" class="ai-msg-action-btn" title="Copy response"><i class="fa-regular fa-copy"></i></button>
+                                                    <button type="button" onclick="rateAiResponse(this, 'up')" class="ai-msg-action-btn ai-thumb-btn" title="Helpful"><i class="fa-regular fa-thumbs-up"></i></button>
+                                                    <button type="button" onclick="rateAiResponse(this, 'down')" class="ai-msg-action-btn ai-thumb-btn" title="Not helpful"><i class="fa-regular fa-thumbs-down"></i></button>
+                                                    <button type="button" onclick="speakAiResponse('${safeSpeechText}', this)" class="ai-msg-action-btn" style="color:var(--primary);font-weight:700;"><i class="fa-solid fa-volume-high"></i> <span>${currentLang==='kn' ? 'ಕೇಳಿ' : 'Listen'}</span></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    `;
+                                    chatContainer.appendChild(bCard);
+                                }
+                            });
+                        }
+                    }
+                }
+            } catch(e){}
+        }
+
+        async function sendAiChatMessage(promptOverride = null, imageUrl = null) {
             const inputEl = document.getElementById('ai-chat-input');
             const query = promptOverride || (inputEl ? inputEl.value.trim() : '');
-            if (!query) return;
+            if (!query && !imageUrl) return;
 
             if (inputEl && !promptOverride) inputEl.value = '';
 
             const chatMessagesContainer = document.getElementById('ai-chat-messages');
             if (!chatMessagesContainer) return;
 
+            const timeStr = getAiMessageTimestamp();
+
             // 1. Render User Message Bubble
             const userBubble = document.createElement('div');
             userBubble.className = 'ai-chat-user-bubble';
-            userBubble.textContent = query;
+            userBubble.innerHTML = `${imageUrl ? `<img src="${imageUrl}" class="ai-photo-preview"><br>` : ''}${query} <div class="ai-msg-time" style="text-align:right;opacity:0.8;">${timeStr}</div>`;
             chatMessagesContainer.appendChild(userBubble);
-            chatMessagesContainer.scrollTop = chatMessagesContainer.scrollHeight;
+            chatMessagesContainer.scrollTo({ top: chatMessagesContainer.scrollHeight, behavior: 'smooth' });
 
             // 2. Render Typing Indicator
             const typingId = `typing-${Date.now()}`;
             const typingBubble = document.createElement('div');
             typingBubble.id = typingId;
-            typingBubble.style.display = 'flex';
-            typingBubble.style.gap = '9px';
-            typingBubble.style.alignItems = 'flex-start';
-            typingBubble.style.maxWidth = '92%';
+            typingBubble.className = 'ai-bot-msg-wrap';
             typingBubble.innerHTML = `
                 <div style="width:28px; height:28px; border-radius:8px; background:linear-gradient(135deg, #10b981, #0ea5e9); display:flex; align-items:center; justify-content:center; color:#fff; font-size:0.8rem; flex-shrink:0; margin-top:2px;">
-                    <i class="fa-solid fa-robot"></i>
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
                 </div>
-                <div class="ai-chat-bot-bubble" style="display:flex; align-items:center; gap:4px; padding:10px 14px;">
+                <div class="ai-chat-bot-bubble" style="display:flex; align-items:center; gap:5px; padding:10px 14px;">
                     <span class="typing-dot"></span>
                     <span class="typing-dot"></span>
                     <span class="typing-dot"></span>
                 </div>
             `;
             chatMessagesContainer.appendChild(typingBubble);
-            chatMessagesContainer.scrollTop = chatMessagesContainer.scrollHeight;
+            chatMessagesContainer.scrollTo({ top: chatMessagesContainer.scrollHeight, behavior: 'smooth' });
 
-            aiChatHistory.push({ sender: 'user', text: query });
+            aiChatHistory.push({ sender: 'user', text: query, imageUrl: imageUrl, time: timeStr });
+            saveAiChatHistoryToStorage();
 
             try {
                 const response = await fetch('/api/raitha-sahayaka/', {
@@ -5160,7 +5428,10 @@ multiCropModels.forEach((model, mIdx) => {
                     body: JSON.stringify({
                         query: query,
                         chat_history: aiChatHistory,
-                        farm_context: currentFarmContext,
+                        farm_context: {
+                            ...currentFarmContext,
+                            active_tab: activeTab
+                        },
                         language: currentLang
                     })
                 });
@@ -5170,35 +5441,50 @@ multiCropModels.forEach((model, mIdx) => {
                 if (typingEl) typingEl.remove();
 
                 const replyText = data.reply || (currentLang === 'kn' ? 'ಕ್ಷಮಿಸಿ, ಉತ್ತರಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ.' : 'Could not generate a response.');
-                aiChatHistory.push({ sender: 'bot', text: replyText });
+                const botTime = getAiMessageTimestamp();
+                aiChatHistory.push({ sender: 'bot', text: replyText, time: botTime });
+                saveAiChatHistoryToStorage();
 
                 // Render Bot Message Card
                 const botCard = document.createElement('div');
-                botCard.style.display = 'flex';
-                botCard.style.gap = '9px';
-                botCard.style.alignItems = 'flex-start';
-                botCard.style.maxWidth = '94%';
-                botCard.style.animation = 'slideUp 0.3s ease';
+                botCard.className = 'ai-bot-msg-wrap';
 
                 const formattedHtml = formatAiMarkdown(replyText);
-                const safeSpeechText = replyText.replace(/[*#_`]/g, ' ').replace(/'/g, "\\'");
+                const safeSpeechText = replyText.replace(/[*#_`]/g, ' ').replace(/'/g, "\'");
+                const safeCopyText = replyText.replace(/"/g, '&quot;').replace(/'/g, "\'");
+
+                // Generate dynamic follow-up suggestion chips
+                const followUps = generateFollowUpSuggestions(query, replyText);
+                const followUpHtml = followUps.length > 0 ? `
+                    <div class="ai-followup-chips">
+                        <span style="font-size:0.6rem;font-weight:700;color:var(--text-muted);display:flex;align-items:center;gap:3px;"><i class="fa-solid fa-lightbulb" style="color:#f59e0b;"></i> ${currentLang === 'kn' ? 'ಮುಂದಿನ ಪ್ರಶ್ನೆಗಳು:' : 'Suggested:'}</span>
+                        ${followUps.map(f => `<button type="button" onclick="sendAiChatMessage('${f.q.replace(/'/g, "\'")}')" class="ai-followup-btn">${f.label}</button>`).join('')}
+                    </div>
+                ` : '';
 
                 botCard.innerHTML = `
                     <div style="width:28px; height:28px; border-radius:8px; background:linear-gradient(135deg, #10b981, #0ea5e9); display:flex; align-items:center; justify-content:center; color:#fff; font-size:0.8rem; flex-shrink:0; margin-top:2px;">
-                        <i class="fa-solid fa-robot"></i>
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
                     </div>
                     <div class="ai-chat-bot-bubble" style="flex:1;">
-                        <div style="margin-bottom:8px;">${formattedHtml}</div>
-                        <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px dashed var(--border-light); padding-top:6px; margin-top:6px; font-size:0.64rem; color:var(--text-muted);">
-                            <span><i class="fa-solid fa-brain" style="color:var(--primary);margin-right:3px;"></i>${data.source || 'Raitha Sahayaka AI'}</span>
-                            <button type="button" onclick="speakAiResponse('${safeSpeechText}', this)" style="background:rgba(16,185,129,0.1); border:1px solid rgba(16,185,129,0.25); color:#10b981; padding:2px 7px; border-radius:5px; cursor:pointer; font-size:0.64rem; font-weight:700; display:inline-flex; align-items:center; gap:3px;">
-                                <i class="fa-solid fa-volume-high"></i> <span>${currentLang==='kn' ? 'ಕೇಳಿ' : 'Listen'}</span>
-                            </button>
+                        <div style="margin-bottom:6px;">${formattedHtml}</div>
+                        ${followUpHtml}
+                        <div class="ai-msg-footer">
+                            <div style="display:flex;align-items:center;gap:4px;">
+                                <span><i class="fa-solid fa-brain" style="color:var(--primary);margin-right:3px;"></i>${data.source || 'Raitha Sahayaka AI'}</span>
+                                <span class="ai-msg-time">${botTime}</span>
+                            </div>
+                            <div class="ai-msg-actions">
+                                <button type="button" onclick="copyAiMessageText(this, '${safeCopyText}')" class="ai-msg-action-btn" title="Copy response"><i class="fa-regular fa-copy"></i></button>
+                                <button type="button" onclick="rateAiResponse(this, 'up')" class="ai-msg-action-btn ai-thumb-btn" title="Helpful"><i class="fa-regular fa-thumbs-up"></i></button>
+                                <button type="button" onclick="rateAiResponse(this, 'down')" class="ai-msg-action-btn ai-thumb-btn" title="Not helpful"><i class="fa-regular fa-thumbs-down"></i></button>
+                                <button type="button" onclick="speakAiResponse('${safeSpeechText}', this)" class="ai-msg-action-btn" style="color:var(--primary);font-weight:700;"><i class="fa-solid fa-volume-high"></i> <span>${currentLang==='kn' ? 'ಕೇಳಿ' : 'Listen'}</span></button>
+                            </div>
                         </div>
                     </div>
                 `;
                 chatMessagesContainer.appendChild(botCard);
-                chatMessagesContainer.scrollTop = chatMessagesContainer.scrollHeight;
+                chatMessagesContainer.scrollTo({ top: chatMessagesContainer.scrollHeight, behavior: 'smooth' });
 
             } catch (err) {
                 console.error("Raitha Sahayaka AI Chat error:", err);
@@ -5210,8 +5496,26 @@ multiCropModels.forEach((model, mIdx) => {
                 errCard.style.borderColor = 'rgba(239,68,68,0.3)';
                 errCard.innerHTML = `<span style="color:#ef4444;"><i class="fa-solid fa-triangle-exclamation"></i> ${currentLang === 'kn' ? 'ಸಂಪರ್ಕ ದೋಷ. ದಯವಿಟ್ಟು ಪುನಃ ಪ್ರಯತ್ನಿಸಿ.' : 'Network error. Please try again.'}</span>`;
                 chatMessagesContainer.appendChild(errCard);
-                chatMessagesContainer.scrollTop = chatMessagesContainer.scrollHeight;
+                chatMessagesContainer.scrollTo({ top: chatMessagesContainer.scrollHeight, behavior: 'smooth' });
             }
+        }
+
+        function handleAiPhotoUpload(event) {
+            const file = event.target.files && event.target.files[0];
+            if (!file) return;
+
+            showToast(currentLang === 'kn' ? 'ಚಿತ್ರವನ್ನು ಪ್ರಕ್ರಿಯೆಗೊಳಿಸಲಾಗುತ್ತಿದೆ...' : 'Processing crop image...', 'fa-camera', 'success', 2000);
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const dataUrl = e.target.result;
+                const prompt = currentLang === 'kn'
+                    ? `[ಕೃಷಿ ಫೋಟೋ ತಪಾಸಣೆ]: ನನ್ನ ಜಮೀನಿನ (${currentFarmContext.location_name}) ಬೆಳೆಯ ಎಲೆಯ ಫೋಟೋವನ್ನು ಪರಿಶೀಲಿಸಿ. ಇದಕ್ಕೆ ತಗುಲಿರುವ ಕೀಟ/ಶಿಲೀಂಧ್ರ ರೋಗ ಅಥವಾ ಪೋಷಕಾಂಶ ಕೊರತೆ ಯಾವುದು ಮತ್ತು ಸೂಕ್ತ ಸಾವಯವ & ರಾಸಾಯನಿಕ ಪರಿಹಾರ ಕ್ರಮಗಳನ್ನು ತಿಳಿಸಿ.`
+                    : `[Crop Photo Diagnosis]: Analyzing uploaded crop leaf photo near ${currentFarmContext.location_name} (${currentFarmContext.district}, Karnataka). Please identify any fungal diseases, insect pests, or nutrient deficiencies, and prescribe biological and chemical treatments.`;
+                sendAiChatMessage(prompt, dataUrl);
+            };
+            reader.readAsDataURL(file);
+            event.target.value = '';
         }
 
         function handleAiQuickPrompt(btn) {
@@ -5223,20 +5527,22 @@ multiCropModels.forEach((model, mIdx) => {
 
         function clearAiChat() {
             aiChatHistory = [];
+            localStorage.removeItem(CHAT_STORAGE_KEY);
             const chatMessagesContainer = document.getElementById('ai-chat-messages');
             if (chatMessagesContainer) {
                 chatMessagesContainer.innerHTML = `
                     <div style="display:flex; gap:9px; align-items:flex-start; max-width:92%;">
                         <div style="width:28px; height:28px; border-radius:8px; background:linear-gradient(135deg, #10b981, #0ea5e9); display:flex; align-items:center; justify-content:center; color:#fff; font-size:0.8rem; flex-shrink:0; margin-top:2px;">
-                            <i class="fa-solid fa-robot"></i>
+                            <i class="fa-solid fa-wand-magic-sparkles"></i>
                         </div>
                         <div style="background:var(--card-bg); border:1px solid var(--glass-border); border-radius:12px 12px 12px 2px; padding:10px 12px; font-size:0.82rem; color:var(--text-main); line-height:1.55; box-shadow:0 4px 14px rgba(0,0,0,0.15);">
                             <div style="font-weight:700; color:var(--primary); margin-bottom:4px;">${currentLang==='kn' ? 'ನಮಸ್ಕಾರ ರೈತ ಬಾಂಧವರೇ! 🙏' : 'Namaskara! 🙏'}</div>
-                            <div>${currentLang==='kn' ? 'ನಾನು <strong>ರೈತ ಸಹಾಯಕ (Raitha Sahayaka)</strong>. ನಿಮ್ಮ ಜಮೀನಿನ ಮಣ್ಣು, ಮಳೆ ಮತ್ತು ಅಂತರ್ಜಲಕ್ಕೆ ಅನುಗುಣವಾಗಿ ರಸಗೊಬ್ಬರ ಪ್ರಮಾಣ, ನೀರಿನ ನಿರ್ವಹಣೆ, ಬೆಳೆ ವಿನ್ಯಾಸ ಹಾಗೂ ಸರ್ಕಾರಿ ಸಬ್ಸಿಡಿಗಳ ಬಗ್ಗೆ ಯಾವುದೇ ಪ್ರಶ್ನೆ ಕೇಳಿ!' : 'I am <strong>Raitha Sahayaka</strong>, your AI Agronomist. Ask me anything about fertilizer schedules, drought crops, or government subsidies!'}</div>
+                            <div>${currentLang==='kn' ? 'ನಾನು <strong>ರೈತ ಸಹಾಯಕ (Raitha Sahayaka)</strong>. ನಿಮ್ಮ ಜಮೀನಿನ ಮಣ್ಣು, ಮಳೆ ಮತ್ತು ಅಂತರ್ಜಲಕ್ಕೆ ಅನುಗುಣವಾಗಿ ರಸಗೊಬ್ಬರ ಪ್ರಮಾಣ, ನೀರಿನ ನಿರ್ವಹಣೆ, ಬೆಳೆ ವಿನ್ಯಾಸ ಹಾಗೂ ಸರ್ಕಾರಿ ಸಬ್ಸಿಡಿಗಳ ಬಗ್ಗೆ ಯಾವುದೇ ಪ್ರಶ್ನೆ ಕೇಳಿ ಅಥವಾ ಎಲೆಯ ಫೋಟೋ ಅಪ್ಲೋಡ್ ಮಾಡಿ!' : 'I am <strong>Raitha Sahayaka</strong>, your AI Agronomist. Ask me anything about fertilizer schedules, drought crops, government subsidies, or upload a leaf photo for disease diagnosis!'}</div>
                         </div>
                     </div>
                 `;
             }
+            showToast(currentLang === 'kn' ? 'ಚಾಟ್ ಇತಿಹಾಸವನ್ನು ಅಳಿಸಲಾಗಿದೆ' : 'Chat history cleared', 'fa-trash-can', 'warning', 2000);
         }
 
         function toggleAiVoiceInput() {
@@ -5326,7 +5632,87 @@ multiCropModels.forEach((model, mIdx) => {
             window.speechSynthesis.speak(utterance);
         }
 
-        // ── Floating AI Chat Toggle & Chips ──────────────────────────
+        // ── Context-Aware Dynamic Quick Chips ────────────────────────
+        function renderAiQuickChips() {
+            const chipsContainer = document.getElementById('ai-quick-chips');
+            if (!chipsContainer) return;
+            
+            const isKn = currentLang === 'kn';
+            const locName = currentFarmContext.location_name || (isKn ? 'ಕರ್ನಾಟಕ' : 'Karnataka');
+            const distName = currentFarmContext.district || locName;
+            
+            let chips = [];
+            if (activeTab === 'diag') {
+                chips = isKn ? [
+                    { label: `💧 ${locName} ಬರ ಅಪಾಯ?`, q: `${locName} ಭಾಗದಲ್ಲಿ ಪ್ರಸ್ತುತ ಬರ ಅಥವಾ ನೀರಿನ ಕೊರತೆ ಅಪಾಯ ಎಷ್ಟಿದೆ?` },
+                    { label: "🛰️ ತೇವಾಂಶ & SPI ಸ್ಥಿತಿ", q: "ನನ್ನ ಜಮೀನಿನ ಉಪಗ್ರಹ ಮಣ್ಣಿನ ತೇವಾಂಶ ಮತ್ತು SPI ಸೂಚಿ ವಿವರ ತಿಳಿಸಿ." },
+                    { label: "🌧️ ೯ ತಿಂಗಳ ಮಳೆ ಮುನ್ಸೂಚನೆ", q: "ಮುಂದಿನ ೯ ತಿಂಗಳಲ್ಲಿ ವಾಡಿಕೆ ಮಳೆ ಪ್ರಮಾಣ ಎಷ್ಟು ನಿರೀಕ್ಷಿಸಬಹುದು?" },
+                    { label: "🚨 ತುರ್ತು ನೀರಾವರಿ ಕ್ರಮ", q: "ಬರಗಾಲದ ನೀರಿನ ಒತ್ತಡ ಕಡಿಮೆ ಮಾಡಲು ತುರ್ತು ನೀರಾವರಿ ವಿಧಾನಗಳೇನು?" }
+                ] : [
+                    { label: `💧 Drought risk in ${locName}?`, q: `What is the current water stress and drought risk level in ${locName}?` },
+                    { label: "🛰️ Moisture & SPI Index", q: `Explain the satellite root-zone moisture and SPI drought severity for ${locName}.` },
+                    { label: "🌧️ 9-Month Rain Forecast", q: `What is the 9-month predictive rainfall anomaly for ${distName}?` },
+                    { label: "🚨 Emergency Protocols", q: "What emergency irrigation steps should I take to prevent crop drying?" }
+                ];
+            } else if (activeTab === 'fire') {
+                chips = isKn ? [
+                    { label: `🔥 ${locName} ಕಾಡ್ಗಿಚ್ಚು ಅಪಾಯ?`, q: `${locName} ಸುತ್ತಮುತ್ತ ಕಾಡ್ಗಿಚ್ಚು ಮತ್ತು ಉಷ್ಣ ಸೂಚಿ (FWI) ಅಪಾಯ ಎಷ್ಟಿದೆ?` },
+                    { label: "🌲 ಬೆಂಕಿ ತಡೆ ಪಟ್ಟಿ ನಿರ್ಮಾಣ", q: "ತೋಟಕ್ಕೆ ಬೆಂಕಿ ಹರಡದಂತೆ ಎಷ್ಟು ಅಗಲದ Firebreak ಬೆಂಕಿ ತಡೆ ಪಟ್ಟಿ ನಿರ್ಮಿಸಬೇಕು?" },
+                    { label: "🚒 ಹತ್ತಿರದ KFD ಕಂಟ್ರೋಲ್ ರೂಂ", q: "ತುರ್ತು ಸಂದರ್ಭದಲ್ಲಿ ಕರ್ನಾಟಕ ಅರಣ್ಯ ಇಲಾಖೆ (KFD) ಸಹಾಯ ಪಡೆಯುವುದು ಹೇಗೆ?" },
+                    { label: "⚠️ ಗಾಳಿ ಮತ್ತು ಇಂಧನ ಹೊರೆ", q: "ಒಣ ಎಲೆಗಳ ಹೊರೆ ಮತ್ತು ಗಾಳಿಯ ವೇಗದಿಂದ ಬೆಂಕಿ ಹರಡುವ ವೇಗ (ROS) ಎಷ್ಟಿದೆ?" }
+                ] : [
+                    { label: `🔥 Fire spread in ${locName}?`, q: `What is the Canadian FWI wildfire rating and spread risk in ${locName}?` },
+                    { label: "🌲 Firebreak Design", q: "How wide should plantation firebreaks be to protect my agroforestry trees?" },
+                    { label: "🚒 Nearest KFD Control Room", q: `Who is the emergency dispatch for forest fire response in ${distName}?` },
+                    { label: "⚠️ Wind & Fuel Load", q: "How does current wind speed affect fire rate of spread (ROS)?" }
+                ];
+            } else if (activeTab === 'pest') {
+                chips = isKn ? [
+                    { label: `🐛 ${locName} ಕೀಟ ರೋಗ ಅಪಾಯ?`, q: `${locName} ಭಾಗದಲ್ಲಿ ಪ್ರಸ್ತುತ ತಾಪಮಾನ ಮತ್ತು ತೇವಾಂಶಕ್ಕೆ ತಕ್ಕಂತೆ ಯಾವ ರೋಗಗಳ ಅಪಾಯವಿದೆ?` },
+                    { label: "🧪 ಜೈವಿಕ ನಿಯಂತ್ರಣ ಔಷಧ", q: "ಟ್ರೈಕೋಡರ್ಮಾ ಮತ್ತು ಸೂಡೋಮೊನಾಸ್ ಜೈವಿಕ ಶಿಲೀಂಧ್ರನಾಶಕ ಪ್ರಮಾಣ ತಿಳಿಸಿ." },
+                    { label: "🏪 ಹತ್ತಿರದ KSSC ಕೃಷಿ ಮಳಿಗೆ", q: `${distName} ಜಿಲ್ಲೆಯ ಅಧಿಕೃತ ಕೃಷಿ ಇನ್‌ಪುಟ್ ಮತ್ತು ಕ್ರಿಮಿನಾಶಕ ಮಳಿಗೆ ಎಲ್ಲಿದೆ?` },
+                    { label: "📷 ಎಲೆ ರೋಗ ತಪಾಸಣೆ", q: "ನನ್ನ ಬೆಳೆಯ ಎಲೆಯ ಫೋಟೋ ಅಪ್ಲೋಡ್ ಮಾಡಿ ರೋಗ ಪತ್ತೆ ಹಚ್ಚುವುದು ಹೇಗೆ?" }
+                ] : [
+                    { label: `🐛 Pest risks in ${locName}?`, q: `What fungal or pest threats are elevated under current humidity in ${locName}?` },
+                    { label: "🧪 Bio-Control Dosages", q: "What are the recommended application rates for Trichoderma and Neem oil?" },
+                    { label: "🏪 Nearest KSSC Store", q: `Where is the nearest government certified seed and agri-input store in ${distName}?` },
+                    { label: "🍃 Leaf Spot Treatment", q: "What is the best curative spray for foliar leaf spots and blast?" }
+                ];
+            } else if (activeTab === 'saved') {
+                chips = isKn ? [
+                    { label: "📊 ಉಳಿಸಿದ ತೋಟಗಳ ಹೋಲಿಕೆ", q: "ನಾನು ಉಳಿಸಿರುವ ಜಮೀನುಗಳ ಪೈಕಿ ಅತ್ಯಂತ ಲಾಭದಾಯಕ ಬೆಳೆ ಯಾವುದು?" },
+                    { label: "💰 ಗರಿಷ್ಠ ROI ಜಮೀನು", q: "ಉಳಿಸಿದ ಸ್ಥಳಗಳಲ್ಲಿ ಅತಿ ಹೆಚ್ಚು ವಾರ್ಷಿಕ ಆದಾಯ ನೀಡುವ ಸ್ಥಳ ಯಾವುದು?" },
+                    { label: "🌦️ ಹವಾಮಾನ ಎಚ್ಚರಿಕೆ", q: "ನನ್ನ ಉಳಿಸಿದ ಜಮೀನುಗಳ ವ್ಯಾಪ್ತಿಯಲ್ಲಿ ಇತ್ತೀಚಿನ ಹವಾಮಾನ ಎಚ್ಚರಿಕೆಗಳೇನು?" }
+                ] : [
+                    { label: "📊 Compare Bookmarks", q: "Compare the crop suitability and ROI across my saved farm locations." },
+                    { label: "💰 Highest ROI Site", q: "Which of my bookmarked farms yields the highest commercial returns?" },
+                    { label: "🌦️ Weather Alerts for Sites", q: "Are there any high heat or drought alerts for my saved farm locations?" }
+                ];
+            } else {
+                // Default Agro tab
+                chips = isKn ? [
+                    { label: `🌾 ${locName} NPK ಗೊಬ್ಬರ ಲೆಕ್ಕ`, q: `${locName} ಮಣ್ಣಿನ pH ${currentFarmContext.ph} ಗೆ ಶಿಫಾರಸು ಮಾಡಲಾದ NPK ರಸಗೊಬ್ಬರ ಪ್ರಮಾಣ ಎಷ್ಟು?` },
+                    { label: "💧 ಕಡಿಮೆ ನೀರಿನ ಬೆಳೆಗಳು", q: `ವಾರ್ಷಿಕ ${currentFarmContext.rainfall}ಮಿಮೀ ಮಳೆಗೆ ಸೂಕ್ತವಾದ ಕಡಿಮೆ ನೀರಿನ ವಾಣಿಜ್ಯ ಬೆಳೆಗಳಾವುವು?` },
+                    { label: `🏛️ ${distName} ಸಬ್ಸಿಡಿ ಯೋಜನೆಗಳು`, q: `${distName} ಜಿಲ್ಲೆಗೆ ಲಭ್ಯವಿರುವ ಕೃಷಿ ಅರಣ್ಯ (KAPY) & ರೈತ ಸಿರಿ ಸಬ್ಸಿಡಿ ಪಡೆಯುವುದು ಹೇಗೆ?` },
+                    { label: "🌲 ೪-ಹಂತದ ಅಂತರ ವಿನ್ಯಾಸ", q: "೧ ಎಕರೆಗೆ ೪-ಹಂತದ ಬಹುಬೆಳೆ ಪದ್ಧತಿಯಲ್ಲಿ ಸಾಲಿನ ಅಂತರ ಮತ್ತು ಸಸಿಗಳ ಸಂಖ್ಯೆ ತಿಳಿಸಿ." },
+                    { label: "⚡ ಸೌರ ಕೃಷಿ (Agri-PV) ಆದಾಯ", q: "ಪ್ರಧಾನ ಮಂತ್ರಿ ಕುಸುಮ್ (PM-KUSUM) ಯೋಜನೆಯಡಿ ಸೌರ ಕೃಷಿಯಿಂದ ವಾರ್ಷಿಕ ಎಷ್ಟು ದ್ವಿ-ಆದಾಯ ಸಿಗುತ್ತದೆ?" }
+                ] : [
+                    { label: `🌾 NPK for ${locName}`, q: `What is the customized NPK fertilizer schedule for ${locName} soil with pH ${currentFarmContext.ph}?` },
+                    { label: "💧 Low Water Crops", q: `Which high-value crops are optimal for ${currentFarmContext.rainfall}mm annual rainfall?` },
+                    { label: `🏛️ Subsidies in ${distName}`, q: `What government subsidy schemes (KAPY, Raitha Siri, MIDH) apply in ${distName}?` },
+                    { label: "🌲 4-Tier Spacing", q: "What is the recommended multi-tier canopy spacing and tree density per acre?" },
+                    { label: "⚡ Solar Agri-PV Returns", q: "How much dual income can I generate on 1 acre with Solar Agri-PV under PM-KUSUM?" }
+                ];
+            }
+
+            chipsContainer.innerHTML = chips.map(c => `
+                <button type="button" onclick="handleAiQuickPrompt(this)" data-q="${c.q.replace(/"/g, '&quot;')}" class="ai-followup-btn" style="white-space:nowrap;flex-shrink:0;">
+                    ${c.label}
+                </button>
+            `).join('');
+        }
+
+        // ── Floating AI Chat Toggle ──────────────────────────────────
         function toggleFloatingAiChat() {
             const win = document.getElementById('floating-ai-window');
             if (!win) return;
@@ -5335,7 +5721,7 @@ multiCropModels.forEach((model, mIdx) => {
             if (isHidden) {
                 renderAiQuickChips();
                 const chatContainer = document.getElementById('ai-chat-messages');
-                if (chatContainer) chatContainer.scrollTop = chatContainer.scrollHeight;
+                if (chatContainer) chatContainer.scrollTo({ top: chatContainer.scrollHeight, behavior: 'smooth' });
                 const inputEl = document.getElementById('ai-chat-input');
                 if (inputEl) inputEl.focus();
                 const bubble = document.getElementById('floating-ai-bubble');
@@ -5346,35 +5732,8 @@ multiCropModels.forEach((model, mIdx) => {
             }
         }
 
-        function renderAiQuickChips() {
-            const chipsContainer = document.getElementById('ai-quick-chips');
-            if (!chipsContainer) return;
-            
-            const chipsEn = [
-                { label: "🌾 NPK Fertilizer", q: "How much fertilizer (NPK) should I apply per acre for my soil?" },
-                { label: "💧 Low Water Crops", q: "Which crops are best suited for low water and drought resilience?" },
-                { label: "🏛️ Govt Subsidies", q: "How can I apply for Raita Siri, Krishi Bhagya and PMKSY subsidies?" },
-                { label: "🌲 4-Tier Spacing", q: "What is the recommended row spacing and layout for 4-tier agroforestry?" },
-                { label: "⚡ Solar Agri-PV", q: "How much dual income can I generate with Solar Agri-PV under PM-KUSUM?" }
-            ];
-
-            const chipsKn = [
-                { label: "🌾 ರಸಗೊಬ್ಬರ ಲೆಕ್ಕ", q: "ಎಕರೆಗೆ ಎಷ್ಟು ಗೊಬ್ಬರ (NPK) ಹಾಕಬೇಕು?" },
-                { label: "💧 ಕಡಿಮೆ ನೀರಿನ ಬೆಳೆ", q: "ಕಡಿಮೆ ನೀರಿಗೆ ಯಾವ ಬೆಳೆಗಳು ಸೂಕ್ತ?" },
-                { label: "🏛️ ಸರ್ಕಾರಿ ಸಬ್ಸಿಡಿ", q: "ರೈತ ಸಿರಿ & ಕೃಷಿ ಭಾಗ್ಯ ಸಬ್ಸಿಡಿ ಪಡೆಯುವುದು ಹೇಗೆ?" },
-                { label: "🌲 ಸಾಲಿನ ಅಂತರ", q: "೪-ಹಂತದ ಕೃಷಿ ಅರಣ್ಯ ಸಾಲಿನ ಅಂತರ ತಿಳಿಸಿ" },
-                { label: "⚡ ಸೌರ ಕೃಷಿ", q: "ಸೌರ ಕೃಷಿ (Agri-PV) ದ್ವಿ-ಆದಾಯ ಎಷ್ಟು ಸಿಗುತ್ತದೆ?" }
-            ];
-
-            const chips = currentLang === 'kn' ? chipsKn : chipsEn;
-            chipsContainer.innerHTML = chips.map(c => `
-                <button type="button" onclick="handleAiQuickPrompt(this)" data-q="${c.q.replace(/"/g, '&quot;')}" style="padding:4px 9px; border-radius:12px; background:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.25); color:var(--primary); font-size:0.68rem; font-weight:700; cursor:pointer; font-family:inherit; flex-shrink:0; transition:all 0.15s;">
-                    ${c.label}
-                </button>
-            `).join('');
-        }
-
-        // Initialize Bookmarks on load
+        // Initialize Bookmarks and Chat History on load
+        loadAiChatHistoryFromStorage();
         renderSavedLocations();
 
         // ── Deep-link URL support ─────────────────────────────────────
