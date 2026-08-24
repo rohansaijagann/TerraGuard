@@ -1046,6 +1046,7 @@ body.dark-theme .ai-window-header{background:rgba(0,0,0,0.15)}
                     </div>
                 </div>
                 <div class="ai-header-actions">
+                    <button type="button" onclick="promptGeminiApiKey()" class="ai-header-btn" title="Configure Google Gemini Vision API Key (Optional)"><i class="fa-solid fa-key"></i></button>
                     <button type="button" onclick="toggleAiMaximize()" class="ai-header-btn" title="Expand / Shrink Window">
                         <i id="ai-max-icon" class="fa-solid fa-expand"></i>
                     </button>
@@ -5428,6 +5429,7 @@ multiCropModels.forEach((model, mIdx) => {
                     body: JSON.stringify({
                         query: query,
                         image_data: imageUrl,
+                        gemini_api_key: localStorage.getItem('terraguard_gemini_api_key') || '',
                         chat_history: aiChatHistory,
                         farm_context: {
                             ...currentFarmContext,
@@ -5523,6 +5525,20 @@ multiCropModels.forEach((model, mIdx) => {
             const promptText = btn.getAttribute('data-q');
             if (promptText) {
                 sendAiChatMessage(promptText);
+            }
+        }
+
+        function promptGeminiApiKey() {
+            const currentKey = localStorage.getItem('terraguard_gemini_api_key') || '';
+            const newKey = prompt(currentLang === 'kn' ? 'ನಿಮ್ಮ Google Gemini Vision API Key ನಮೂದಿಸಿ (ಐಚ್ಛಿಕ):' : 'Enter your Google Gemini API Key for live AI Vision (Optional):', currentKey);
+            if (newKey !== null) {
+                if (newKey.trim()) {
+                    localStorage.setItem('terraguard_gemini_api_key', newKey.trim());
+                    showToast(currentLang === 'kn' ? 'Gemini API Key ಉಳಿಸಲಾಗಿದೆ!' : 'Gemini API Key saved!', 'fa-key', 'success');
+                } else {
+                    localStorage.removeItem('terraguard_gemini_api_key');
+                    showToast(currentLang === 'kn' ? 'ಸ್ಥಳೀಯ Vision AI ಸಕ್ರಿಯವಾಗಿದೆ' : 'Using Built-in Vision AI Engine', 'fa-wand-magic-sparkles', 'info');
+                }
             }
         }
 

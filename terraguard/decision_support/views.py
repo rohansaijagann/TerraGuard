@@ -2372,6 +2372,7 @@ class RaithaSahayakaAPI(APIView):
 
         query = request.data.get('query', '')
         image_data = request.data.get('image_data', None)
+        custom_gemini_key = request.data.get('gemini_api_key') or request.headers.get('X-Gemini-Key') or None
         chat_history = request.data.get('chat_history', [])
         farm_context = request.data.get('farm_context', {})
         language = request.data.get('language', 'kn')
@@ -2379,5 +2380,12 @@ class RaithaSahayakaAPI(APIView):
         if not query.strip() and not image_data:
             return Response({"reply": "ದಯವಿಟ್ಟು ನಿಮ್ಮ ಕೃಷಿ ಪ್ರಶ್ನೆಯನ್ನು ಕೇಳಿ ಅಥವಾ ಎಲೆಯ ಫೋಟೋ ಅಪ್ಲೋಡ್ ಮಾಡಿ... / Please ask a farming question or upload a crop photo.", "source": "Raitha Sahayaka"})
 
-        data = generate_agronomist_reply(query, chat_history, farm_context, language, image_data=image_data)
+        data = generate_agronomist_reply(
+            query,
+            chat_history,
+            farm_context,
+            language,
+            image_data=image_data,
+            custom_gemini_key=custom_gemini_key
+        )
         return Response(data)
