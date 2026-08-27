@@ -2678,24 +2678,33 @@ class RaithaSahayakaAPI(APIView):
     permission_classes = []
 
     def post(self, request):
-        from .ml_utils.ai_agronomist import generate_agronomist_reply
+        try:
+            from .ml_utils.ai_agronomist import generate_agronomist_reply
 
-        query = request.data.get('query', '')
-        image_data = request.data.get('image_data', None)
-        custom_gemini_key = request.data.get('gemini_api_key') or request.headers.get('X-Gemini-Key') or None
-        chat_history = request.data.get('chat_history', [])
-        farm_context = request.data.get('farm_context', {})
-        language = request.data.get('language', 'kn')
+            query = request.data.get('query', '')
+            image_data = request.data.get('image_data', None)
+            custom_gemini_key = request.data.get('gemini_api_key') or request.headers.get('X-Gemini-Key') or None
+            chat_history = request.data.get('chat_history', [])
+            farm_context = request.data.get('farm_context', {})
+            language = request.data.get('language', 'kn')
 
-        if not query.strip() and not image_data:
-            return Response({"reply": "ದಯವಿಟ್ಟು ನಿಮ್ಮ ಕೃಷಿ ಪ್ರಶ್ನೆಯನ್ನು ಕೇಳಿ ಅಥವಾ ಎಲೆಯ ಫೋಟೋ ಅಪ್ಲೋಡ್ ಮಾಡಿ... / Please ask a farming question or upload a crop photo.", "source": "Raitha Sahayaka"})
+            if not query.strip() and not image_data:
+                return Response({"reply": "ದಯವಿಟ್ಟು ನಿಮ್ಮ ಕೃಷಿ ಪ್ರಶ್ನೆಯನ್ನು ಕೇಳಿ ಅಥವಾ ಎಲೆಯ ಫೋಟೋ ಅಪ್ಲೋಡ್ ಮಾಡಿ... / Please ask a farming question or upload a crop photo.", "source": "Raitha Sahayaka"})
 
-        data = generate_agronomist_reply(
-            query,
-            chat_history,
-            farm_context,
-            language,
-            image_data=image_data,
-            custom_gemini_key=custom_gemini_key
-        )
-        return Response(data)
+            data = generate_agronomist_reply(
+                query,
+                chat_history,
+                farm_context,
+                language,
+                image_data=image_data,
+                custom_gemini_key=custom_gemini_key
+            )
+            return Response(data)
+        except Exception as e:
+            import traceback
+            traceback.print_exc()
+            return Response({
+                "reply": f"ದಯವಿಟ್ಟು ಕ್ಷಮಿಸಿ, ತಾತ್ಕಾಲಿಕ ಸರ್ವರ್ ಸಮಸ್ಯೆ ಉಂಟಾಗಿದೆ. (Error: {str(e)[:80]}). ದಯವಿಟ್ಟು ಪುನಃ ಪ್ರಯತ್ನಿಸಿ.",
+                "source": "Raitha Sahayaka System",
+                "error": str(e)
+            }, status=200)
