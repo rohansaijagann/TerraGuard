@@ -18,33 +18,31 @@ import re
 from django.conf import settings
 from PIL import Image
 
-SYSTEM_PROMPT_EN = """You are 'Raitha Sahayaka' (ರೈತ ಸಹಾಯಕ), a senior agricultural scientist and plant pathologist from the University of Agricultural Sciences (UAS) Bengaluru & UAS Dharwad.
-You advise Karnataka farmers, plantation managers, and agriculturalists with rigorous, scientifically validated, and highly actionable guidance.
+SYSTEM_PROMPT_EN = """You are 'Raitha Sahayaka' (ರೈತ ಸಹಾಯಕ), an AI farming assistant and agronomist for Karnataka farmers.
+Your goal is to give farmers, students, and growers clear, practical, and very simple, easy-to-understand agricultural guidance.
 
-CURRENT FARM TELEMETRY & CONTEXT:
+CURRENT FARM DETAILS:
 - Location: {location_name} ({district}, Karnataka) [Lat: {lat}, Lon: {lon}]
 - Annual Rainfall: {rainfall_mm} mm
 - Soil pH: {soil_ph} | Available Nitrogen: {nitrogen} cg/kg | Organic Carbon: {soc}%
-- CGWB Groundwater Table Depth: {aquifer_depth}m mbgl (Status: {aquifer_status})
-- Recommended Agroforestry Stack: {top_crops}
-- Active Government Schemes: {subsidies}
-- Regional APMC Mandi: {nearest_mandi}
-- Custom Hiring Centre (CHC): {nearest_chc}
+- Groundwater Depth: {aquifer_depth} meters ({aquifer_status})
+- Recommended Crops: {top_crops}
+- Government Schemes: {subsidies}
+- Nearest Mandi / APMC: {nearest_mandi}
+- Machinery Custom Hiring Centre (CHC): {nearest_chc}
 
-MANDATORY SCIENTIFIC STRUCTURE FOR CROP HEALTH & DIAGNOSIS:
-When responding to plant health, foliar photos, pests, or disease inquiries, structure your report strictly into these 6 numbered sections:
-1. Diagnosis & Pathogen Identification (Scientific Taxonomy): Common and scientific names of the causative agent.
-2. Etiology & Environmental Drivers: Physical and environmental triggers (humidity >80%, water stagnation, overcast skies, nitrogen excess, or insect vectors).
-3. Clinical Diagnostic Symptoms: Morphological symptoms (concentric lesions, chlorosis, blast spots, collar rot, defoliation).
-4. Prescribed Chemical Treatment & Dosage: Certified chemical formulations with precise dosages per liter of water.
-5. Biological & Organic Crop Protection: Certified bio-control agents (Trichoderma, Pseudomonas, Neem oil, bio-stimulants).
-6. Agricultural Extension & RSK Support: Nearest KSDA Raitha Samparka Kendra and plant health clinic.
-
-TONE & FORMATTING GUIDELINES:
-- Maintain an authoritative, professional, and respectful scientific tone.
-- Do NOT use informal text emojis. Use bold section titles, clear bullet points, and exact dosages.
-- If requested language is 'kn' (Kannada), provide the entire consultation in fluent, formal Kannada with the exact same 6 structured sections.
-"""
+LANGUAGE & STYLE GUIDELINES (SIMPLE, PLAIN ENGLISH):
+1. Always write in simple, friendly, everyday English.
+2. DO NOT use heavy academic jargon, difficult Latin medical names, or complicated scientific terms.
+3. Keep sentences short, helpful, and direct.
+4. When explaining plant diseases, pests, or leaf photos, use this simple 6-part format:
+   1. **Problem / Disease Name**: Simple name of the crop issue (with common name in brackets).
+   2. **Why It Happened (Causes)**: Simple reason (e.g. excess humidity, continuous rain, wet leaves, insect attack).
+   3. **Signs to Check (Symptoms)**: Easy-to-spot visual signs (e.g. yellow leaf edges, brown spots, white powder on leaves).
+   4. **Medicine & Spray Dosage**: Clear, exact measurement (e.g. "Mix 2 grams per 1 liter of water and spray early in the morning").
+   5. **Natural / Organic Remedies**: Home remedies or organic sprays (e.g. Neem oil spray, cow urine/Jeevamrutha, bio-fungicide).
+   6. **Local Help & Government Office**: Nearest Raitha Samparka Kendra (RSK) or agriculture department contact.
+5. For general farming questions (fertilizers, watering, sowing, subsidies), give 2 to 4 simple, numbered steps that are easy to follow."""
 
 SYSTEM_PROMPT_KN = """ನೀವು 'ರೈತ ಸಹಾಯಕ' (Raitha Sahayaka), ಬೆಂಗಳೂರು ಮತ್ತು ಧಾರವಾಡ ಕೃಷಿ ವಿಶ್ವವಿದ್ಯಾಲಯದ ಹಿರಿಯ ಸಸ್ಯ ರೋಗಶಾಸ್ತ್ರಜ್ಞ ಹಾಗೂ ಕೃಷಿ ವಿಜ್ಞಾನಿ.
 ಕರ್ನಾಟಕದ ರೈತರಿಗೆ ನಿಖರ, ವೈಜ್ಞಾನಿಕ ಹಾಗೂ ಅಧಿಕ ಇಳುವರಿ ನೀಡುವ ಅಧಿಕೃತ ಕೃಷಿ ತಾಂತ್ರಿಕ ಮಾರ್ಗದರ್ಶನ ನೀಡುವುದು ನಿಮ್ಮ ಕರ್ತವ್ಯ.
@@ -223,7 +221,7 @@ def generate_agronomist_reply(query, chat_history=None, farm_context=None, langu
                 }
             }
 
-            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={gemini_key}"
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key={gemini_key}"
             req = urllib.request.Request(
                 url,
                 data=json.dumps(payload).encode("utf-8"),
@@ -289,14 +287,14 @@ def fallback_agronomic_engine(query, ctx, language="en", image_data=None):
 **೫. ಸಾವಯವ & ಜೈವಿಕ ನಿರ್ವಹಣೆ:** **ಟ್ರೈಕೋಡರ್ಮಾ ಹಾರ್ಜಿಯಾನಮ್** — ೫ ಗ್ರಾಂ / ಲೀಟರ್ + ೧೦,೦೦೦ ppm **ಬೇವಿನ ಎಣ್ಣೆ** ೩ ಮಿಲಿ / ಲೀಟರ್.
 **೬. ತಾಲ್ಲೂಕು ಕೃಷಿ ವಿಸ್ತರಣೆ & RSK ನೆರವು:** {ctx['district']} ತಾಲ್ಲೂಕು ಕೃಷಿ ಇಲಾಖೆ & ರೈತ ಸಂಪರ್ಕ ಕೇಂದ್ರ (RSK)."""
             else:
-                reply = f"""{telemetry_badge}**Plant Pathology Diagnostic Dossier — Foliar Rust ({ctx['location_name']})**
+                reply = f"""{telemetry_badge}**Crop Health Check — Leaf Rust Disease ({ctx['location_name']})**
 
-**1. Diagnosis & Pathogen Identification:** **Foliar Leaf Rust (*Puccinia* / *Hemileia vastatrix*)**
-**2. Etiology & Environmental Drivers:** Airborne urediniospores germinating under sustained canopy condensation, ambient temperatures of 20–26°C, and relative humidity exceeding 80%.
-**3. Clinical Diagnostic Symptoms:** Distinct reddish-orange to cinnamon-brown powdery pustules erupting across the lower leaf lamina ({pixel_data['rust_pct']}% foliar area colonized).
-**4. Prescribed Chemical Treatment & Dosage:** **Hexaconazole 5% EC (Contaf)** @ 2 ml/L or **Propiconazole 25% EC (Tilt)** @ 1 ml/L.
-**5. Biological & Organic Crop Protection:** **Trichoderma harzianum** @ 5 g/L + **Neem Oil 10,000 ppm** @ 3 ml/L.
-**6. Agricultural Extension & RSK Support:** {ctx['district']} KSDA Raitha Samparka Kendra & University Plant Pathology Clinic."""
+**1. Problem / Disease Name:** **Leaf Rust (Fungal Infection)**
+**2. Why It Happened:** High humidity (>80%), wet leaves from morning fog/rain, and warm weather (20–26°C). Rust spores spread easily through the wind.
+**3. Signs to Check (Symptoms):** Small reddish-orange or brown powdery spots on the underside of leaves ({pixel_data['rust_pct']}% of leaf affected).
+**4. Medicine & Spray Dosage:** **Hexaconazole 5% (Contaf)** — Mix 2 ml in 1 liter of water, OR **Propiconazole (Tilt)** — Mix 1 ml in 1 liter of water. Spray early in the morning.
+**5. Natural / Organic Treatment:** Spray **Neem Oil** (3 ml per liter of water) or **Trichoderma** bio-powder (5 grams per liter of water).
+**6. Local Help & Support:** Visit your nearest {ctx['district']} Raitha Samparka Kendra (RSK) or Agriculture Department."""
             return {"reply": reply, "source": "Computer Vision Pathology Engine", "language": language}
 
         # Pattern B: Powdery / White Mildew detected
@@ -311,14 +309,14 @@ def fallback_agronomic_engine(query, ctx, language="en", image_data=None):
 **೫. ಸಾವಯವ & ಜೈವಿಕ ನಿರ್ವಹಣೆ:** ೧೦% ಹಸಿ ಹಸುವಿನ ಹಾಲಿನ ದ್ರಾವಣ ಸಿಂಪಡಣೆ ಅಥವಾ **ಆಂಪೆಲೋಮೈಸಿಸ್ ಕ್ವಿಸ್ಕ್ವಾಲಿಸ್** ಜೈವಿಕ ಶಿಲೀಂಧ್ರನಾಶಕ.
 **೬. ತಾಲ್ಲೂಕು ಕೃಷಿ ವಿಸ್ತರಣೆ & RSK ನೆರವು:** {ctx['district']} ತೋಟಗಾರಿಕಾ ಇಲಾಖೆ ಕಚೇರಿ."""
             else:
-                reply = f"""{telemetry_badge}**Plant Pathology Diagnostic Dossier — Powdery Mildew ({ctx['location_name']})**
+                reply = f"""{telemetry_badge}**Crop Health Check — Powdery Mildew / White Powder ({ctx['location_name']})**
 
-**1. Diagnosis & Pathogen Identification:** **Powdery Mildew (*Erysiphe polygoni* / *Oidium*)**
-**2. Etiology & Environmental Drivers:** Warm sunny daytime conditions (28–32°C) combined with high nocturnal humidity and dense canopy shade restricting direct light.
-**3. Clinical Diagnostic Symptoms:** White talcum-like powdery fungal mycelial patches covering the upper leaf lamina ({pixel_data['white_pct']}% surface area colonized).
-**4. Prescribed Chemical Treatment & Dosage:** **Wettable Sulphur 80% WP (Sulfex)** @ 3 g/L or **Hexaconazole 5% EC** @ 1.5 ml/L.
-**5. Biological & Organic Crop Protection:** 10% Raw Cow Milk foliar spray or **Ampelomyces quisqualis** hyperparasitic bio-control.
-**6. Agricultural Extension & RSK Support:** {ctx['district']} KSDA Plant Health Clinic & Horticulture Center."""
+**1. Problem / Disease Name:** **Powdery Mildew (White Fungus)**
+**2. Why It Happened:** Warm sunny days with cool humid nights and thick leaf shade blocking sunlight.
+**3. Signs to Check (Symptoms):** White flour-like powder coating the upper surface of leaves ({pixel_data['white_pct']}% of leaf affected), making leaves curl and dry up.
+**4. Medicine & Spray Dosage:** **Wettable Sulphur (Sulfex)** — Mix 3 grams in 1 liter of water, OR **Hexaconazole** — Mix 1.5 ml in 1 liter of water.
+**5. Natural / Organic Treatment:** Spray 10% raw cow milk (100 ml milk in 1 liter water) or Neem oil spray (3 ml/L).
+**6. Local Help & Support:** {ctx['district']} Horticulture Department or Raitha Samparka Kendra."""
             return {"reply": reply, "source": "Computer Vision Pathology Engine", "language": language}
 
         # Pattern C: High Chlorosis / Yellowing (>12%)
@@ -335,16 +333,16 @@ def fallback_agronomic_engine(query, ctx, language="en", image_data=None):
 **೫. ಸಾವಯವ & ಜೈವಿಕ ನಿರ್ವಹಣೆ:** ೧೦,೦೦೦ ppm **ಬೇವಿನ ಎಣ್ಣೆ** — ೩ ಮಿಲಿ / ಲೀಟರ್ ಮತ್ತು ಎಕರೆಗೆ ೧೫ ಹಳದಿ ಅಂಟು ಬಲೆಗಳು.
 **೬. ತಾಲ್ಲೂಕು ಕೃಷಿ ವಿಸ್ತರಣೆ & RSK ನೆರವು:** {ctx['district']} ಕೃಷಿ ವಿಜ್ಞಾನ ಕೇಂದ್ರ (KVK)."""
             else:
-                reply = f"""{telemetry_badge}**Plant Pathology Diagnostic Dossier — Interveinal Chlorosis & Vector Complex ({ctx['location_name']})**
+                reply = f"""{telemetry_badge}**Crop Health Check — Yellow Leaves & Leaf Curl ({ctx['location_name']})**
 
-**1. Diagnosis & Pathogen Identification:** **Interveinal Chlorosis & Leaf Curl Complex (Begomovirus / Zinc Deficiency)**
-**2. Etiology & Environmental Drivers:** Sap-sucking Whitefly (*Bemisia tabaci*) vectors transmitting viral load, exacerbated by soil pH {ctx['soil_ph']} induced Zinc/Iron uptake lockout ({pixel_data['yellow_pct']}% chlorosis area detected).
-**3. Clinical Diagnostic Symptoms:** Interveinal yellow chlorotic mottling, leaf margin curling, brittle lamina, and stunted shoot internodes.
-**4. Prescribed Chemical Treatment & Dosage:**
-- Vector Management: **Diafenthiuron 50% WP (Pegasus)** @ 1.2 g/L or **Acetamiprid 20% SP** @ 0.3 g/L.
-- Micronutrient Correction: **Chelated Zinc EDTA (12%)** @ 1.5 g/L foliar spray.
-**5. Biological & Organic Crop Protection:** **Neem Oil 10,000 ppm** @ 3 ml/L + 15 Yellow Sticky Traps per acre.
-**6. Agricultural Extension & RSK Support:** {ctx['district']} Krishi Vigyan Kendra (KVK) & RSK Center."""
+**1. Problem / Disease Name:** **Yellow Leaves & Leaf Curl (Whitefly / Nutrient Deficiency)**
+**2. Why It Happened:** Tiny whiteflies sucking plant sap and passing virus, or soil lacking zinc/iron ({pixel_data['yellow_pct']}% yellow area).
+**3. Signs to Check (Symptoms):** Leaves turning yellow between veins, leaf edges curling upwards, and slow plant growth.
+**4. Medicine & Spray Dosage:**
+- For Sucking Pests: **Diafenthiuron (Pegasus)** — 1.2 g/L OR **Acetamiprid** — 0.3 g/L.
+- For Micronutrients: **Zinc EDTA 12%** — Mix 1.5 grams in 1 liter of water and spray on leaves.
+**5. Natural / Organic Treatment:** Spray **Neem Oil** (3 ml/L) and put 15 **Yellow Sticky Traps** per acre.
+**6. Local Help & Support:** {ctx['district']} Krishi Vigyan Kendra (KVK) or RSK."""
             return {"reply": reply, "source": "Computer Vision Pathology Engine", "language": language}
 
         # Pattern D: Severe Brown/Black Necrotic Spots (>10%)
@@ -359,14 +357,14 @@ def fallback_agronomic_engine(query, ctx, language="en", image_data=None):
 **೫. ಸಾವಯವ & ಜೈವಿಕ ನಿರ್ವಹಣೆ:** **ಟ್ರೈಕೋಡರ್ಮಾ ವಿರಿಡೆ** ೫ ಗ್ರಾಂ / ಲೀಟರ್ ಸಿಂಪಡಣೆ.
 **೬. ತಾಲ್ಲೂಕು ಕೃಷಿ ವಿಸ್ತರಣೆ & RSK ನೆರವು:** {ctx['district']} ರೈತ ಸಂಪರ್ಕ ಕೇಂದ್ರ (RSK)."""
             else:
-                reply = f"""{telemetry_badge}**Plant Pathology Diagnostic Dossier — Concentric Target Spot ({ctx['location_name']})**
+                reply = f"""{telemetry_badge}**Crop Health Check — Brown Leaf Spot & Early Blight ({ctx['location_name']})**
 
-**1. Diagnosis & Pathogen Identification:** **Concentric Target Leaf Spot (*Alternaria solani* / *Cercospora*)**
-**2. Etiology & Environmental Drivers:** Warm temperatures (26–32°C) with morning dew persistence, splash irrigation, and humidity >80% triggering conidial germination ({pixel_data['brown_pct']}% necrotic tissue detected).
-**3. Clinical Diagnostic Symptoms:** Distinct concentric target-board dark brown rings with chlorotic yellow haloes leading to necrotic collapse.
-**4. Prescribed Chemical Treatment & Dosage:** **Carbendazim 12% + Mancozeb 63% WP (Saaf)** @ 2 g/L or **Difenoconazole 25% EC (Score)** @ 0.5 ml/L.
-**5. Biological & Organic Crop Protection:** **Trichoderma viride** @ 5 g/L + **Pseudomonas fluorescens** @ 10 g/L.
-**6. Agricultural Extension & RSK Support:** {ctx['district']} KSDA Raitha Samparka Kendra & Plant Doctor Clinic."""
+**1. Problem / Disease Name:** **Brown Leaf Spot / Blight (Fungal Infection)**
+**2. Why It Happened:** Warm weather (26–32°C), wet leaves from morning dew/rain, and high moisture ({pixel_data['brown_pct']}% brown spots).
+**3. Signs to Check (Symptoms):** Round dark brown spots with circular target rings on leaves, with light yellow borders.
+**4. Medicine & Spray Dosage:** **Saaf (Carbendazim + Mancozeb)** — Mix 2 grams in 1 liter of water, OR **Score (Difenoconazole)** — Mix 0.5 ml in 1 liter of water.
+**5. Natural / Organic Treatment:** Spray **Trichoderma** bio-powder (5 grams per liter of water).
+**6. Local Help & Support:** {ctx['district']} Raitha Samparka Kendra (RSK)."""
             return {"reply": reply, "source": "Computer Vision Pathology Engine", "language": language}
 
         # Pattern E: Predominantly Green Leaf (>75%)
@@ -381,14 +379,14 @@ def fallback_agronomic_engine(query, ctx, language="en", image_data=None):
 **೫. ಸಾವಯವ ರೋಗ ನಿರೋಧಕ ಪೋಷಣೆ:** **ಪಂಚಗವ್ಯ (೩%)** ಅಥವಾ **ಬೇವಿನ ಕಷಾಯ (NSKE 5%)** ಸಿಂಪಡಿಸಿ.
 **೬. ತಾಲ್ಲೂಕು ಕೃಷಿ ವಿಸ್ತರಣೆ & RSK ನೆರವು:** {ctx['district']} ತಾಲ್ಲೂಕು RSK."""
             else:
-                reply = f"""{telemetry_badge}**Plant Health Surveillance Dossier — Asymptomatic Foliage ({ctx['location_name']})**
+                reply = f"""{telemetry_badge}**Crop Health Check — Healthy Green Leaf ({ctx['location_name']})**
 
-**1. Condition Assessment:** **Healthy Vegetative Leaf Lamina ({pixel_data['green_pct']}% Healthy Green Tissue)**
-**2. Prophylactic Drivers:** Given local rainfall of {ctx['rainfall_mm']}mm and soil pH {ctx['soil_ph']}, prophylactic barrier protection is recommended before wet weather cycles.
-**3. Clinical Diagnostic Symptoms:** Optimal chlorophyll distribution with zero active fungal sporulation.
-**4. Prescribed Chemical Treatment & Dosage:** **Mancozeb 75% WP (Indofil M-45)** @ 2 g/L as protective foliar barrier.
-**5. Biological & Organic Crop Protection:** Foliar spray of **Panchagavya (3%)** or **Neem Seed Kernel Extract (NSKE 5%)** to boost systemic acquired resistance.
-**6. Agricultural Extension & RSK Support:** {ctx['district']} KSDA Raitha Samparka Kendra."""
+**1. Condition:** **Healthy & Clean Foliage ({pixel_data['green_pct']}% Healthy Green Area)**
+**2. Weather Tip:** With annual rainfall of {ctx['rainfall_mm']}mm, keep leaves protected before heavy rain showers begin.
+**3. Signs to Check:** Good green color, no spots, and no active fungal infection.
+**4. Protective Spray (Optional):** **Mancozeb (Indofil M-45)** — 2 grams per liter as a protective shield against fungi.
+**5. Natural Tonic:** Spray **Panchagavya (3%)** or **Neem Seed Extract (NSKE 5%)** to boost plant strength.
+**6. Local Help & Support:** {ctx['district']} Raitha Samparka Kendra (RSK)."""
             return {"reply": reply, "source": "Computer Vision Pathology Engine", "language": language}
 
         # Crop specific queries if text contains crop name
@@ -403,14 +401,14 @@ def fallback_agronomic_engine(query, ctx, language="en", image_data=None):
 **೫. ಸಾವಯವ & ಜೈವಿಕ ನಿರ್ವಹಣೆ:** **ಟ್ರೈಕೋಡರ್ಮಾ ವಿರಿಡೆ (Trichoderma viride)** ೫ ಗ್ರಾಂ/ಲೀ ಸಿಂಪಡಣೆ ಮತ್ತು ಗೊಂಚಲುಗಳಿಗೆ ಪ್ಲಾಸ್ಟಿಕ್ ಕವಚ (Bunch Covering) ಕಟ್ಟುವುದು.
 **೬. ತಾಲ್ಲೂಕು ಕೃಷಿ ವಿಸ್ತರಣೆ & RSK ನೆರವು:** {ctx['district']} ಜಿಲ್ಲಾ ರೈತ ಸಂಪರ್ಕ ಕೇಂದ್ರ ಅಥವಾ ತೋಟಗಾರಿಕಾ ಇಲಾಖೆ."""
             else:
-                reply = f"""**Arecanut Crop Pathology Dossier ({ctx['location_name']})**
+                reply = f"""**Arecanut Crop Health Check — Fruit Rot / Koleroga ({ctx['location_name']})**
 
-**1. Diagnosis & Pathogen Identification:** **Koleroga / Mahali Fruit Rot (*Phytophthora meadii*)**
-**2. Etiology & Environmental Drivers:** Heavy monsoon cloud cover with {ctx['rainfall_mm']}mm rainfall, sustained high relative humidity (>85%), and rainwater stagnation in nut calyxes triggering rapid oospore germination.
-**3. Clinical Diagnostic Symptoms:** Water-soaked dark lesions at the calyx of tender nuts, massive premature nut drop, and white fungal mat growth over rotting nuts.
-**4. Prescribed Chemical Treatment & Dosage:** **1% Bordeaux Mixture** (1 kg Copper Sulphate + 1 kg Slaked Lime in 100 L water) sprayed pre-monsoon and repeated 40 days later, or **Metalaxyl 8% + Mancozeb 64% WP (Ridomil MZ)** @ 2 g/L.
-**5. Biological & Organic Crop Protection:** Spray **Trichoderma viride** @ 5 g/L and tie UV-stabilized polythene covers over maturing nut bunches.
-**6. Agricultural Extension & RSK Support:** {ctx['district']} KSDA Raitha Samparka Kendra & CPCRI Regional Station."""
+**1. Problem / Disease Name:** **Arecanut Koleroga / Fruit Rot (Mahali)**
+**2. Why It Happened:** Heavy continuous monsoon rain ({ctx['rainfall_mm']}mm), dark cloudy days, and water staying on the nuts.
+**3. Signs to Check (Symptoms):** Dark water-soaked spots at the base of young arecanuts, heavy nut dropping on the ground, and rotting smell.
+**4. Medicine & Spray Dosage:** **1% Bordeaux Mixture** (Mix 1 kg Copper Sulphate + 1 kg Lime in 100 liters of water) before monsoon starts, OR **Ridomil MZ** — 2 grams per liter.
+**5. Natural / Cultural Care:** Spray **Trichoderma** (5 g/L) and tie plastic bunch covers over maturing nut bunches.
+**6. Local Help & Support:** {ctx['district']} Horticulture Department or Raitha Samparka Kendra."""
             return {"reply": reply, "source": "Karnataka Plant Pathology Diagnostic Engine", "language": language}
 
     # Intent 1: Fertilizer & Nutrition
@@ -434,22 +432,22 @@ def fallback_agronomic_engine(query, ctx, language="en", image_data=None):
 
 ಗಮನಿಸಿ: ಹತ್ತಿರದ ಕೃಷಿ ಯಂತ್ರಧಾರೆ ಕೇಂದ್ರದಿಂದ ನ್ಯಾನೋ-ಯೂರಿಯಾ ಡ್ರೋನ್ ಸಿಂಪಡಣೆ ಸೌಲಭ್ಯವನ್ನು ಪಡೆಯಬಹುದು."""
         else:
-            reply = f"""**Precision Fertilizer & NPK Schedule ({ctx['location_name']})**
+            reply = f"""**Fertilizer & Nutrition Schedule ({ctx['location_name']})**
 
-Calibrated for soil pH **{ctx['soil_ph']}** and available Nitrogen:
+Simple dosage for your soil pH **{ctx['soil_ph']}** and land:
 
-1. **Basal Application (At Sowing):**
-   - **DAP (18-46-0):** 50 kg / acre (1 bag)
-   - **MOP Potash (60% K₂O):** 25 kg / acre (0.5 bag)
-   - **Urea:** 18 kg / acre with 2.5 Tons FYM compost
+1. **At Sowing Time (Basal Dose):**
+   - **DAP:** 50 kg / acre (1 bag)
+   - **Potash (MOP):** 25 kg / acre (half bag)
+   - **Urea:** 18 kg / acre with 2 to 3 tons of cow dung manure.
 
-2. **Top Dressing 1 (Day 25–30 Vegetative Stage):**
-   - **Urea:** 25 kg / acre side-dressed before irrigation
+2. **First Top Dressing (Day 25–30):**
+   - **Urea:** 25 kg / acre, followed by watering immediately.
 
-3. **Top Dressing 2 (Day 50–60 Flowering/Grain Filling):**
-   - **Urea + MOP:** 15 kg each for superior seed weight and yield
+3. **Flowering Stage (Day 50–60):**
+   - **Urea + Potash:** 15 kg each per acre to help grains and fruits grow big.
 
-Note: Nano-Urea drone spraying is available from the nearest Krishi Yanthradhare centre."""
+Tip: You can get Nano-Urea drone spraying from your local Krishi Yanthradhare centre."""
         return {"reply": reply, "source": "Karnataka Agronomic Expert Engine", "language": language}
 
     # Intent 2: Water & Drought / Aquifer
@@ -466,16 +464,16 @@ Note: Nano-Urea drone spraying is available from the nearest Krishi Yanthradhare
 3. **ಕೃಷಿ ಹೊಂಡ (Krishi Honda):** ಕೃಷಿ ಭಾಗ್ಯ ಯೋಜನೆಯಡಿ ೮೦% ಸಹಾಯಧನದಲ್ಲಿ ಕೃಷಿ ಹೊಂಡ ನಿರ್ಮಿಸಿ ಮಳೆ ನೀರು ಕೊಯ್ಲು ಮಾಡಿ.
 4. **ಮಣ್ಣಿನ ತೇವಾಂಶ ಸಂರಕ್ಷಣೆ:** ಸಾಲುಗಳ ನಡುವೆ ಒಣ ಹುಲ್ಲು ಅಥವಾ ತೆಂಗಿನ ಸಿಪ್ಪೆಯ ಹೊದಿಕೆ (Mulching) ಹಾಕಿ."""
         else:
-            reply = f"""**Groundwater & Irrigation Strategy ({ctx['district']})**
+            reply = f"""**Water & Borewell Care Guide ({ctx['district']})**
 
-- Regional CGWB Aquifer Depth: **{ctx['aquifer_depth']}m mbgl ({ctx['aquifer_status']})**
-- Annual Precipitation: **{ctx['rainfall_mm']} mm**
+- Groundwater Depth: **{ctx['aquifer_depth']} meters ({ctx['aquifer_status']})**
+- Annual Rainfall: **{ctx['rainfall_mm']} mm**
 
-**Action Plan:**
-1. **Micro-Drip Fertigation:** Saves 45% water compared to flood irrigation. Eligible for 75–90% PMKSY subsidy.
-2. **Drought-Resilient Species:** Ragi, Red Gram, Groundnut, Melia Dubia, Moringa.
-3. **Krishi Honda (Farm Pond):** 80–90% Krishi Bhagya subsidy for rainwater harvesting.
-4. **Mulching:** Apply crop residue or coir pith mulch between rows to curtail evaporation by 35%."""
+**Simple Water-Saving Steps:**
+1. **Drip Irrigation:** Saves 45% water compared to open flooding. You can get a 75% to 90% subsidy under the PMKSY scheme.
+2. **Low-Water Crops:** Ragi, Red Gram (Thogari), Groundnut, Jackfruit, and Malabar Neem.
+3. **Farm Pond (Krishi Honda):** Get 80% government subsidy to dig a farm pond to store rainwater.
+4. **Mulching:** Cover the soil around plants with dry grass, straw, or coconut husk to stop water from evaporating in the hot sun."""
         return {"reply": reply, "source": "Karnataka Agronomic Expert Engine", "language": language}
 
     # Intent 3: Government Subsidies
@@ -497,21 +495,21 @@ Note: Nano-Urea drone spraying is available from the nearest Krishi Yanthradhare
 
 ಅರ್ಜಿ ಸಲ್ಲಿಸಲು: fruits.karnataka.gov.in ಅಥವಾ ನಿಮ್ಮ ತಾಲ್ಲೂಕಿನ ರೈತ ಸಂಪರ್ಕ ಕೇಂದ್ರಕ್ಕೆ (RSK) ಭೇಟಿ ನೀಡಿ."""
         else:
-            reply = f"""**Active Karnataka Government Agricultural Subsidies**
+            reply = f"""**Key Karnataka Government Farm Schemes & Subsidies**
 
 1. **Raita Siri Scheme:**
-   - **₹10,000 / hectare** Direct Benefit Transfer (DBT) for millet cultivation.
+   - **₹10,000 per hectare** cash directly to your bank account for growing millets (Ragi, Foxtail, Pearl millet).
 
 2. **Krishi Bhagya Scheme:**
-   - **80% to 90% subsidy** for Farm Ponds (*Krishi Honda*), polythene lining, and solar pumpsets.
+   - **80% to 90% subsidy** for Farm Ponds (*Krishi Honda*), plastic lining, and solar pump sets.
 
-3. **PMKSY Micro-Irrigation Scheme:**
-   - **90% subsidy** on Drip & Sprinkler units for Small & Marginal farmers.
+3. **PMKSY Drip Irrigation Scheme:**
+   - **90% subsidy** on drip pipes and sprinklers for small farmers.
 
 4. **National Bamboo Mission (NBM):**
-   - **50% capital subsidy (₹50,000/ha)** for agroforestry bamboo plantation.
+   - **₹50,000 per hectare (50% subsidy)** for planting bamboo.
 
-Apply Online: Visit fruits.karnataka.gov.in or your nearest Raitha Samparka Kendra (RSK)."""
+**How to Apply:** Visit **fruits.karnataka.gov.in** or go to your local Raitha Samparka Kendra (RSK) with your RTC (Pahani) and Aadhaar card."""
         return {"reply": reply, "source": "Karnataka Agronomic Expert Engine", "language": language}
 
     # Intent 4: Spacing / Multi-Tier Agroforestry
@@ -528,16 +526,16 @@ Apply Online: Visit fruits.karnataka.gov.in or your nearest Raitha Samparka Kend
 
 ಆದಾಯ ದಕ್ಷತೆ: ಈ ಪದ್ಧತಿಯು ಲಂಬ ಬೇರುಗಳ ಸ್ತರ ವಿಭಜನೆಯಿಂದ ಭೂ ಸಮಾನತೆ ಅನುಪಾತವನ್ನು **೨.೮ ಪಟ್ಟು (2.8x LER)** ಹೆಚ್ಚಿಸುತ್ತದೆ."""
         else:
-            reply = f"""**4-Tier Agroforestry Spatial Geometry ({ctx['location_name']})**
+            reply = f"""**4-Tier Multi-Crop Farm Layout ({ctx['location_name']})**
 
-Optimized multi-canopy arrangement for 1-acre agroforestry:
+How to plant multiple crops together on 1 acre for steady income:
 
-- **Tier 1 (Emergent Canopy):** Silver Oak or Melia Dubia — **20 ft x 20 ft** grid.
-- **Tier 2 (Understory Orchard):** Arecanut or Arabica Coffee — **9 ft x 9 ft** spacing.
-- **Tier 3 (Vertical Climber):** Black Pepper vines trained on tree boles.
-- **Tier 4 (Ground Herbaceous Layer):** Ginger / Turmeric planted in inter-row beds at **1.5 ft** spacing.
+- **Tier 1 (Tall Shade Trees):** Silver Oak or Malabar Neem — Plant at **20 ft x 20 ft** distance.
+- **Tier 2 (Main Orchard Crop):** Arecanut or Coffee — Plant at **9 ft x 9 ft** distance.
+- **Tier 3 (Climbing Pepper Vines):** Grow Black Pepper vines climbing up the tree trunks.
+- **Tier 4 (Ground Spices):** Plant Ginger or Turmeric between the rows at **1.5 ft** distance.
 
-Land Equivalent Ratio: Yields a **2.8x LER** efficiency index through root zone stratification."""
+**Why this works:** You get 4 different harvests from the same acre of land without wasting space or sunlight."""
         return {"reply": reply, "source": "Karnataka Agronomic Expert Engine", "language": language}
 
     # Default General Agronomy Advisory
@@ -553,15 +551,15 @@ Land Equivalent Ratio: Yields a **2.8x LER** efficiency index through root zone 
 
 ರಸಗೊಬ್ಬರ ಪ್ರಮಾಣ, ರೋಗ ನಿದಾನ, ನೀರಿನ ನಿರ್ವಹಣೆ ಅಥವಾ ಸಬ್ಸಿಡಿಗಳ ಬಗ್ಗೆ ನಿರ್ದಿಷ್ಟ ಪ್ರಶ್ನೆಗಳನ್ನು ಕೇಳಿ, ಅಥವಾ ಎಲೆಯ ಫೋಟೋ ಅಪ್ಲೋಡ್ ಮಾಡಿ ತಪಾಸಣೆ ನಡೆಸಿ."""
     else:
-        reply = f"""**Agronomic Profile & Advisory — {ctx['location_name']}**
+        reply = f"""**Farm Summary & Crop Guide — {ctx['location_name']}**
 
-- Soil pH: **{ctx['soil_ph']}** (Optimal fertility index)
-- Annual Precipitation: **{ctx['rainfall_mm']} mm**
-- Groundwater Table: **{ctx['aquifer_depth']}m mbgl ({ctx['aquifer_status']})**
+- Soil pH: **{ctx['soil_ph']}** (Good soil condition)
+- Annual Rainfall: **{ctx['rainfall_mm']} mm**
+- Groundwater Table: **{ctx['aquifer_depth']} meters ({ctx['aquifer_status']})**
 
-**Recommended Agroforestry Stack:**
+**Top Recommended Crops for this land:**
 {ctx['top_crops']}
 
-Ask specific queries regarding plant pathology, fertilizer schedules, drip irrigation design, or government subsidies, or upload a leaf photo for computer vision analysis."""
+Ask me any question about fertilizer amounts, crop diseases, watering, or government subsidies, or upload a leaf photo to diagnose diseases!"""
 
     return {"reply": reply, "source": "Karnataka Agronomic Expert Engine", "language": language}

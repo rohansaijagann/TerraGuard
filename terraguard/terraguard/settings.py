@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -26,6 +27,9 @@ SECRET_KEY = 'django-insecure-568=lp-$(pwno4u+^00+gay%k^eizhy3&q)i8eso(o)q9b22yf
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
+
+# Gemini AI API Key — used by Raitha Sahayaka chatbot (read from env)
+GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY', '')
 
 # Application definition
 
