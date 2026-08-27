@@ -31,6 +31,10 @@ ALLOWED_HOSTS = ['*']
 # Gemini AI API Key — used by Raitha Sahayaka chatbot (read from env)
 GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY', '')
 
+# Max request upload sizes (allow up to 15MB for high-res camera photos)
+DATA_UPLOAD_MAX_MEMORY_SIZE = 15728640
+FILE_UPLOAD_MAX_MEMORY_SIZE = 15728640
+
 # Application definition
 
 INSTALLED_APPS = [

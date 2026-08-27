@@ -7708,6 +7708,13 @@ multiCropModels.forEach((model, mIdx) => {
             saveAiChatHistoryToStorage();
 
             try {
+                // Strip heavy image payloads from historical messages before sending to backend
+                const cleanHistory = (aiChatHistory || []).slice(-6).map(m => ({
+                    sender: m.sender,
+                    text: m.text,
+                    time: m.time
+                }));
+
                 const response = await fetch('/api/raitha-sahayaka/', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -7715,7 +7722,7 @@ multiCropModels.forEach((model, mIdx) => {
                         query: query,
                         image_data: imageUrl,
                         gemini_api_key: localStorage.getItem('terraguard_gemini_api_key') || '',
-                        chat_history: aiChatHistory,
+                        chat_history: cleanHistory,
                         farm_context: {
                             ...currentFarmContext,
                             active_tab: activeTab
@@ -7723,6 +7730,17 @@ multiCropModels.forEach((model, mIdx) => {
                         language: currentLang
                     })
                 });
+
+                if (!response.ok) {
+                    const errText = await response.text();
+                    let msg = currentLang === 'kn' ? 'ಸರ್ವರ್ ಪ್ರತಿಕ್ರಿಯಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ.' : 'Server could not process request.';
+                    try {
+                        const jsonErr = JSON.parse(errText);
+                        if (jsonErr.reply) msg = jsonErr.reply;
+                        else if (jsonErr.error) msg = jsonErr.error;
+                    } catch(e){}
+                    throw new Error(msg);
+                }
 
                 const data = await response.json();
                 const typingEl = document.getElementById(typingId);
@@ -7782,7 +7800,8 @@ multiCropModels.forEach((model, mIdx) => {
                 const errCard = document.createElement('div');
                 errCard.className = 'ai-chat-bot-bubble';
                 errCard.style.borderColor = 'rgba(239,68,68,0.3)';
-                errCard.innerHTML = `<span style="color:#ef4444;"><i class="fa-solid fa-triangle-exclamation"></i> ${currentLang === 'kn' ? 'ಸಂಪರ್ಕ ದೋಷ. ದಯವಿಟ್ಟು ಪುನಃ ಪ್ರಯತ್ನಿಸಿ.' : 'Network error. Please try again.'}</span>`;
+                const errMsgText = err && err.message ? err.message : (currentLang === 'kn' ? 'ಸಂಪರ್ಕ ದೋಷ. ದಯವಿಟ್ಟು ಪುನಃ ಪ್ರಯತ್ನಿಸಿ.' : 'Network error. Please try again.');
+                errCard.innerHTML = `<span style="color:#ef4444;"><i class="fa-solid fa-triangle-exclamation"></i> ${errMsgText}</span>`;
                 chatMessagesContainer.appendChild(errCard);
                 chatMessagesContainer.scrollTo({ top: chatMessagesContainer.scrollHeight, behavior: 'smooth' });
             }
@@ -7796,11 +7815,42 @@ multiCropModels.forEach((model, mIdx) => {
 
             const reader = new FileReader();
             reader.onload = function(e) {
-                const dataUrl = e.target.result;
-                const prompt = currentLang === 'kn'
-                    ? `[ಕೃಷಿ ಫೋಟೋ ತಪಾಸಣೆ]: ನನ್ನ ಜಮೀನಿನ (${currentFarmContext.location_name}) ಬೆಳೆಯ ಎಲೆಯ ಫೋಟೋವನ್ನು ಪರಿಶೀಲಿಸಿ. ಇದಕ್ಕೆ ತಗುಲಿರುವ ಕೀಟ/ಶಿಲೀಂಧ್ರ ರೋಗ ಅಥವಾ ಪೋಷಕಾಂಶ ಕೊರತೆ ಯಾವುದು ಮತ್ತು ಸೂಕ್ತ ಸಾವಯವ & ರಾಸಾಯನಿಕ ಪರಿಹಾರ ಕ್ರಮಗಳನ್ನು ತಿಳಿಸಿ.`
-                    : `[Crop Photo Diagnosis]: Analyzing uploaded crop leaf photo near ${currentFarmContext.location_name} (${currentFarmContext.district}, Karnataka). Please identify any fungal diseases, insect pests, or nutrient deficiencies, and prescribe biological and chemical treatments.`;
-                sendAiChatMessage(prompt, dataUrl);
+                const rawDataUrl = e.target.result;
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const maxDim = 800;
+                    let width = img.width;
+                    let height = img.height;
+                    if (width > height) {
+                        if (width > maxDim) {
+                            height = Math.round((height * maxDim) / width);
+                            width = maxDim;
+                        }
+                    } else {
+                        if (height > maxDim) {
+                            width = Math.round((width * maxDim) / height);
+                            height = maxDim;
+                        }
+                    }
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+                    const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.82);
+
+                    const prompt = currentLang === 'kn'
+                        ? `[ಕೃಷಿ ಫೋಟೋ ತಪಾಸಣೆ]: ನನ್ನ ಜಮೀನಿನ (${currentFarmContext.location_name}) ಬೆಳೆಯ ಎಲೆಯ ಫೋಟೋವನ್ನು ಪರಿಶೀಲಿಸಿ. ಇದಕ್ಕೆ ತಗುಲಿರುವ ಕೀಟ/ಶಿಲೀಂಧ್ರ ರೋಗ ಅಥವಾ ಪೋಷಕಾಂಶ ಕೊರತೆ ಯಾವುದು ಮತ್ತು ಸೂಕ್ತ ಸಾವಯವ & ರಾಸಾಯನಿಕ ಪರಿಹಾರ ಕ್ರಮಗಳನ್ನು ತಿಳಿಸಿ.`
+                        : `[Crop Photo Diagnosis]: Analyzing uploaded crop leaf photo near ${currentFarmContext.location_name} (${currentFarmContext.district}, Karnataka). Please identify any fungal diseases, insect pests, or nutrient deficiencies, and prescribe biological and chemical treatments.`;
+                    sendAiChatMessage(prompt, compressedDataUrl);
+                };
+                img.onerror = function() {
+                    const prompt = currentLang === 'kn'
+                        ? `[ಕೃಷಿ ಫೋಟೋ ತಪಾಸಣೆ]: ನನ್ನ ಜಮೀನಿನ (${currentFarmContext.location_name}) ಬೆಳೆಯ ಎಲೆಯ ಫೋಟೋವನ್ನು ಪರಿಶೀಲಿಸಿ.`
+                        : `[Crop Photo Diagnosis]: Analyzing uploaded crop leaf photo near ${currentFarmContext.location_name} (${currentFarmContext.district}, Karnataka).`;
+                    sendAiChatMessage(prompt, rawDataUrl);
+                };
+                img.src = rawDataUrl;
             };
             reader.readAsDataURL(file);
             event.target.value = '';

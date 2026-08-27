@@ -221,7 +221,7 @@ def generate_agronomist_reply(query, chat_history=None, farm_context=None, langu
                 }
             }
 
-            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key={gemini_key}"
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={gemini_key}"
             req = urllib.request.Request(
                 url,
                 data=json.dumps(payload).encode("utf-8"),
@@ -410,6 +410,27 @@ def fallback_agronomic_engine(query, ctx, language="en", image_data=None):
 **5. Natural / Cultural Care:** Spray **Trichoderma** (5 g/L) and tie plastic bunch covers over maturing nut bunches.
 **6. Local Help & Support:** {ctx['district']} Horticulture Department or Raitha Samparka Kendra."""
             return {"reply": reply, "source": "Karnataka Plant Pathology Diagnostic Engine", "language": language}
+
+        # Default disease / crop health response if no specific pattern hit
+        if is_kn:
+            reply = f"""**ಸಸ್ಯ ರೋಗ ನಿದಾನ & ಎಲೆ ತಪಾಸಣೆ ವರದಿ ({ctx['location_name']})**
+
+**೧. ರೋಗ ನಿದಾನ & ಪರೀಕ್ಷೆ:** ಎಲೆಯ ಮೇಲ್ಮೈಯಲ್ಲಿ ಶಿಲೀಂಧ್ರ ಸೋಂಕು (Foliar Leaf Spot / Blight) ಅಥವಾ ಲಘು ಪೋಷಕಾಂಶಗಳ ಕೊರತೆ ಕಂಡುಬಂದಿದೆ.
+**೨. ರೋಗ ಪ್ರೇರಕ ಕಾರಣಗಳು & ಹವಾಮಾನ:** ತೇವಾಂಶ {ctx['rainfall_mm']}ಮಿಮೀ ಮಳೆ ಹಾಗೂ ಮೋಡ ಕವಿದ ವಾತಾವರಣದಿಂದ ಶಿಲೀಂಧ್ರ ಬೀಜಾಣುಗಳು ಎಲೆ ಅಂಗಾಂಶವನ್ನು ಪ್ರವೇಶಿಸುತ್ತವೆ.
+**೩. ಪ್ರಮುಖ ರೋಗ ಲಕ್ಷಣಗಳು:** ಎಲೆಯ ಮೇಲೆ ಕಂದು-ಹಳದಿ ಚುಕ್ಕೆಗಳು ಮತ್ತು ಎಲೆಯ ಅಂಚು ಒಣಗುವಿಕೆ.
+**೪. ಶಿಫಾರಸು ಮಾಡಿದ ರಾಸಾಯನಿಕ ಔಷಧ:** **ಕಾರ್ಬೆಂಡಾಜಿಮ್ 12% + ಮ್ಯಾಂಕೋಜೆಬ್ 63% WP (Saaf)** — ೨ ಗ್ರಾಂ / ಲೀಟರ್ ನೀರಿಗೆ ಬೆರೆಸಿ ಸಿಂಪಡಿಸಿ.
+**೫. ಸಾವಯವ & ಜೈವಿಕ ನಿರ್ವಹಣೆ:** **ಟ್ರೈಕೋಡರ್ಮಾ ವಿರಿಡೆ** ೫ ಗ್ರಾಂ/ಲೀಟರ್ + ೧೦,೦೦೦ ppm **ಬೇವಿನ ಎಣ್ಣೆ** ೩ ಮಿಲಿ/ಲೀಟರ್.
+**೬. ತಾಲ್ಲೂಕು ಕೃಷಿ ವಿಸ್ತರಣೆ:** {ctx['district']} ತಾಲ್ಲೂಕು ರೈತ ಸಂಪರ್ಕ ಕೇಂದ್ರ (RSK)."""
+        else:
+            reply = f"""**Crop Health & Leaf Pathology Check ({ctx['location_name']})**
+
+**1. Problem / Diagnosis:** **Foliar Leaf Spot & Early Fungal Stress**
+**2. Why It Happened:** High humidity, wet morning dew, and cloudy conditions favoring fungal spore germination in {ctx['district']}.
+**3. Signs to Check (Symptoms):** Brown/yellow spots on leaf surfaces, slight curling, or dry leaf margins.
+**4. Medicine & Spray Dosage:** **Saaf (Carbendazim 12% + Mancozeb 63% WP)** — Mix 2 grams in 1 liter of water and spray early in the morning, OR **Azoxystrobin** — 1 ml per liter.
+**5. Natural / Organic Treatment:** Spray **Neem Oil** (3 ml/L) + **Trichoderma Viride** bio-fungicide (5 g/L).
+**6. Local Support:** Visit your nearest {ctx['district']} Raitha Samparka Kendra (RSK) or KVK."""
+        return {"reply": reply, "source": "Karnataka Plant Pathology Diagnostic Engine", "language": language}
 
     # Intent 1: Fertilizer & Nutrition
     if any(k in q_lower for k in ["fertilizer", "gobbara", "urea", "dap", "npk", "ಗೊಬ್ಬರ", "ಯೂರಿಯಾ"]):
