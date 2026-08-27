@@ -16,7 +16,12 @@ import urllib.request
 import urllib.error
 import re
 from django.conf import settings
-from PIL import Image
+try:
+    from PIL import Image
+    HAS_PIL = True
+except ImportError:
+    Image = None
+    HAS_PIL = False
 
 SYSTEM_PROMPT_EN = """You are 'Raitha Sahayaka' (ರೈತ ಸಹಾಯಕ), an AI farming assistant and agronomist for Karnataka farmers.
 Your goal is to give farmers, students, and growers clear, practical, and very simple, easy-to-understand agricultural guidance.
@@ -92,7 +97,7 @@ def analyze_leaf_image_pixels(image_data):
     Decodes uploaded leaf image and performs real computer vision color/texture analysis
     to detect necrosis (brown/black), chlorosis (yellow), rust (orange/red), mildew (white), and healthy green.
     """
-    if not image_data or not isinstance(image_data, str) or "base64," not in image_data:
+    if not HAS_PIL or not Image or not image_data or not isinstance(image_data, str) or "base64," not in image_data:
         return None
     
     try:
