@@ -47,9 +47,9 @@ class RecommendationAPI(APIView):
                 "message": "Water body detected. Please select a solid land coordinate for agricultural analysis."
             })
             
-        local_rainfall = env_data['annual_rainfall_mm']
-        local_ph = env_data['soil_ph']
-        local_elevation = env_data['elevation']
+        local_rainfall = float(request.data.get('rainfall') or request.data.get('annual_rainfall_mm') or env_data.get('annual_rainfall_mm', 900))
+        local_ph = float(request.data.get('soil_ph') or request.data.get('ph') or env_data.get('soil_ph', 6.5))
+        local_elevation = float(request.data.get('elevation') or env_data.get('elevation', 600))
         
         # Fetch CGWB Groundwater Aquifer Data for the District
         from .ml_utils.groundwater_cgwb import get_cgwb_groundwater_status
@@ -145,9 +145,22 @@ class RecommendationAPI(APIView):
                 })
 
         # ── 2. FAIL-SAFE FALLBACK: Deterministic AHP Algorithm ────────────────
+        district_str = geo_check.get('district', '').lower()
         if not recommendations:
             candidates = SpeciesConstraint.objects.all()
             for species in candidates:
+                sp_lower = species.name.lower()
+
+                is_hilly = local_elevation >= 700 or local_rainfall >= 1400 or any(d in district_str for d in ['kodagu', 'chikmagalur', 'chikkamagaluru', 'sakleshpur', 'hassan', 'shivamogga'])
+                if is_hilly:
+                    # Plains and dryland crops cannot grow in cold/wet high-altitude hills
+                    if any(k in sp_lower for k in ["mango", "cotton", "sorghum", "jowar", "chickpea", "bengal gram", "safflower", "aloe", "pomegranate", "guava", "sapota", "mulberry", "finger millet", "moringa", "tamarind", "neem", "acacia", "fig", "ber", "sunflower"]):
+                        continue
+                elif local_rainfall <= 750:
+                    # High moisture / plantation crops cannot grow in drylands without extreme irrigation
+                    if any(k in sp_lower for k in ["cardamom", "rubber", "cocoa", "coffee (arabica)", "black pepper", "tea"]):
+                        continue
+
                 zone = species.target_zone
                 if zone.min_rainfall_mm <= local_rainfall <= zone.max_rainfall_mm:
                     rainfall_score = 100

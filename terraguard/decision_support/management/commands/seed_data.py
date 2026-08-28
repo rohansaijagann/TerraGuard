@@ -11,9 +11,9 @@ class Command(BaseCommand):
 
         # 1. Initialize Zones
         zones = {
-            "Western Ghats": KarnatakaAgroZone.objects.create(name="Western Ghats", soil_profile="Laterite", min_rainfall_mm=2000, max_rainfall_mm=4500, base_elevation_m=600),
-            "Southern Maidan": KarnatakaAgroZone.objects.create(name="Southern Maidan", soil_profile="Red Loamy", min_rainfall_mm=600, max_rainfall_mm=1000, base_elevation_m=800),
-            "Northern Maidan": KarnatakaAgroZone.objects.create(name="Northern Maidan", soil_profile="Black Cotton", min_rainfall_mm=300, max_rainfall_mm=700, base_elevation_m=400)
+            "Western Ghats": KarnatakaAgroZone.objects.create(name="Western Ghats", soil_profile="Laterite", min_rainfall_mm=1200, max_rainfall_mm=4500, base_elevation_m=600),
+            "Southern Maidan": KarnatakaAgroZone.objects.create(name="Southern Maidan", soil_profile="Red Loamy", min_rainfall_mm=550, max_rainfall_mm=1100, base_elevation_m=700),
+            "Northern Maidan": KarnatakaAgroZone.objects.create(name="Northern Maidan", soil_profile="Black Cotton", min_rainfall_mm=300, max_rainfall_mm=750, base_elevation_m=400)
         }
 
         # 2. Production Dataset (Easily expandable to 100+ species)

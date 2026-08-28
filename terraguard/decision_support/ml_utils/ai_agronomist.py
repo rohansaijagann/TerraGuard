@@ -227,20 +227,25 @@ def generate_agronomist_reply(query, chat_history=None, farm_context=None, langu
                 }
             }
 
-            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={gemini_key}"
-            req = urllib.request.Request(
-                url,
-                data=json.dumps(payload).encode("utf-8"),
-                headers={"Content-Type": "application/json"}
-            )
-            with urllib.request.urlopen(req, timeout=10) as response:
-                resp_json = json.loads(response.read().decode("utf-8"))
-                reply = resp_json["candidates"][0]["content"]["parts"][0]["text"]
-                return {
-                    "reply": reply,
-                    "source": "Google Gemini 1.5 Flash (Vision AI)",
-                    "language": lang
-                }
+            models_to_try = ['gemini-3.5-flash', 'gemini-3.6-flash', 'gemini-3.7-flash']
+            for m in models_to_try:
+                try:
+                    url = f"https://generativelanguage.googleapis.com/v1beta/models/{m}:generateContent?key={gemini_key}"
+                    req = urllib.request.Request(
+                        url,
+                        data=json.dumps(payload).encode("utf-8"),
+                        headers={"Content-Type": "application/json"}
+                    )
+                    with urllib.request.urlopen(req, timeout=10) as response:
+                        resp_json = json.loads(response.read().decode("utf-8"))
+                        reply = resp_json["candidates"][0]["content"]["parts"][0]["text"]
+                        return {
+                            "reply": reply,
+                            "source": f"Google Gemini ({m})",
+                            "language": lang
+                        }
+                except Exception as model_err:
+                    continue
         except Exception as e:
             print(f"Gemini API fallback triggered: {e}")
 

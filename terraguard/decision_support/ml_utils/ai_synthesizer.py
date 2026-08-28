@@ -28,16 +28,60 @@ def _get_gemini_key(custom_key=None):
     )
 
 def _extract_json_array(text):
+    if not text or not isinstance(text, str):
+        return []
+    text = re.sub(r'^```json\s*', '', text.strip(), flags=re.MULTILINE)
+    text = re.sub(r'^```\s*$', '', text.strip(), flags=re.MULTILINE)
     text = text.strip()
-    match = re.search(r'\[[\s\S]*\]', text)
+    
+    try:
+        data = json.loads(text)
+        if isinstance(data, list):
+            return data
+    except Exception:
+        pass
+    
+    match = re.search(r'\[\s*\{[\s\S]*\}\s*\]', text)
     if match:
-        return json.loads(match.group(0))
-    return json.loads(text)
+        try:
+            return json.loads(match.group(0))
+        except Exception:
+            pass
+
+    objects = []
+    pattern = r'\{[^{}]*(?:\{[^{}]*\}[^{}]*)*\}'
+    for obj_str in re.finditer(pattern, text):
+        try:
+            obj = json.loads(obj_str.group(0))
+            if isinstance(obj, dict) and ('species' in obj or 'name' in obj):
+                objects.append(obj)
+        except Exception:
+            continue
+            
+    return objects
+
+def _call_gemini_api(payload, gemini_key, timeout=3.5):
+    """Tries active Gemini models in sequence with swift fallback."""
+    models = ['gemini-3.5-flash', 'gemini-3.6-flash']
+    for m in models:
+        try:
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/{m}:generateContent?key={gemini_key}"
+            req = urllib.request.Request(
+                url,
+                data=json.dumps(payload).encode("utf-8"),
+                headers={"Content-Type": "application/json"}
+            )
+            with urllib.request.urlopen(req, timeout=timeout) as response:
+                resp_json = json.loads(response.read().decode("utf-8"))
+                return resp_json["candidates"][0]["content"]["parts"][0]["text"]
+        except Exception:
+            continue
+    return None
 
 # ══════════════════════════════════════════════════════════════════════════════
 # 1. DYNAMIC AI CROP RECOMMENDATIONS (Primary: Gemini -> Fallback: AHP)
 # ══════════════════════════════════════════════════════════════════════════════
-def generate_ai_crop_recommendations(crop_ctx, custom_gemini_key=None, timeout=5.5):
+def generate_ai_crop_recommendations(crop_ctx, custom_gemini_key=None, timeout=6.0):
     """
     Asks Gemini AI to dynamically recommend optimal crops & trees for given farm telemetry.
     Returns parsed list of species dicts if successful, or None if fallback should take over.
@@ -54,20 +98,31 @@ def generate_ai_crop_recommendations(crop_ctx, custom_gemini_key=None, timeout=5
     cgwb_depth = crop_ctx.get("aquifer_depth", 15.0)
     cgwb_status = crop_ctx.get("aquifer_status", "Safe")
 
-    prompt = f"""You are an expert agronomist at UAS Bangalore.
-Based on this real-time land telemetry in Karnataka:
+    # Determine authentic physiological zone guidance
+    if elevation >= 750 or rainfall >= 1600:
+        terrain_guide = "High-Altitude Western Ghats / Hilly Malenadu (Recommend: Arabica Coffee, Robusta Coffee, Cardamom, Black Pepper, Silver Oak, Coorg Mandarin Orange, Avocado, Tea, Nutmeg, Cinnamon, Ginger, Teak, Rosewood. DO NOT recommend plains/dryland crops like Mango, Ragi, Cotton, Bajra, Sorghum)."
+    elif elevation <= 300 and rainfall >= 2200:
+        terrain_guide = "Coastal Karavali Belt (Recommend: Arecanut, Coconut, Cashew, Paddy, Black Pepper, Kokum, Rubber, Nutmeg)."
+    elif rainfall <= 700:
+        terrain_guide = "Arid / Semi-Arid Northern Drylands (Recommend: Toor Dal, Cotton, Jowar/Sorghum, Bengal Gram, Pomegranate, Sunflower, Safflower, Neem, Ber)."
+    else:
+        terrain_guide = "Southern Plains / Transition Zone (Recommend: Ragi, Mulberry, Mango, Coconut, Red Gram, Tomato, Tamarind, Sandalwood, Melia Dubia)."
+
+    prompt = f"""You are a senior agronomist at UAS Bangalore and College of Forestry Ponnampet.
+Land Telemetry in Karnataka:
 - Location: {loc_name} ({district} District)
 - Annual Rainfall: {rainfall} mm | Elevation: {elevation} m | Soil pH: {ph}
 - CGWB Groundwater Depth: {cgwb_depth} m ({cgwb_status})
+- Zone Agro-Climatic Rule: {terrain_guide}
 
-Recommend 6 to 8 optimal crops and trees for multi-tier agroforestry.
+Recommend 6 to 8 physiologically authentic and optimal commercial crops & trees for this exact terrain and climate.
 Return ONLY a valid JSON array of objects with this schema:
 [
   {{
-    "species": "Common & Botanical Name (e.g. Arecanut, Ragi, Teak, Black Pepper)",
+    "species": "Common and Botanical Name (e.g. Arabica Coffee, Black Pepper, Silver Oak)",
     "type": "Crop" or "Tree",
     "score": 85 to 99,
-    "commercial_value": "Very High" or "High" or "Medium" or "Low",
+    "commercial_value": "Very High" or "High" or "Medium",
     "commercial_explanation": "Brief 1-line reason for market value in Karnataka.",
     "carbon_rating": 1 to 10,
     "breakdown": {{"rainfall": 90.0, "elevation": 88.0, "ph": 92.0, "carbon": 70.0}},
@@ -80,22 +135,15 @@ Return RAW JSON ARRAY only."""
     payload = {
         "contents": [{"role": "user", "parts": [{"text": prompt}]}],
         "generationConfig": {
-            "temperature": 0.25,
-            "maxOutputTokens": 2048,
+            "temperature": 0.2,
+            "maxOutputTokens": 1800,
             "responseMimeType": "application/json"
         }
     }
 
     try:
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={gemini_key}"
-        req = urllib.request.Request(
-            url,
-            data=json.dumps(payload).encode("utf-8"),
-            headers={"Content-Type": "application/json"}
-        )
-        with urllib.request.urlopen(req, timeout=timeout) as response:
-            resp_json = json.loads(response.read().decode("utf-8"))
-            raw_text = resp_json["candidates"][0]["content"]["parts"][0]["text"]
+        raw_text = _call_gemini_api(payload, gemini_key, timeout=timeout)
+        if raw_text:
             crops_list = _extract_json_array(raw_text)
             if isinstance(crops_list, list) and len(crops_list) > 0:
                 return crops_list
@@ -171,15 +219,8 @@ Return RAW JSON ARRAY only."""
     }
 
     try:
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={gemini_key}"
-        req = urllib.request.Request(
-            url,
-            data=json.dumps(payload).encode("utf-8"),
-            headers={"Content-Type": "application/json"}
-        )
-        with urllib.request.urlopen(req, timeout=timeout) as response:
-            resp_json = json.loads(response.read().decode("utf-8"))
-            raw_text = resp_json["candidates"][0]["content"]["parts"][0]["text"]
+        raw_text = _call_gemini_api(payload, gemini_key, timeout=timeout)
+        if raw_text:
             pests_list = _extract_json_array(raw_text)
             if isinstance(pests_list, list):
                 return pests_list
@@ -242,18 +283,11 @@ Use simple, friendly, everyday English (no complicated scientific words). Give e
                 }
             }
 
-            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={gemini_key}"
-            req = urllib.request.Request(
-                url,
-                data=json.dumps(payload).encode("utf-8"),
-                headers={"Content-Type": "application/json"}
-            )
-            with urllib.request.urlopen(req, timeout=3.5) as response:
-                resp_json = json.loads(response.read().decode("utf-8"))
-                reply = resp_json["candidates"][0]["content"]["parts"][0]["text"]
+            reply = _call_gemini_api(payload, gemini_key, timeout=4.5)
+            if reply:
                 return {
                     "is_ai": True,
-                    "source": "Google Gemini 3.6 Flash (Real-time Synthesis)",
+                    "source": "Google Gemini 3.5 Flash (Real-time Synthesis)",
                     "badge_text": "Live AI Synthesis",
                     "text": reply.strip()
                 }
@@ -328,18 +362,11 @@ Use simple, everyday English (no heavy academic words). Give exactly 3 clear poi
                 }
             }
 
-            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={gemini_key}"
-            req = urllib.request.Request(
-                url,
-                data=json.dumps(payload).encode("utf-8"),
-                headers={"Content-Type": "application/json"}
-            )
-            with urllib.request.urlopen(req, timeout=3.5) as response:
-                resp_json = json.loads(response.read().decode("utf-8"))
-                reply = resp_json["candidates"][0]["content"]["parts"][0]["text"]
+            reply = _call_gemini_api(payload, gemini_key, timeout=4.5)
+            if reply:
                 return {
                     "is_ai": True,
-                    "source": "Google Gemini 3.6 Flash (Real-time Synthesis)",
+                    "source": "Google Gemini 3.5 Flash (Real-time Synthesis)",
                     "badge_text": "Live AI Synthesis",
                     "text": reply.strip()
                 }
@@ -428,23 +455,109 @@ Use simple, friendly, everyday English (no complicated formulas). Give exactly 3
                 }
             }
 
-            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={gemini_key}"
-            req = urllib.request.Request(
-                url,
-                data=json.dumps(payload).encode("utf-8"),
-                headers={"Content-Type": "application/json"}
-            )
-            with urllib.request.urlopen(req, timeout=3.5) as response:
-                resp_json = json.loads(response.read().decode("utf-8"))
-                reply = resp_json["candidates"][0]["content"]["parts"][0]["text"]
+            reply = _call_gemini_api(payload, gemini_key, timeout=4.5)
+            if reply:
                 return {
                     "is_ai": True,
-                    "source": "Google Gemini 3.6 Flash (Real-time Hydrological AI)",
+                    "source": "Google Gemini 3.5 Flash (Real-time Hydrological AI)",
                     "badge_text": "Live AI Drought Synthesis",
                     "text": reply.strip()
                 }
         except Exception as e:
             print(f"AI Drought Advisory fallback triggered: {e}")
+
+    # Fallback
+    if moisture < 40 or "Severe" in severity:
+        if is_kn:
+            fallback_text = f"""೧. **ಬಾಷ್ಪೀಕರಣ & ಮಣ್ಣಿನ ತೇವಾಂಶ ನಷ್ಟದ ತೀವ್ರತೆ**: ಮಣ್ಣಿನ ತೇವಾಂಶ {moisture}% ಗೆ ಇಳಿದಿದ್ದು ಮತ್ತು {dry_days} ಒಣ ದಿನಗಳಿಂದ ಬೇರು ವಲಯದಲ್ಲಿ ತೀವ್ರ ನೀರಿನ ಕೊರತೆ ಉಂಟಾಗಿದೆ.
+೨. **ಅಂತರ್ಜಲ ಸಂರಕ್ಷಣೆ & ನಿಖರ ನೀರಾವರಿ ವೇಳಾಪಟ್ಟಿ**: ಬಾಷ್ಪೀಕರಣ ತಡೆಯಲು ರಾತ್ರಿ ೮ ರಿಂದ ಬೆಳಿಗ್ಗೆ ೬ ರವರೆಗೆ ಮಾತ್ರ ಹನಿ ನೀರಾವರಿ ನಡೆಸಿ. ಮಣ್ಣಿನ ಮೇಲೆ ದಪ್ಪ ಸಾವಯವ ಹೊದಿಕೆ (ಮಲ್ಚಿಂಗ್) ಹಾಕಿ.
+೩. **ಕೃಷಿ ಭಾಗ್ಯ & ಬರ ಪರಿಹಾರ ನಿರ್ವಹಣಾ ತಂತ್ರ**: ಕೃಷಿ ಭಾಗ್ಯ ಯೋಜನೆಯಡಿ ೮೦% ಸಹಾಯಧನದಲ್ಲಿ ಕೃಷಿ ಹೊಂಡ ನಿರ್ಮಿಸಿ; ಬೆಳೆಗಳ ಬರ ನಿರೋಧಕತೆ ಹೆಚ್ಚಿಸಲು ೧% ಪೊಟ್ಯಾಸಿಯಮ್ ನೈಟ್ರೇಟ್ ಸಿಂಪಡಿಸಿ."""
+        else:
+            fallback_text = f"""1. **Soil Moisture & Heat Impact**: The soil moisture is at {moisture}% after {dry_days} dry days. The sun is evaporating water quickly from the top soil.
+2. **Smart Watering & Night Drip**: Run drip irrigation during the night (8:00 PM to 6:00 AM) so water goes directly to roots without evaporating in the hot sun. Spread straw or dry leaves around plants.
+3. **Government Farm Pond & Subsidy Help**: Apply for an 80% government subsidy to dig a farm pond (Krishi Honda) under the Krishi Bhagya scheme. Spray mild potassium spray (1%) to help crops handle the heat."""
+    else:
+        if is_kn:
+            fallback_text = f"""೧. **ಬಾಷ್ಪೀಕರಣ & ಮಣ್ಣಿನ ತೇವಾಂಶ ನಷ್ಟದ ತೀವ್ರತೆ**: ಮಣ್ಣಿನ ತೇವಾಂಶ {moisture}% ಮತ್ತು NDVI {ndvi} ಉತ್ತಮ ಮಟ್ಟದಲ್ಲಿದ್ದು, ಸದ್ಯಕ್ಕೆ ತೀವ್ರ ನೀರಿನ ಒತ್ತಡವಿಲ್ಲ.
+೨. **ಅಂತರ್ಜಲ ಸಂರಕ್ಷಣೆ & ನಿಖರ ನೀರಾವರಿ ವೇಳಾಪಟ್ಟಿ**: ಅಂತರ್ಜಲ ಆಳ {cgwb_depth} ಮೀ ({cgwb_status}) ಇರುವುದರಿಂದ ನಿಗದಿತ ಪ್ರಮಾಣಿತ ಹನಿ ನೀರಾವರಿ ವೇಳಾಪಟ್ಟಿಯನ್ನು ಮುಂದುವರಿಸಿ.
+೩. **ಕೃಷಿ ಭಾಗ್ಯ & ಬರ ಪರಿಹಾರ ನಿರ್ವಹಣಾ ತಂತ್ರ**: ಮುಂಗಾರು ಮಳೆಯ ನೀರನ್ನು ಸಂರಕ್ಷಿಸಲು ಜಮೀನಿನ ಬದುಗಳಲ್ಲಿ ಜಲಮರುಪೂರಣ ಕಂದಕ ಹಾಗೂ ಕೃಷಿ ಹೊಂಡ ನಿರ್ಮಿಸಿಕೊಳ್ಳಿ."""
+        else:
+            fallback_text = f"""1. **Soil Moisture & Heat Impact**: Soil moisture is at {moisture}% and crop greenness is healthy ({ndvi}). There is no immediate water stress.
+2. **Smart Watering & Night Drip**: With groundwater depth at {cgwb_depth}m ({cgwb_status}), continue your regular drip irrigation schedule to maintain steady crop growth.
+3. **Government Farm Pond & Subsidy Help**: Build a farm pond (*Krishi Honda*) with Krishi Bhagya government subsidy to store upcoming rainwater for the dry season."""
+
+    return {
+        "is_ai": False,
+        "source": "TerraGuard Hydrological Modeling Engine (Fail-safe Fallback)",
+        "badge_text": "Scientific Hydrological Baseline",
+        "text": fallback_text.strip()
+    }
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# 6. AI WILDFIRE & CANOPY DEFENSE ADVISORY (Fire Synthesis Card)
+# ══════════════════════════════════════════════════════════════════════════════
+def generate_ai_fire_advisory(fire_ctx, language="en", custom_gemini_key=None):
+    is_kn = language == "kn"
+    district = fire_ctx.get("district", "Karnataka")
+    loc_name = fire_ctx.get("location_name", "Selected Forest Area")
+    temp = fire_ctx.get("temp", 28.0)
+    humidity = fire_ctx.get("humidity", 45.0)
+    wind_speed = fire_ctx.get("wind_speed", 14.0)
+    wind_dir = fire_ctx.get("wind_direction", "NE")
+    fwi = fire_ctx.get("fwi", 35.0)
+    risk_level = fire_ctx.get("risk_level", "Moderate")
+    burn_prob = fire_ctx.get("burn_probability", 40)
+    spread_rate = fire_ctx.get("spread_rate", 8.5)
+    burn_radius = fire_ctx.get("burn_radius_m", 250)
+    nearest_kfd = fire_ctx.get("nearest_kfd_name", "Local Range Forest Office")
+
+    gemini_key = _get_gemini_key(custom_gemini_key)
+
+    if gemini_key:
+        try:
+            if is_kn:
+                prompt = f"""ನೀವು ಕರ್ನಾಟಕ ಅರಣ್ಯ ಇಲಾಖೆ (KFD) ಮತ್ತು ಭಾರತೀಯ ಅರಣ್ಯ ಸರ್ವೇಕ್ಷಣೆಯ (FSI) ಹಿರಿಯ ಕಾಡ್ಗಿಚ್ಚು ವಿಶ್ಲೇಷಕರು.
+ಕರ್ನಾಟಕದ ಈ ಅರಣ್ಯ/ಕೃಷಿ ಪ್ರದೇಶದ ಲೈವ್ ಹವಾಮಾನ ಮತ್ತು ರೋಥರ್‌ಮೆಲ್ ಕಾಡ್ಗಿಚ್ಚು ಮಾದರಿಯ ಡೇಟಾ ಪರಿಶೀಲಿಸಿ ತ್ವರಿತ ರಕ್ಷಣಾತ್ಮಕ ಸಲಹೆ ನೀಡಿ:
+- ಸ್ಥಳ: {loc_name} ({district}) | ಉಷ್ಣಾಂಶ: {temp}°C | ತೇವಾಂಶ: {humidity}% | ಗಾಳಿ: {wind_speed} ಕಿಮೀ/ಗಂ ({wind_dir})
+- FWI ಸೂಚ್ಯಂಕ: {fwi} ({risk_level}) | ಬೆಂಕಿ ಹೊತ್ತಿಕೊಳ್ಳುವ ಸಂಭವನೀಯತೆ: {burn_prob}% | ಹರಡುವ ವೇಗ: {spread_rate} ಮೀ/ನಿಮಿ | ದಹನ ತ್ರಿಜ್ಯ: {burn_radius} ಮೀ
+- ಹತ್ತಿರದ ವಲಯ ಅರಣ್ಯ ಕಚೇರಿ: {nearest_kfd}
+
+ಕೆಳಗಿನ ೩ ಶೀರ್ಷಿಕೆಗಳಲ್ಲಿ ನಿಖರವಾಗಿ, ನೇರವಾಗಿ ಕನ್ನಡದಲ್ಲಿ ಉತ್ತರಿಸಿ (ಎಮೋಜಿ ಬೇಡ):
+೧. **ಇಂಧನ ತೇವಾಂಶ & ಜ್ವಾಲೆಯ ಹರಡುವಿಕೆಯ ಅಪಾಯ**: ತೇವಾಂಶ {humidity}% ಮತ್ತು ಒಣ ಎಲೆ/ಕಡ್ಡಿಗಳ ಹೊತ್ತಿಕೊಳ್ಳುವ ತೀವ್ರತೆ.
+೨. **ಗಾಳಿಯ ದಿಕ್ಕು & ಕಿಡಿಗಳ ಹಾರುವಿಕೆಯ ನಿಯಂತ್ರಣ**: {wind_dir} ದಿಕ್ಕಿನ ಗಾಳಿಯ ಪ್ರಭಾವದಿಂದ ಬೆಂಕಿಯ ಕಿಡಿಗಳು ಮುಂದೆ ಹಾರುವ (Spotting) ಅಪಾಯ ಮತ್ತು ನಿಯಂತ್ರಣ.
+೩. **ಕೃಷಿ ಗಡಿ & ತುರ್ತು ರಕ್ಷಣಾ ವಲಯ (WUI)**: ಜಮೀನು/ತೋಟಗಳ ಸುತ್ತ ೩೦ ಮೀಟರ್ ಫೈರ್‌ಲೈನ್ (ಬೆಂಕಿ ತಡೆ ಕಂದಕ) ಮತ್ತು ಅರಣ್ಯ ಇಲಾಖೆ (KFD 1926) ಸಂಪರ್ಕ."""
+            else:
+                prompt = f"""You are a forest fire and farm safety expert in Karnataka.
+Analyze this forest and farm fire risk and write a simple safety guide in plain English:
+- Location: {loc_name} ({district}) | Temp: {temp}°C | Humidity: {humidity}% | Wind: {wind_speed} km/h ({wind_dir})
+- Fire Danger: {risk_level} (Risk Score: {fwi}) | Estimated Spread: {burn_radius}m
+- Nearest Forest Office: {nearest_kfd}
+
+Use simple, everyday English (no heavy technical jargon). Give exactly 3 clear points:
+1. **Fire Danger & Dry Weather**: How dry the grass is and how fast fire could spread.
+2. **Safe Firebreak Border (Fireline)**: How to clear a 3 to 5 meter wide clean soil border around the farm.
+3. **Forest Department Help & Emergency**: What number to call (1926) and how to alert neighbors."""
+
+            payload = {
+                "contents": [{"role": "user", "parts": [{"text": prompt}]}],
+                "generationConfig": {
+                    "temperature": 0.35,
+                    "maxOutputTokens": 450,
+                    "topP": 0.85
+                }
+            }
+
+            reply = _call_gemini_api(payload, gemini_key, timeout=4.5)
+            if reply:
+                return {
+                    "is_ai": True,
+                    "source": "Google Gemini 3.5 Flash (Real-time Wildfire AI)",
+                    "badge_text": "Live AI Tactical Synthesis",
+                    "text": reply.strip()
+                }
+        except Exception as e:
+            print(f"AI Fire Advisory fallback triggered: {e}")
 
     # Fallback
     if moisture < 40 or "Severe" in severity:
@@ -528,18 +641,11 @@ Use simple, everyday English (no heavy technical jargon). Give exactly 3 clear p
                 }
             }
 
-            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={gemini_key}"
-            req = urllib.request.Request(
-                url,
-                data=json.dumps(payload).encode("utf-8"),
-                headers={"Content-Type": "application/json"}
-            )
-            with urllib.request.urlopen(req, timeout=3.5) as response:
-                resp_json = json.loads(response.read().decode("utf-8"))
-                reply = resp_json["candidates"][0]["content"]["parts"][0]["text"]
+            reply = _call_gemini_api(payload, gemini_key, timeout=4.5)
+            if reply:
                 return {
                     "is_ai": True,
-                    "source": "Google Gemini 3.6 Flash (Real-time Wildfire AI)",
+                    "source": "Google Gemini 3.5 Flash (Real-time Wildfire AI)",
                     "badge_text": "Live AI Tactical Synthesis",
                     "text": reply.strip()
                 }
