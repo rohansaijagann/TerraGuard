@@ -4208,7 +4208,7 @@ body.dark-theme .ai-window-header{background:rgba(0,0,0,0.15)}
                     // ── Multi-Crop Intercropping Systems (Tier 1-4 Agroforestry) ──
                                         const isHighRain = rain >= 1000;
                     const isKn = currentLang === 'kn';
-                    const multiCropModels = isHighRain ? [
+                    const multiCropModels = (data.multi_crop_systems && Array.isArray(data.multi_crop_systems) && data.multi_crop_systems.length > 0) ? data.multi_crop_systems : (isHighRain ? [
                         {
                             title: isKn ? 'ಮಲೆನಾಡು ಬಹು-ಹಂತದ ವಾಣಿಜ್ಯ ಬೆಳೆ ಪದ್ಧತಿ' : 'Malenadu Multi-Tier Commercial Cash Stack',
                             zone: isKn ? 'ಪಶ್ಚಿಮ ಘಟ್ಟ ಮತ್ತು ಕರಾವಳಿ ತೇವಾಂಶ ವಲಯ' : 'Western Ghats & Coastal Wet Belt',
@@ -4270,7 +4270,7 @@ body.dark-theme .ai-window-header{background:rgba(0,0,0,0.15)}
                             ],
                             synergyNote: isKn ? 'ಶೂನ್ಯ ನಷ್ಟದ ವಿನ್ಯಾಸ: ತೀವ್ರ ಮಳೆ ಕೊರತೆಯಲ್ಲೂ ಆಳವಾದ ಬೇರಿನ ಹುಣಸೆ ಮತ್ತು ಜಾಲಿ ಮರಗಳು ರೈತರ ಆದಾಯವನ್ನು ಕಾಪಾಡುತ್ತವೆ.' : 'Zero-failure design: even during severe monsoon deficits, deep-rooted tamarind and acacia sustain farm cashflow.'
                         }
-                    ];
+                    ]);
 multiCropModels.forEach((model, mIdx) => {
                         html += `
                         <div class="recommendation-card" data-type="multi-crop" data-horizon="multi-tier" style="display: ${currentFilter === 'multi-crop' ? 'block' : 'none'}; border: 1px solid rgba(16,185,129,0.3); background: linear-gradient(135deg, rgba(16,185,129,0.06), rgba(59,130,246,0.04));" onclick="toggleDetails(this)">

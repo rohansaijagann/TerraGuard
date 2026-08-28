@@ -71,8 +71,7 @@ class RecommendationAPI(APIView):
         from .ml_utils.apmc_market_feed import get_apmc_market_intelligence
         from .ml_utils.carbon_credit_engine import calculate_20yr_carbon_credits
         from .ml_utils.krishi_machinery_chc import locate_nearest_chc_machinery
-        from .ml_utils.pmfby_insurance import calculate_pmfby_crop_insurance
-        from .ml_utils.ai_synthesizer import generate_ai_crop_recommendations, generate_ai_crop_advisory
+        from .ml_utils.ai_synthesizer import generate_ai_crop_recommendations, generate_ai_crop_advisory, generate_ai_multicrop_systems
 
         cgwb_data = get_cgwb_groundwater_status(geo_check.get('district', ''))
         nearest_chc = locate_nearest_chc_machinery(lat, lon)
@@ -323,6 +322,9 @@ class RecommendationAPI(APIView):
             "portal_url": "https://samrakshane.karnataka.gov.in"
         }
 
+        # Real-Time AI 4-Tier Multi-Crop & Syntropic Agroforestry Systems
+        multi_crop_systems = generate_ai_multicrop_systems(crop_ctx, custom_gemini_key=custom_key, language=lang)
+
         return Response({
             "coordinates": {"lat": lat, "lon": lon},
             "location_name": location_name,
@@ -334,7 +336,7 @@ class RecommendationAPI(APIView):
             "apmc_top_mandi": apmc_top_mandi,
             "pmfby_summary": pmfby_summary,
             "is_ai_generated": is_ai_crops,
-            "engine_badge": "Live Gemini 3.6 Flash AI" if is_ai_crops else "Scientific AHP Model (Fail-Safe)",
+            "engine_badge": "Live Gemini AI Agronomist" if is_ai_crops else "Scientific AHP Model (Fail-Safe)",
             "environmental_context": {
                 "rainfall": local_rainfall, 
                 "monthly_rainfall": env_data.get('monthly_rainfall', []),
@@ -346,6 +348,7 @@ class RecommendationAPI(APIView):
                 "humidity": env_data.get('humidity', 60)
             },
             "ai_crop_advisory": ai_crop_advisory,
+            "multi_crop_systems": multi_crop_systems,
             "recommendations": recommendations[:50] 
         })
 

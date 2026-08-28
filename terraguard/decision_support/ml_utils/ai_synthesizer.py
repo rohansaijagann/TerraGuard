@@ -675,3 +675,110 @@ Use simple, everyday English (no heavy technical jargon). Give exactly 3 clear p
         "badge_text": "Scientific Wildfire Baseline",
         "text": fallback_text.strip()
     }
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# 7. AI MULTI-CROP & 4-TIER AGROFORESTRY SYNTHESIS (Multi-Crop Tab)
+# ══════════════════════════════════════════════════════════════════════════════
+def generate_ai_multicrop_systems(crop_ctx, custom_gemini_key=None, language="en"):
+    """
+    Dynamically generates 2 distinct 4-tier syntropic agroforestry models
+    tailored to the specific district, soil, rainfall, and elevation in Karnataka.
+    """
+    is_kn = language == "kn"
+    gemini_key = _get_gemini_key(custom_gemini_key)
+    if not gemini_key:
+        return None
+
+    loc_name = crop_ctx.get("location_name", "Karnataka Farm")
+    district = crop_ctx.get("district", "Karnataka")
+    rainfall = crop_ctx.get("rainfall_mm", 900)
+    elevation = crop_ctx.get("elevation", 600)
+    ph = crop_ctx.get("soil_ph", 6.5)
+
+    lang_instr = "Provide all names, roles, titles, and explanations in Kannada." if is_kn else "Provide all output in English."
+
+    prompt = f"""You are an expert in Syntropic Agroforestry, Multi-Tier Stratification, and Permaculture at UAS Bangalore and College of Forestry Ponnampet.
+Farm Telemetry in Karnataka:
+- Location: {loc_name} ({district} District, Karnataka)
+- Annual Rainfall: {rainfall} mm | Elevation: {elevation} m | Soil pH: {ph}
+- Language requirement: {lang_instr}
+
+Design exactly 2 distinct 4-tier synergistic multi-crop agroforestry models specifically tailored for {district} District in Karnataka.
+Each model MUST contain 4 vertical canopy tiers:
+1. Top Canopy Layer 1 (20-35m tall timber/crown fruit tree)
+2. Middle Orchard Layer 2 (5-15m primary cash orchard/plantation crop)
+3. Understory Layer 3 (1.5-5m shade-loving spice/bush crop)
+4. Ground Floor Layer 4 (0-1m living mulch, legume, or rhizome crop)
+
+Return ONLY a valid JSON array of 2 objects with this schema:
+[
+  {{
+    "title": "Descriptive Multi-Tier System Name",
+    "zone": "{district} Agro-Climatic Zone",
+    "score": 95,
+    "ler": "2.6x LER Synergy",
+    "annualNet": "₹2,80,000",
+    "waterSaving": "40% Moisture Lock",
+    "synergyNote": "1-line explanation of root and canopy synergy between these 4 species.",
+    "tiers": [
+      {{
+        "height": "25–35m",
+        "layer": "Top Canopy Layer 1",
+        "icon": "fa-tree",
+        "color": "#10b981",
+        "species": "Common and Botanical Species Name",
+        "role": "Canopy function and commercial value",
+        "yield": "₹60,000/yr"
+      }},
+      {{
+        "height": "8–15m",
+        "layer": "Middle Orchard Layer 2",
+        "icon": "fa-lemon",
+        "color": "#38bdf8",
+        "species": "Common and Botanical Species Name",
+        "role": "Primary cash harvest",
+        "yield": "₹1,40,000/yr"
+      }},
+      {{
+        "height": "2–5m",
+        "layer": "Understory Layer 3",
+        "icon": "fa-pepper-hot",
+        "color": "#f59e0b",
+        "species": "Common and Botanical Species Name",
+        "role": "Filtered shade intercrop",
+        "yield": "₹55,000/yr"
+      }},
+      {{
+        "height": "0–1m",
+        "layer": "Ground Cover Layer 4",
+        "icon": "fa-seedling",
+        "color": "#c084fc",
+        "species": "Common and Botanical Species Name",
+        "role": "Living mulch and nitrogen fixation",
+        "yield": "₹25,000/yr"
+      }}
+    ]
+  }}
+]
+Return RAW JSON ARRAY only."""
+
+    payload = {
+        "contents": [{"role": "user", "parts": [{"text": prompt}]}],
+        "generationConfig": {
+            "temperature": 0.25,
+            "maxOutputTokens": 1950,
+            "responseMimeType": "application/json"
+        }
+    }
+
+    try:
+        raw_text = _call_gemini_api(payload, gemini_key, timeout=5.5)
+        if raw_text:
+            models = _extract_json_array(raw_text)
+            if isinstance(models, list) and len(models) >= 1:
+                return models
+    except Exception as e:
+        print(f"AI Multi-Crop Generation fallback triggered: {e}")
+
+    return None
