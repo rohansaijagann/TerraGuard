@@ -62,16 +62,8 @@ class RecommendationAPI(APIView):
         from .ml_utils.krishi_machinery_chc import locate_nearest_chc_machinery
         from .ml_utils.pmfby_insurance import calculate_pmfby_crop_insurance
 
-        # Fetch CGWB Groundwater Aquifer Data for the District
-        from .ml_utils.groundwater_cgwb import get_cgwb_groundwater_status
-        from .ml_utils.yield_predictor import estimate_yield_and_revenue
-        from .ml_utils.subsidy_matcher import match_government_schemes
-        from .ml_utils.fertilizer_calculator import calculate_precision_fertilizer_dosage
-        from .ml_utils.agri_pv_modeler import model_agri_pv_dual_income
-        from .ml_utils.apmc_market_feed import get_apmc_market_intelligence
-        from .ml_utils.carbon_credit_engine import calculate_20yr_carbon_credits
-        from .ml_utils.krishi_machinery_chc import locate_nearest_chc_machinery
         from .ml_utils.ai_synthesizer import generate_ai_crop_recommendations, generate_ai_crop_advisory, generate_ai_multicrop_systems
+
 
         cgwb_data = get_cgwb_groundwater_status(geo_check.get('district', ''))
         nearest_chc = locate_nearest_chc_machinery(lat, lon)

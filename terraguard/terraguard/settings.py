@@ -21,12 +21,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-568=lp-$(pwno4u+^00+gay%k^eizhy3&q)i8eso(o)q9b22yf'
+# Set SECRET_KEY env var on Render. Falls back to insecure local key for dev only.
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-568=lp-$(pwno4u+^00+gay%k^eizhy3&q)i8eso(o)q9b22yf')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# Set DEBUG=False in Render environment variables for production.
+DEBUG = os.environ.get('DEBUG', 'False').strip().lower() in ('true', '1', 'yes')
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 
 # Gemini AI API Key — used by Raitha Sahayaka chatbot (read from env)
 GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY', '')

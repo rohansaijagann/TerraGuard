@@ -187,13 +187,11 @@ def generate_agronomist_reply(query, chat_history=None, farm_context=None, langu
         "nearest_chc": farm_context.get("nearest_chc", "Krishi Yanthradhare Depot")
     }
 
-    # Check for Gemini API key
-    default_key = base64.b64decode("QVEuQWI4Uk42SUwwVnEwZS1KZHQ1WmE2b0tXWWx2OUZkcDFUcjFlUm9NNzJuWkY0NkdYRmc=").decode("utf-8")
+    # Check for Gemini API key — priority: custom key from user > env var > Django settings
     gemini_key = (
         custom_gemini_key or
         os.environ.get("GEMINI_API_KEY") or
-        getattr(settings, "GEMINI_API_KEY", None) or
-        default_key
+        getattr(settings, "GEMINI_API_KEY", None)
     )
 
     if gemini_key and gemini_key.strip():
@@ -240,12 +238,10 @@ def generate_agronomist_reply(query, chat_history=None, farm_context=None, langu
             }
 
             models_to_try = [
-                'gemini-3.5-flash-lite',
-                'gemini-3.1-flash-lite',
-                'gemini-flash-lite-latest',
-                'gemini-3.5-flash',
-                'gemini-3.6-flash',
-                'gemini-flash-latest'
+                'gemini-2.0-flash',
+                'gemini-1.5-flash-latest',
+                'gemini-1.5-flash',
+                'gemini-2.0-flash-lite',
             ]
             for m in models_to_try:
                 try:
@@ -280,7 +276,35 @@ def fallback_agronomic_engine(query, ctx, language="en", image_data=None):
     """
     q_lower = query.lower()
     is_kn = language == "kn"
-    
+
+    # Try to identify plant/crop from query for better fallback labelling
+    _crop_map = {
+        "rice": "Paddy (Oryza sativa)", "paddy": "Paddy (Oryza sativa)", "bhatta": "Paddy (Oryza sativa)", "ಭತ್ತ": "ಭತ್ತ (Paddy)",
+        "maize": "Maize (Zea mays)", "corn": "Maize (Zea mays)", "mekke": "ಮೆಕ್ಕೆಜೋಳ", "ಮೆಕ್ಕೆ": "ಮೆಕ್ಕೆಜೋಳ",
+        "tomato": "Tomato (Solanum lycopersicum)", "tamato": "Tomato", "ಟೊಮ್ಯಾಟೊ": "ಟೊಮ್ಯಾಟೊ",
+        "potato": "Potato (Solanum tuberosum)", "ಆಲೂ": "ಆಲೂಗಡ್ಡೆ",
+        "chilli": "Chilli (Capsicum annuum)", "pepper": "Chilli Pepper", "ಮೆಣಸಿನ": "ಮೆಣಸಿನಕಾಯಿ",
+        "cotton": "Cotton (Gossypium hirsutum)", "ಹತ್ತಿ": "ಹತ್ತಿ",
+        "sugarcane": "Sugarcane (Saccharum officinarum)", "ಕಬ್ಬು": "ಕಬ್ಬು",
+        "ragi": "Finger Millet / Ragi (Eleusine coracana)", "ರಾಗಿ": "ರಾಗಿ",
+        "areca": "Arecanut (Areca catechu)", "adike": "Arecanut", "ಅಡಿಕೆ": "ಅಡಿಕೆ (Arecanut)",
+        "coconut": "Coconut (Cocos nucifera)", "ತೆಂಗು": "ತೆಂಗಿನ ಮರ",
+        "banana": "Banana (Musa spp.)", "ಬಾಳೆ": "ಬಾಳೆ",
+        "mango": "Mango (Mangifera indica)", "ಮಾವು": "ಮಾವು",
+        "coffee": "Coffee (Coffea arabica)", "ಕಾಫಿ": "ಕಾಫಿ",
+        "soybean": "Soybean (Glycine max)", "ಸೋಯಾ": "ಸೋಯಾಬೀನ್",
+        "wheat": "Wheat (Triticum aestivum)", "ಗೋಧಿ": "ಗೋಧಿ",
+        "groundnut": "Groundnut (Arachis hypogaea)", "peanut": "Groundnut", "ಶೇಂಗಾ": "ಶೇಂಗಾ",
+        "sunflower": "Sunflower (Helianthus annuus)", "ಸೂರ್ಯಕಾಂತಿ": "ಸೂರ್ಯಕಾಂತಿ",
+    }
+    detected_crop_en = "Identified Crop Foliage"
+    detected_crop_kn = "ಗುರುತಿಸಲಾದ ಬೆಳೆ"
+    for key, val in _crop_map.items():
+        if key in q_lower:
+            detected_crop_en = val
+            detected_crop_kn = val
+            break
+
     pixel_data = analyze_leaf_image_pixels(image_data)
     has_image = pixel_data is not None
 
@@ -320,7 +344,7 @@ def fallback_agronomic_engine(query, ctx, language="en", image_data=None):
             else:
                 reply = f"""{telemetry_badge}**Crop Health Diagnosis — Leaf Rust ({ctx['location_name']})**
 
-1. 🌾 **Crop / Plant Identified:** Agricultural Crop Foliage
+1. 🌾 **Crop / Plant Identified:** {detected_crop_en}
 2. 🔍 **Diagnostic Result:** **Active Leaf Rust (Fungal Infection)**
 3. 📋 **Causes & Weather Triggers:** High humidity (>80%), morning fog/dew, and warm weather (20–26°C). Rust spores spread rapidly through wind.
 4. 🔬 **Visual Symptoms Checked:** Reddish-orange powdery pustules on underside of leaves ({pixel_data['rust_pct']}% foliar area affected).
@@ -344,7 +368,7 @@ def fallback_agronomic_engine(query, ctx, language="en", image_data=None):
             else:
                 reply = f"""{telemetry_badge}**Crop Health Diagnosis — Powdery Mildew ({ctx['location_name']})**
 
-1. 🌾 **Crop / Plant Identified:** Commercial Crop Foliage
+1. 🌾 **Crop / Plant Identified:** {detected_crop_en}
 2. 🔍 **Diagnostic Result:** **Active Powdery Mildew (White Fungus)**
 3. 📋 **Causes & Weather Triggers:** Warm sunny days with cool humid nights and dense canopy shade blocking direct sunlight.
 4. 🔬 **Visual Symptoms Checked:** White powdery fungal patches on upper leaf surfaces ({pixel_data['white_pct']}% affected), causing leaf curling and drying.
@@ -370,7 +394,7 @@ def fallback_agronomic_engine(query, ctx, language="en", image_data=None):
             else:
                 reply = f"""{telemetry_badge}**Crop Health Diagnosis — Chlorosis & Leaf Curl ({ctx['location_name']})**
 
-1. 🌾 **Crop / Plant Identified:** Agricultural Crop Foliage
+1. 🌾 **Crop / Plant Identified:** {detected_crop_en}
 2. 🔍 **Diagnostic Result:** **Foliar Chlorosis & Whitefly Vector Stress**
 3. 📋 **Causes & Weather Triggers:** Sucking pests (whiteflies/thrips) transmitting geminivirus, or alkaline soil pH {ctx['soil_ph']} locking zinc/iron absorption ({pixel_data['yellow_pct']}% chlorotic area).
 4. 🔬 **Visual Symptoms Checked:** Interveinal yellowing, upward cupping of leaf margins, and stunted new flushes.
@@ -396,7 +420,7 @@ def fallback_agronomic_engine(query, ctx, language="en", image_data=None):
             else:
                 reply = f"""{telemetry_badge}**Crop Health Diagnosis — Leaf Spot & Blight ({ctx['location_name']})**
 
-1. 🌾 **Crop / Plant Identified:** Agricultural Crop Foliage
+1. 🌾 **Crop / Plant Identified:** {detected_crop_en}
 2. 🔍 **Diagnostic Result:** **Early Blight / Alternaria Leaf Spot (Fungal)**
 3. 📋 **Causes & Weather Triggers:** Warm temperature (26–32°C), high humidity, and prolonged leaf wetness ({pixel_data['brown_pct']}% necrotic spot area).
 4. 🔬 **Visual Symptoms Checked:** Concentric dark brown target rings with chlorotic yellow halo margins on mature leaves.
@@ -420,7 +444,7 @@ def fallback_agronomic_engine(query, ctx, language="en", image_data=None):
             else:
                 reply = f"""{telemetry_badge}**Crop Health Check — Optimal Foliar Health ({ctx['location_name']})**
 
-1. 🌾 **Crop / Plant Identified:** Agricultural / Horticultural Crop
+1. 🌾 **Crop / Plant Identified:** {detected_crop_en}
 2. 🔍 **Diagnostic Result:** **✅ Healthy Plant — No Active Disease, Fungus, or Pest Detected ({pixel_data['green_pct']}% Healthy Green Tissue)**
 3. 📋 **Causes & Weather Triggers:** Excellent foliar vitality with active photosynthesis. Soil pH {ctx['soil_ph']} and rainfall telemetry ({ctx['rainfall_mm']}mm) support robust crop vigor.
 4. 🔬 **Visual Symptoms Checked:** Clean green leaf blade, intact cellular margins, no fungal spores, mildew, or lesions.

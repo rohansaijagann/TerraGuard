@@ -2728,7 +2728,7 @@ body.dark-theme .ai-window-header{background:rgba(0,0,0,0.15)}
                 if (activeTab === 'agro') fetchRecommendations(lat, lon);
                 else if (activeTab === 'diag') fetchDiagnostics(lat, lon);
                 else if (activeTab === 'fire') fetchFireRisk(lat, lon);
-                else if (activeTab === 'pest') fetchPestRisks(lat, lon);
+                else if (activeTab === 'pest') fetchPestDisease(lat, lon);
             } else if (activeTab === 'saved') {
                 renderSavedLocations();
             }
@@ -8132,30 +8132,8 @@ multiCropModels.forEach((model, mIdx) => {
                 alert(currentLang === 'kn' ? 'ನಿಮ್ಮ ಬ್ರೌಸರ್ ಧ್ವನಿ ಓದುವಿಕೆಯನ್ನು ಬೆಂಬಲಿಸುವುದಿಲ್ಲ.' : 'Text-to-speech not supported on this browser.');
                 return;
             }
-
-            if (window.speechSynthesis.speaking) {
-                window.speechSynthesis.cancel();
-                if (btnEl) btnEl.innerHTML = `<i class="fa-solid fa-volume-high"></i> <span>${currentLang==='kn' ? 'ಕೇಳಿ' : 'Listen'}</span>`;
-                return;
-            }
-
-            const cleanText = text.replace(/[*#_`\n]/g, ' ');
-            const utterance = new SpeechSynthesisUtterance(cleanText);
-            utterance.lang = currentLang === 'kn' ? 'kn-IN' : 'en-IN';
-            utterance.rate = 0.92;
-            utterance.pitch = 1.0;
-
-            if (btnEl) btnEl.innerHTML = `<i class="fa-solid fa-circle-stop" style="color:#ef4444;"></i> <span>Stop</span>`;
-
-            utterance.onend = () => {
-                if (btnEl) btnEl.innerHTML = `<i class="fa-solid fa-volume-high"></i> <span>${currentLang==='kn' ? 'ಕೇಳಿ' : 'Listen'}</span>`;
-            };
-
-            utterance.onerror = () => {
-                if (btnEl) btnEl.innerHTML = `<i class="fa-solid fa-volume-high"></i> <span>${currentLang==='kn' ? 'ಕೇಳಿ' : 'Listen'}</span>`;
-            };
-
-            window.speechSynthesis.speak(utterance);
+            // Delegate to the shared TTS engine so global stop (dblclick/Escape) works here too
+            speakAdvisory(text, currentLang, btnEl);
         }
 
         // ── Context-Aware Dynamic Quick Chips ────────────────────────
