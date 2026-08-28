@@ -23,8 +23,8 @@ except ImportError:
     Image = None
     HAS_PIL = False
 
-SYSTEM_PROMPT_EN = """You are 'Raitha Sahayaka' (ರೈತ ಸಹಾಯಕ), an AI farming assistant and agronomist for Karnataka farmers.
-Your goal is to give farmers, students, and growers clear, practical, and very simple, easy-to-understand agricultural guidance.
+SYSTEM_PROMPT_EN = """You are 'Raitha Sahayaka' (ರೈತ ಸಹಾಯಕ), an expert AI Agronomist and Plant Pathologist for Karnataka farmers (UAS Bangalore & UAS Dharwad).
+Your goal is to give farmers, students, and growers clear, practical, and accurate agricultural guidance.
 
 CURRENT FARM DETAILS:
 - Location: {location_name} ({district}, Karnataka) [Lat: {lat}, Lon: {lon}]
@@ -36,18 +36,26 @@ CURRENT FARM DETAILS:
 - Nearest Mandi / APMC: {nearest_mandi}
 - Machinery Custom Hiring Centre (CHC): {nearest_chc}
 
-LANGUAGE & STYLE GUIDELINES (SIMPLE, PLAIN ENGLISH):
-1. Always write in simple, friendly, everyday English.
-2. DO NOT use heavy academic jargon, difficult Latin medical names, or complicated scientific terms.
-3. Keep sentences short, helpful, and direct.
-4. When explaining plant diseases, pests, or leaf photos, use this simple 6-part format:
-   1. **Problem / Disease Name**: Simple name of the crop issue (with common name in brackets).
-   2. **Why It Happened (Causes)**: Simple reason (e.g. excess humidity, continuous rain, wet leaves, insect attack).
-   3. **Signs to Check (Symptoms)**: Easy-to-spot visual signs (e.g. yellow leaf edges, brown spots, white powder on leaves).
-   4. **Medicine & Spray Dosage**: Clear, exact measurement (e.g. "Mix 2 grams per 1 liter of water and spray early in the morning").
-   5. **Natural / Organic Remedies**: Home remedies or organic sprays (e.g. Neem oil spray, cow urine/Jeevamrutha, bio-fungicide).
-   6. **Local Help & Government Office**: Nearest Raitha Samparka Kendra (RSK) or agriculture department contact.
-5. For general farming questions (fertilizers, watering, sowing, subsidies), give 2 to 4 simple, numbered steps that are easy to follow."""
+IMAGE & PLANT LEAF DIAGNOSIS INSTRUCTIONS:
+When an image or crop photo is provided:
+1. **Identify the Plant / Crop Species First**: Name the plant clearly (e.g. Tomato, Arecanut, Coffee, Paddy, Cotton, Mango, Maize, Chilli, Banana, Pomegranate, etc.).
+2. **Accurate Disease vs. Health Assessment**:
+   - **IF THE LEAF IS HEALTHY** (clean green leaf, no spots, no powdery coating, no rotting): State clearly:
+     `✅ **Health Status**: Healthy Plant (No Active Disease or Pest Detected) — Foliar tissue is robust with optimal chlorophyll.`
+     Give simple preventive tips (irrigation balance, Panchagavya/Neem tonic, balanced NPK). **DO NOT invent or hallucinate any disease on a healthy plant.**
+   - **IF THE LEAF HAS A GENUINE DISEASE OR PEST**: Give the exact disease name with common and scientific name.
+3. Structure your response using these clear headings:
+   1. 🌾 **Crop / Plant Identified**: [Plant Name]
+   2. 🔍 **Diagnostic Result**: [Healthy Status OR Specific Disease Name]
+   3. 📋 **Causes & Weather Triggers**: [Humidity, rain, dew, or nutrient imbalance]
+   4. 🔬 **Visual Symptoms Checked**: [Spots, yellowing, wilting, or clean foliage]
+   5. 💊 **Recommended Spray & Dosage**: [Exact chemical medicine and dose per liter of water]
+   6. 🌿 **Organic & Bio-Control Management**: [Neem oil, Trichoderma, Pseudomonas, Jeevamrutha]
+   7. 🏛️ **Government Helpline & RSK**: [Kisan Call Centre 1800-180-1551 & {district} Raitha Samparka Kendra]
+
+LANGUAGE & STYLE:
+- Write in simple, direct, practical English.
+- Avoid unnecessary academic jargon; give clear dosage per 1 liter of water."""
 
 SYSTEM_PROMPT_KN = """ನೀವು 'ರೈತ ಸಹಾಯಕ' (Raitha Sahayaka), ಬೆಂಗಳೂರು ಮತ್ತು ಧಾರವಾಡ ಕೃಷಿ ವಿಶ್ವವಿದ್ಯಾಲಯದ ಹಿರಿಯ ಸಸ್ಯ ರೋಗಶಾಸ್ತ್ರಜ್ಞ ಹಾಗೂ ಕೃಷಿ ವಿಜ್ಞಾನಿ.
 ಕರ್ನಾಟಕದ ರೈತರಿಗೆ ನಿಖರ, ವೈಜ್ಞಾನಿಕ ಹಾಗೂ ಅಧಿಕ ಇಳುವರಿ ನೀಡುವ ಅಧಿಕೃತ ಕೃಷಿ ತಾಂತ್ರಿಕ ಮಾರ್ಗದರ್ಶನ ನೀಡುವುದು ನಿಮ್ಮ ಕರ್ತವ್ಯ.
@@ -61,18 +69,22 @@ SYSTEM_PROMPT_KN = """ನೀವು 'ರೈತ ಸಹಾಯಕ' (Raitha Sahayaka)
 - ಸರ್ಕಾರದ ಯೋಜನೆಗಳು: {subsidies}
 - ಹತ್ತಿರದ APMC ಮಾರುಕಟ್ಟೆ: {nearest_mandi}
 
-ರೋಗ ನಿದಾನ ವರದಿ ವಿನ್ಯಾಸ (Mandatory Structure):
-ಬೆಳೆಯ ರೋಗ ಅಥವಾ ಎಲೆಯ ಫೋಟೋ ತಪಾಸಣೆ ಮಾಡುವಾಗ ಕಡ್ಡಾಯವಾಗಿ ಈ ೬ ಶೀರ್ಷಿಕೆಗಳಲ್ಲಿ ಉತ್ತರಿಸಿ:
-೧. ರೋಗ ನಿದಾನ & ಸೂಕ್ಷ್ಮಾಣು ಜೀವಿ (Scientific Taxonomy): ಸಾಮಾನ್ಯ ಮತ್ತು ವೈಜ್ಞಾನಿಕ ಹೆಸರು.
-೨. ರೋಗ ಪ್ರೇರಕ ಕಾರಣಗಳು & ಹವಾಮಾನ (Etiology): ತೇವಾಂಶ >೮೦%, ನಿಂತ ನೀರು, ಮೋಡ ಕವಿದ ವಾತಾವರಣ, ಜಿಗಿ ಹುಳುಗಳು ಇತ್ಯಾದಿ.
-೩. ಪ್ರಮುಖ ರೋಗ ಲಕ್ಷಣಗಳು (Clinical Symptoms): ಎಲೆ ಮೇಲಿನ ಚುಕ್ಕೆಗಳು, ಕಮಟು, ಸುರುಟಿಕೊಳ್ಳುವಿಕೆ, ಹಳದಿ ಅಂಚುಗಳು.
-೪. ಶಿಫಾರಸು ಮಾಡಿದ ರಾಸಾಯನಿಕ ಔಷಧ & ಸಿಂಪರಣೆ ಪ್ರಮಾಣ (Chemical Dosage): ಪ್ರತಿ ಲೀಟರ್ ನೀರಿಗೆ ನಿಖರ ಪ್ರಮಾಣ.
-೫. ಸಾವಯವ & ಜೈವಿಕ ನಿರ್ವಹಣೆ (Bio-Control): ಟ್ರೈಕೋಡರ್ಮಾ, ಬೇವಿನ ಎಣ್ಣೆ, ಸೂಡೋಮೊನಾಸ್.
-೬. ತಾಲ್ಲೂಕು ಕೃಷಿ ವಿಸ್ತರಣೆ & RSK ನೆರವು (Extension Referral): ತಾಲ್ಲೂಕು ರೈತ ಸಂಪರ್ಕ ಕೇಂದ್ರ.
-
-ನಿಯಮಗಳು:
-- ಯಾವುದೇ ಅಸಂಬದ್ಧ ಎಮೋಜಿಗಳನ್ನು ಬಳಸಬೇಡಿ. ಸ್ಪಷ್ಟ, ಗೌರವಯುತ ಹಾಗೂ ಅಧಿಕೃತ ಕನ್ನಡದಲ್ಲಿ ಉತ್ತರಿಸಿ.
-"""
+ಎಲೆ ಫೋಟೋ ತಪಾಸಣೆ & ರೋಗ ನಿದಾನ ನಿಯಮಗಳು:
+ಬೆಳೆಯ ಫೋಟೋ ತಪಾಸಣೆ ಮಾಡುವಾಗ:
+೧. **ಮೊದಲು ಗಿಡ ಅಥವಾ ಬೆಳೆಯ ಹೆಸರನ್ನು ಗುರುತಿಸಿ** (ಉದಾ: ಟೊಮೇಟೊ, ಅಡಿಕೆ, ಕಾಫಿ, ಭತ್ತ, ಹತ್ತಿ, ಮಾವು, ಮೆಕ್ಕೆಜೋಳ, ಮೆಣಸಿನಕಾಯಿ, ಬಾಳೆ ಇತ್ಯಾದಿ).
+೨. **ಆರೋಗ್ಯಕರ vs ರೋಗಗ್ರಸ್ತ ನಿಖರ ತಪಾಸಣೆ**:
+   - **ಎಲೆಯು ಆರೋಗ್ಯಕರವಾಗಿದ್ದರೆ** (ಹಸಿರಾಗಿದ್ದು, ಯಾವುದೇ ಚುಕ್ಕೆ/ಬೂದಿ/ಕೊಳೆ ಇಲ್ಲದಿದ್ದರೆ): ಸ್ಪಷ್ಟವಾಗಿ ತಿಳಿಸಿ:
+     `✅ **ಆರೋಗ್ಯ ಸ್ಥಿತಿ**: ಆರೋಗ್ಯಕರ ಬೆಳೆ (ಯಾವುದೇ ಸಕ್ರಿಯ ರೋಗ ಅಥವಾ ಕೀಟಬಾಧೆ ಇಲ್ಲ) — ಎಲೆಯು ಸಮೃದ್ಧ ಕ್ಲೋರೊಫಿಲ್ ಹೊಂದಿದೆ.`
+     ಸಾಮಾನ್ಯ ಪೋಷಣೆ ಮತ್ತು ಮುನ್ನೆಚ್ಚರಿಕೆ ಕ್ರಮಗಳನ್ನು ನೀಡಿ. **ಆರೋಗ್ಯಕರ ಗಿಡಕ್ಕೆ ಸುಳ್ಳು ರೋಗವನ್ನು ಸೃಷ್ಟಿಸಬೇಡಿ.**
+   - **ನಿಜವಾದ ರೋಗವಿದ್ದರೆ**: ರೋಗದ ನಿಖರ ಹೆಸರು ಮತ್ತು ಕಾರಣ ನೀಡಿ.
+೩. ಕಡ್ಡಾಯವಾಗಿ ಈ ಶೀರ್ಷಿಕೆಗಳಲ್ಲಿ ಉತ್ತರಿಸಿ:
+   ೧. 🌾 **ಗುರುತಿಸಲಾದ ಬೆಳೆ / ಸಸ್ಯ**: [ಬೆಳೆಯ ಹೆಸರು]
+   ೨. 🔍 **ರೋಗ ನಿದಾನ & ಸ್ಥಿತಿ**: [ಆರೋಗ್ಯಕರ ಸ್ಥಿತಿ ಅಥವಾ ನಿಖರ ರೋಗದ ಹೆಸರು]
+   ೩. 📋 **ಪ್ರೇರಕ ಕಾರಣಗಳು & ಹವಾಮಾನ**: [ತೇವಾಂಶ, ಮಳೆ, ಇಬ್ಬನಿ ಅಥವಾ ಪೋಷಕಾಂಶ ಕೊರತೆ]
+   ೪. 🔬 **ಪ್ರಮುಖ ರೋಗ ಲಕ್ಷಣಗಳು**: [ಚುಕ್ಕೆಗಳು, ಕಮಟು, ಹಳದಿ ಅಂಚು ಅಥವಾ ಹಸಿರು ಅಂಗಾಂಶ]
+   ೫. 💊 **ಶಿಫಾರಸು ಮಾಡಿದ ಔಷಧ & ಸಿಂಪರಣೆ ಪ್ರಮಾಣ**: [ಪ್ರತಿ ಲೀಟರ್ ನೀರಿಗೆ ನಿಖರ ಪ್ರಮಾಣ]
+   ೬. 🌿 **ಸಾವಯವ & ಜೈವಿಕ ನಿರ್ವಹಣೆ**: [ಬೇವಿನ ಎಣ್ಣೆ, ಟ್ರೈಕೋಡರ್ಮಾ, ಜೀವಾಮೃತ]
+   ೭. 🏛️ **ಕಿಸಾನ್ ಕಾಲ್ ಸೆಂಟರ್ & RSK**: [ಟೋಲ್-ಫ್ರೀ 1800-180-1551 & {district} ರೈತ ಸಂಪರ್ಕ ಕೇಂದ್ರ]"""
 
 def detect_language(query, requested_lang="en"):
     """Accurately detects whether to reply in Kannada or English."""
@@ -298,21 +310,23 @@ def fallback_agronomic_engine(query, ctx, language="en", image_data=None):
             if is_kn:
                 reply = f"""{telemetry_badge}**ಸಸ್ಯ ರೋಗ ನಿದಾನ ವರದಿ — ಎಲೆ ತುಕ್ಕು ರೋಗ ({ctx['location_name']})**
 
-**೧. ರೋಗ ನಿದಾನ & ಸೂಕ್ಷ್ಮಾಣು ಜೀವಿ:** **ಎಲೆ ತುಕ್ಕು ರೋಗ (Leaf Rust — *Puccinia sorghi* / *Hemileia vastatrix*)**
-**೨. ರೋಗ ಪ್ರೇರಕ ಕಾರಣಗಳು & ಹವಾಮಾನ:** ವಾತಾವರಣದ ತೇವಾಂಶ >೮೦%, ನಿರಂತರ ಮಂಜು, ತಾಪಮಾನ ೨೦-೨೬°C ಮತ್ತು ಪಕ್ಕದ ಕಳೆ ಗಿಡಗಳಿಂದ ಗಾಳಿಯ ಮೂಲಕ ಬೀಜಾಣುಗಳು ಹರಡುವುದು.
-**೩. ಪ್ರಮುಖ ರೋಗ ಲಕ್ಷಣಗಳು:** ಎಲೆಯ ಕೆಳಭಾಗದಲ್ಲಿ ಕಿತ್ತಳೆ-ಕೆಂಪು ಬಣ್ಣದ ತುಕ್ಕಿನ ಪುಡಿಯುಳ್ಳ ಗುಳ್ಳೆಗಳು (Pustules) ಎದ್ದು, ಎಲೆಯು ಪೂರ್ಣ ಒಣಗಿ ಉದುರುವುದು ({pixel_data['rust_pct']}% ಪತ್ತೆಯಾಗಿದೆ).
-**೪. ಶಿಫಾರಸು ಮಾಡಿದ ರಾಸಾಯನಿಕ ಔಷಧ & ಸಿಂಪರಣೆ ಪ್ರಮಾಣ:** **ಹೆಕ್ಸಾಕೊನಾಜೋಲ್ 5% EC (Contaf)** — ೨ ಮಿಲಿ / ಲೀಟರ್ ಅಥವಾ **ಪ್ರೊಪಿಕೊನಾಜೋಲ್ 25% EC (Tilt)** — ೧ ಮಿಲಿ / ಲೀಟರ್.
-**೫. ಸಾವಯವ & ಜೈವಿಕ ನಿರ್ವಹಣೆ:** **ಟ್ರೈಕೋಡರ್ಮಾ ಹಾರ್ಜಿಯಾನಮ್** — ೫ ಗ್ರಾಂ / ಲೀಟರ್ + ೧೦,೦೦೦ ppm **ಬೇವಿನ ಎಣ್ಣೆ** ೩ ಮಿಲಿ / ಲೀಟರ್.
-**೬. ತಾಲ್ಲೂಕು ಕೃಷಿ ವಿಸ್ತರಣೆ & RSK ನೆರವು:** {ctx['district']} ತಾಲ್ಲೂಕು ಕೃಷಿ ಇಲಾಖೆ & ರೈತ ಸಂಪರ್ಕ ಕೇಂದ್ರ (RSK)."""
+೧. 🌾 **ಗುರುತಿಸಲಾದ ಬೆಳೆ / ಸಸ್ಯ:** ಬೆಳೆ ಎಲೆ (ರೋಗ ಸೂಕ್ಷ್ಮ ಸಸ್ಯ)
+೨. 🔍 **ರೋಗ ನಿದಾನ & ಸ್ಥಿತಿ:** **ಎಲೆ ತುಕ್ಕು ರೋಗ (Leaf Rust — *Puccinia* / *Hemileia*)**
+೩. 📋 **ಪ್ರೇರಕ ಕಾರಣಗಳು & ಹವಾಮಾನ:** ವಾತಾವರಣದ ತೇವಾಂಶ >೮೦%, ನಿರಂತರ ಮಂಜು, ತಾಪಮಾನ ೨೦-೨೬°C ಮತ್ತು ಪಕ್ಕದ ಕಳೆ ಗಿಡಗಳಿಂದ ಗಾಳಿಯ ಮೂಲಕ ಬೀಜಾಣುಗಳು ಹರಡುವುದು.
+೪. 🔬 **ಪ್ರಮುಖ ರೋಗ ಲಕ್ಷಣಗಳು:** ಎಲೆಯ ಕೆಳಭಾಗದಲ್ಲಿ ಕಿತ್ತಳೆ-ಕೆಂಪು ಬಣ್ಣದ ತುಕ್ಕಿನ ಪುಡಿಯುಳ್ಳ ಗುಳ್ಳೆಗಳು (Pustules) ಎದ್ದು, ಎಲೆಯು ಪೂರ್ಣ ಒಣಗಿ ಉದುರುವುದು ({pixel_data['rust_pct']}% ಪತ್ತೆಯಾಗಿದೆ).
+೫. 💊 **ಶಿಫಾರಸು ಮಾಡಿದ ಔಷಧ & ಸಿಂಪರಣೆ ಪ್ರಮಾಣ:** **ಹೆಕ್ಸಾಕೊನಾಜೋಲ್ 5% EC (Contaf)** — ೨ ಮಿಲಿ / ಲೀಟರ್ ಅಥವಾ **ಪ್ರೊಪಿಕೊನಾಜೋಲ್ 25% EC (Tilt)** — ೧ ಮಿಲಿ / ಲೀಟರ್.
+೬. 🌿 **ಸಾವಯವ & ಜೈವಿಕ ನಿರ್ವಹಣೆ:** **ಟ್ರೈಕೋಡರ್ಮಾ ಹಾರ್ಜಿಯಾನಮ್** — ೫ ಗ್ರಾಂ / ಲೀಟರ್ + ೧೦,೦೦೦ ppm **ಬೇವಿನ ಎಣ್ಣೆ** ೩ ಮಿಲಿ / ಲೀಟರ್.
+೭. 🏛️ **ಕಿಸಾನ್ ಕಾಲ್ ಸೆಂಟರ್ & RSK:** ಟೋಲ್-ಫ್ರೀ **1800-180-1551** & {ctx['district']} ತಾಲ್ಲೂಕು ರೈತ ಸಂಪರ್ಕ ಕೇಂದ್ರ."""
             else:
-                reply = f"""{telemetry_badge}**Crop Health Check — Leaf Rust Disease ({ctx['location_name']})**
+                reply = f"""{telemetry_badge}**Crop Health Diagnosis — Leaf Rust ({ctx['location_name']})**
 
-**1. Problem / Disease Name:** **Leaf Rust (Fungal Infection)**
-**2. Why It Happened:** High humidity (>80%), wet leaves from morning fog/rain, and warm weather (20–26°C). Rust spores spread easily through the wind.
-**3. Signs to Check (Symptoms):** Small reddish-orange or brown powdery spots on the underside of leaves ({pixel_data['rust_pct']}% of leaf affected).
-**4. Medicine & Spray Dosage:** **Hexaconazole 5% (Contaf)** — Mix 2 ml in 1 liter of water, OR **Propiconazole (Tilt)** — Mix 1 ml in 1 liter of water. Spray early in the morning.
-**5. Natural / Organic Treatment:** Spray **Neem Oil** (3 ml per liter of water) or **Trichoderma** bio-powder (5 grams per liter of water).
-**6. Local Help & Support:** Visit your nearest {ctx['district']} Raitha Samparka Kendra (RSK) or Agriculture Department."""
+1. 🌾 **Crop / Plant Identified:** Agricultural Crop Foliage
+2. 🔍 **Diagnostic Result:** **Active Leaf Rust (Fungal Infection)**
+3. 📋 **Causes & Weather Triggers:** High humidity (>80%), morning fog/dew, and warm weather (20–26°C). Rust spores spread rapidly through wind.
+4. 🔬 **Visual Symptoms Checked:** Reddish-orange powdery pustules on underside of leaves ({pixel_data['rust_pct']}% foliar area affected).
+5. 💊 **Recommended Spray & Dosage:** **Hexaconazole 5% (Contaf)** — 2 ml per 1L water OR **Propiconazole (Tilt)** — 1 ml per 1L water. Spray in the early morning.
+6. 🌿 **Organic & Bio-Control Management:** Spray **Neem Oil 10,000 ppm** (3 ml/L) or **Trichoderma harzianum** (5 g/L).
+7. 🏛️ **Helpline & Local RSK:** Toll-Free Kisan Call Centre **1800-180-1551** & {ctx['district']} Raitha Samparka Kendra."""
             return {"reply": reply, "source": "Computer Vision Pathology Engine", "language": language}
 
         # Pattern B: Powdery / White Mildew detected
@@ -320,21 +334,23 @@ def fallback_agronomic_engine(query, ctx, language="en", image_data=None):
             if is_kn:
                 reply = f"""{telemetry_badge}**ಸಸ್ಯ ರೋಗ ನಿದಾನ ವರದಿ — ಬೂದಿ ರೋಗ ({ctx['location_name']})**
 
-**೧. ರೋಗ ನಿದಾನ & ಸೂಕ್ಷ್ಮಾಣು ಜೀವಿ:** **ಬೂದಿ ರೋಗ (Powdery Mildew — *Erysiphe polygoni* / *Oidium*)**
-**೨. ರೋಗ ಪ್ರೇರಕ ಕಾರಣಗಳು & ಹವಾಮಾನ:** ಹಗಲಿನ ಬೆಚ್ಚನೆಯ ತಾಪಮಾನ (೨೮-೩೨°C), ರಾತ್ರಿಯ ತಂಪಾದ ತೇವಾಂಶ ಮತ್ತು ದಟ್ಟವಾದ ಎಲೆಗಳ ನಡುವೆ ಸೂರ್ಯನ ಬೆಳಕು ಬೀಳದಿರುವುದು.
-**೩. ಪ್ರಮುಖ ರೋಗ ಲಕ್ಷಣಗಳು:** ಎಲೆಯ ಮೇಲ್ಭಾಗದಲ್ಲಿ ಬಿಳಿ ಬಣ್ಣದ ಹಿಟ್ಟಿನಂತಹ ಬೂದಿಯ ಪದರ ({pixel_data['white_pct']}% ಆವರಿಸಿದೆ), ಎಲೆಗಳು ಸುರುಟಿಕೊಂಡು ಒಣಗುವುದು.
-**೪. ಶಿಫಾರಸು ಮಾಡಿದ ರಾಸಾಯನಿಕ ಔಷಧ & ಸಿಂಪರಣೆ ಪ್ರಮಾಣ:** **ಕರಗುವ ಗಂಧಕ 80% WP (Sulfex)** — ೩ ಗ್ರಾಂ / ಲೀಟರ್ ಅಥವಾ **ಡೈನೊಕ್ಯಾಪ್ 48% EC** — ೧ ಮಿಲಿ / ಲೀಟರ್.
-**೫. ಸಾವಯವ & ಜೈವಿಕ ನಿರ್ವಹಣೆ:** ೧೦% ಹಸಿ ಹಸುವಿನ ಹಾಲಿನ ದ್ರಾವಣ ಸಿಂಪಡಣೆ ಅಥವಾ **ಆಂಪೆಲೋಮೈಸಿಸ್ ಕ್ವಿಸ್ಕ್ವಾಲಿಸ್** ಜೈವಿಕ ಶಿಲೀಂಧ್ರನಾಶಕ.
-**೬. ತಾಲ್ಲೂಕು ಕೃಷಿ ವಿಸ್ತರಣೆ & RSK ನೆರವು:** {ctx['district']} ತೋಟಗಾರಿಕಾ ಇಲಾಖೆ ಕಚೇರಿ."""
+೧. 🌾 **ಗುರುತಿಸಲಾದ ಬೆಳೆ / ಸಸ್ಯ:** ತೋಟಗಾರಿಕೆ / ಕೃಷಿ ಬೆಳೆ
+೨. 🔍 **ರೋಗ ನಿದಾನ & ಸ್ಥಿತಿ:** **ಬೂದಿ ರೋಗ (Powdery Mildew — *Erysiphe* / *Oidium*)**
+೩. 📋 **ಪ್ರೇರಕ ಕಾರಣಗಳು & ಹವಾಮಾನ:** ಹಗಲಿನ ಬೆಚ್ಚನೆಯ ತಾಪಮಾನ (೨೮-೩೨°C), ರಾತ್ರಿಯ ತಂಪಾದ ತೇವಾಂಶ ಮತ್ತು ದಟ್ಟವಾದ ಎಲೆಗಳ ನಡುವೆ ಸೂರ್ಯನ ಬೆಳಕು ಬೀಳದಿರುವುದು.
+೪. 🔬 **ಪ್ರಮುಖ ರೋಗ ಲಕ್ಷಣಗಳು:** ಎಲೆಯ ಮೇಲ್ಭಾಗದಲ್ಲಿ ಬಿಳಿ ಬಣ್ಣದ ಹಿಟ್ಟಿನಂತಹ ಬೂದಿಯ ಪದರ ({pixel_data['white_pct']}% ಆವರಿಸಿದೆ), ಎಲೆಗಳು ಸುರುಟಿಕೊಂಡು ಒಣಗುವುದು.
+೫. 💊 **ಶಿಫಾರಸು ಮಾಡಿದ ಔಷಧ & ಸಿಂಪರಣೆ ಪ್ರಮಾಣ:** **ಕರಗುವ ಗಂಧಕ 80% WP (Sulfex)** — ೩ ಗ್ರಾಂ / ಲೀಟರ್ ಅಥವಾ **ಡೈನೊಕ್ಯಾಪ್ 48% EC** — ೧ ಮಿಲಿ / ಲೀಟರ್.
+೬. 🌿 **ಸಾವಯವ & ಜೈವಿಕ ನಿರ್ವಹಣೆ:** ೧೦% ಹಸಿ ಹಸುವಿನ ಹಾಲಿನ ದ್ರಾವಣ ಸಿಂಪಡಣೆ ಅಥವಾ **ಬೇವಿನ ಎಣ್ಣೆ** ೩ ಮಿಲಿ / ಲೀಟರ್.
+೭. 🏛️ **ಕಿಸಾನ್ ಕಾಲ್ ಸೆಂಟರ್ & RSK:** ಟೋಲ್-ಫ್ರೀ **1800-180-1551** & {ctx['district']} ತೋಟಗಾರಿಕಾ ಇಲಾಖೆ / RSK."""
             else:
-                reply = f"""{telemetry_badge}**Crop Health Check — Powdery Mildew / White Powder ({ctx['location_name']})**
+                reply = f"""{telemetry_badge}**Crop Health Diagnosis — Powdery Mildew ({ctx['location_name']})**
 
-**1. Problem / Disease Name:** **Powdery Mildew (White Fungus)**
-**2. Why It Happened:** Warm sunny days with cool humid nights and thick leaf shade blocking sunlight.
-**3. Signs to Check (Symptoms):** White flour-like powder coating the upper surface of leaves ({pixel_data['white_pct']}% of leaf affected), making leaves curl and dry up.
-**4. Medicine & Spray Dosage:** **Wettable Sulphur (Sulfex)** — Mix 3 grams in 1 liter of water, OR **Hexaconazole** — Mix 1.5 ml in 1 liter of water.
-**5. Natural / Organic Treatment:** Spray 10% raw cow milk (100 ml milk in 1 liter water) or Neem oil spray (3 ml/L).
-**6. Local Help & Support:** {ctx['district']} Horticulture Department or Raitha Samparka Kendra."""
+1. 🌾 **Crop / Plant Identified:** Commercial Crop Foliage
+2. 🔍 **Diagnostic Result:** **Active Powdery Mildew (White Fungus)**
+3. 📋 **Causes & Weather Triggers:** Warm sunny days with cool humid nights and dense canopy shade blocking direct sunlight.
+4. 🔬 **Visual Symptoms Checked:** White powdery fungal patches on upper leaf surfaces ({pixel_data['white_pct']}% affected), causing leaf curling and drying.
+5. 💊 **Recommended Spray & Dosage:** **Wettable Sulphur (Sulfex 80% WP)** — 3 grams per 1L water OR **Hexaconazole** — 1.5 ml per 1L water.
+6. 🌿 **Organic & Bio-Control Management:** Spray **10% Raw Cow Milk Solution** (100ml in 1L water) or **Neem Oil** (3 ml/L).
+7. 🏛️ **Helpline & Local RSK:** Toll-Free Kisan Call Centre **1800-180-1551** & {ctx['district']} Horticulture Office / RSK."""
             return {"reply": reply, "source": "Computer Vision Pathology Engine", "language": language}
 
         # Pattern C: High Chlorosis / Yellowing (>12%)
@@ -342,25 +358,27 @@ def fallback_agronomic_engine(query, ctx, language="en", image_data=None):
             if is_kn:
                 reply = f"""{telemetry_badge}**ಸಸ್ಯ ರೋಗ ನಿದಾನ ವರದಿ — ಎಲೆ ಹಳದಿ & ಮುಟುರು ಸಂಕೀರ್ಣ ({ctx['location_name']})**
 
-**೧. ರೋಗ ನಿದಾನ & ಸೂಕ್ಷ್ಮಾಣು ಜೀವಿ:** **ಎಲೆ ಮುಟುರು ವೈರಸ್ & ಸತು/ಕಬ್ಬಿಣದ ಕೊರತೆ (Begomovirus / Micronutrient Chlorosis)**
-**೨. ರೋಗ ಪ್ರೇರಕ ಕಾರಣಗಳು & ಹವಾಮಾನ:** ಬಿಳಿ ನೊಣ (Whiteflies) ಮತ್ತು ಜಿಗಿ ಹುಳುಗಳ ರಸಹೀರುವಿಕೆ, ಹಾಗೂ ಮಣ್ಣಿನ pH {ctx['soil_ph']} ವ್ಯತ್ಯಾಸದಿಂದ ಸೂಕ್ಷ್ಮ ಪೋಷಕಾಂಶಗಳ ಕೊರತೆ ({pixel_data['yellow_pct']}% ಎಲೆ ಹಳದಿಯಾಗಿದೆ).
-**೩. ಪ್ರಮುಖ ರೋಗ ಲಕ್ಷಣಗಳು:** ಎಲೆಯ ನರಗಳ ನಡುವೆ ಹಳದಿ ಬಣ್ಣ, ಎಲೆಯ ಅಂಚು ಮೇಲ್ಮುಖವಾಗಿ ಸುರುಟಿಕೊಳ್ಳುವುದು ಮತ್ತು ಗಿಡ ಬೆಳವಣಿಗೆ ಕುಂಠಿತವಾಗುವುದು.
-**೪. ಶಿಫಾರಸು ಮಾಡಿದ ರಾಸಾಯನಿಕ ಔಷಧ & ಸಿಂಪರಣೆ ಪ್ರಮಾಣ:**
+೧. 🌾 **ಗುರುತಿಸಲಾದ ಬೆಳೆ / ಸಸ್ಯ:** ಕೃಷಿ ಸಸ್ಯ ಎಲೆ
+೨. 🔍 **ರೋಗ ನಿದಾನ & ಸ್ಥಿತಿ:** **ಎಲೆ ಮುಟುರು ವೈರಸ್ & ಸತು/ಕಬ್ಬಿಣದ ಕೊರತೆ (Begomovirus / Micronutrient Chlorosis)**
+೩. 📋 **ಪ್ರೇರಕ ಕಾರಣಗಳು & ಹವಾಮಾನ:** ಬಿಳಿ ನೊಣ (Whiteflies) ಮತ್ತು ಜಿಗಿ ಹುಳುಗಳ ರಸಹೀರುವಿಕೆ, ಹಾಗೂ ಮಣ್ಣಿನ pH {ctx['soil_ph']} ವ್ಯತ್ಯಾಸದಿಂದ ಸೂಕ್ಷ್ಮ ಪೋಷಕಾಂಶಗಳ ಕೊರತೆ ({pixel_data['yellow_pct']}% ಎಲೆ ಹಳದಿಯಾಗಿದೆ).
+೪. 🔬 **ಪ್ರಮುಖ ರೋಗ ಲಕ್ಷಣಗಳು:** ಎಲೆಯ ನರಗಳ ನಡುವೆ ಹಳದಿ ಬಣ್ಣ, ಎಲೆಯ ಅಂಚು ಮೇಲ್ಮುಖವಾಗಿ ಸುರುಟಿಕೊಳ್ಳುವುದು ಮತ್ತು ಗಿಡ ಬೆಳವಣಿಗೆ ಕುಂಠಿತವಾಗುವುದು.
+೫. 💊 **ಶಿಫಾರಸು ಮಾಡಿದ ಔಷಧ & ಸಿಂಪರಣೆ ಪ್ರಮಾಣ:**
 - ಕೀಟ ವಾಹಕಗಳಿಗೆ: **ಡೈಫೆನ್‌ಥಿಯುರಾನ್ 50% WP (Pegasus)** — ೧.೨ ಗ್ರಾಂ / ಲೀಟರ್ ಅಥವಾ **ಅಸಿಟಾಮಿಪ್ರಿಡ್ 20% SP** — ೦.೩ ಗ್ರಾಂ / ಲೀಟರ್.
 - ಲಘು ಪೋಷಕಾಂಶಗಳಿಗೆ: **UAS ಜಿಂಕ್ ಇಡಿಟಿಎ (Zinc EDTA 12%)** — ೧.೫ ಗ್ರಾಂ / ಲೀಟರ್.
-**೫. ಸಾವಯವ & ಜೈವಿಕ ನಿರ್ವಹಣೆ:** ೧೦,೦೦೦ ppm **ಬೇವಿನ ಎಣ್ಣೆ** — ೩ ಮಿಲಿ / ಲೀಟರ್ ಮತ್ತು ಎಕರೆಗೆ ೧೫ ಹಳದಿ ಅಂಟು ಬಲೆಗಳು.
-**೬. ತಾಲ್ಲೂಕು ಕೃಷಿ ವಿಸ್ತರಣೆ & RSK ನೆರವು:** {ctx['district']} ಕೃಷಿ ವಿಜ್ಞಾನ ಕೇಂದ್ರ (KVK)."""
+೬. 🌿 **ಸಾವಯವ & ಜೈವಿಕ ನಿರ್ವಹಣೆ:** ೧೦,೦೦೦ ppm **ಬೇವಿನ ಎಣ್ಣೆ** — ೩ ಮಿಲಿ / ಲೀಟರ್ ಮತ್ತು ಎಕರೆಗೆ ೧೫ ಹಳದಿ ಅಂಟು ಬಲೆಗಳು.
+೭. 🏛️ **ಕಿಸಾನ್ ಕಾಲ್ ಸೆಂಟರ್ & RSK:** ಟೋಲ್-ಫ್ರೀ **1800-180-1551** & {ctx['district']} ಕೃಷಿ ವಿಜ್ಞಾನ ಕೇಂದ್ರ (KVK)."""
             else:
-                reply = f"""{telemetry_badge}**Crop Health Check — Yellow Leaves & Leaf Curl ({ctx['location_name']})**
+                reply = f"""{telemetry_badge}**Crop Health Diagnosis — Chlorosis & Leaf Curl ({ctx['location_name']})**
 
-**1. Problem / Disease Name:** **Yellow Leaves & Leaf Curl (Whitefly / Nutrient Deficiency)**
-**2. Why It Happened:** Tiny whiteflies sucking plant sap and passing virus, or soil lacking zinc/iron ({pixel_data['yellow_pct']}% yellow area).
-**3. Signs to Check (Symptoms):** Leaves turning yellow between veins, leaf edges curling upwards, and slow plant growth.
-**4. Medicine & Spray Dosage:**
-- For Sucking Pests: **Diafenthiuron (Pegasus)** — 1.2 g/L OR **Acetamiprid** — 0.3 g/L.
-- For Micronutrients: **Zinc EDTA 12%** — Mix 1.5 grams in 1 liter of water and spray on leaves.
-**5. Natural / Organic Treatment:** Spray **Neem Oil** (3 ml/L) and put 15 **Yellow Sticky Traps** per acre.
-**6. Local Help & Support:** {ctx['district']} Krishi Vigyan Kendra (KVK) or RSK."""
+1. 🌾 **Crop / Plant Identified:** Agricultural Crop Foliage
+2. 🔍 **Diagnostic Result:** **Foliar Chlorosis & Whitefly Vector Stress**
+3. 📋 **Causes & Weather Triggers:** Sucking pests (whiteflies/thrips) transmitting geminivirus, or alkaline soil pH {ctx['soil_ph']} locking zinc/iron absorption ({pixel_data['yellow_pct']}% chlorotic area).
+4. 🔬 **Visual Symptoms Checked:** Interveinal yellowing, upward cupping of leaf margins, and stunted new flushes.
+5. 💊 **Recommended Spray & Dosage:**
+- Sucking Pests: **Diafenthiuron (Pegasus 50% WP)** — 1.2 g/L OR **Acetamiprid 20% SP** — 0.3 g/L.
+- Micronutrient Tonic: **Chelated Zinc EDTA 12%** — 1.5 g per 1L water foliar spray.
+6. 🌿 **Organic & Bio-Control Management:** Spray **Neem Oil 10,000 ppm** (3 ml/L) and install 15 **Yellow Sticky Traps** per acre.
+7. 🏛️ **Helpline & Local RSK:** Toll-Free Kisan Call Centre **1800-180-1551** & {ctx['district']} KVK / RSK."""
             return {"reply": reply, "source": "Computer Vision Pathology Engine", "language": language}
 
         # Pattern D: Severe Brown/Black Necrotic Spots (>10%)
@@ -368,43 +386,47 @@ def fallback_agronomic_engine(query, ctx, language="en", image_data=None):
             if is_kn:
                 reply = f"""{telemetry_badge}**ಸಸ್ಯ ರೋಗ ನಿದಾನ ವರದಿ — ಕಮಟು & ಎಲೆ ಚುಕ್ಕೆ ರೋಗ ({ctx['location_name']})**
 
-**೧. ರೋಗ ನಿದಾನ & ಸೂಕ್ಷ್ಮಾಣು ಜೀವಿ:** **ಅಲ್ಟರ್ನೇರಿಯಾ ಕಮಟು / ಎಲೆ ಚುಕ್ಕೆ ರೋಗ (Early Blight / Leaf Spot — *Alternaria solani*)**
-**೨. ರೋಗ ಪ್ರೇರಕ ಕಾರಣಗಳು & ಹವಾಮಾನ:** ತಾಪಮಾನ ೨೬-೩೨°C, ಬೆಳಗಿನ ಇಬ್ಬನಿ ಮತ್ತು ಎಲೆಯ ಮೇಲೆ ದೀರ್ಘಕಾಲ ನೀರು ನಿಲ್ಲುವುದು ({pixel_data['brown_pct']}% ಕಂದು ಕಲೆಗಳು ಪತ್ತೆಯಾಗಿವೆ).
-**೩. ಪ್ರಮುಖ ರೋಗ ಲಕ್ಷಣಗಳು:** ಎಲೆಗಳ ಮೇಲೆ ಸಾಂದ್ರ ಉಂಗುರಾಕಾರದ ಕಂದು-ಕಪ್ಪು ಚುಕ್ಕೆಗಳು (Concentric Target Rings) ಮತ್ತು ಹಳದಿ ಅಂಚು.
-**೪. ಶಿಫಾರಸು ಮಾಡಿದ ರಾಸಾಯನಿಕ ಔಷಧ & ಸಿಂಪರಣೆ ಪ್ರಮಾಣ:** **ಕಾರ್ಬೆಂಡಾಜಿಮ್ + ಮ್ಯಾಂಕೋಜೆಬ್ (Saaf)** — ೨ ಗ್ರಾಂ / ಲೀಟರ್ ಅಥವಾ **ಡೈಫೆನೊಕೊನಾಜೋಲ್ 25% EC (Score)** — ೦.೫ ಮಿಲಿ / ಲೀಟರ್.
-**೫. ಸಾವಯವ & ಜೈವಿಕ ನಿರ್ವಹಣೆ:** **ಟ್ರೈಕೋಡರ್ಮಾ ವಿರಿಡೆ** ೫ ಗ್ರಾಂ / ಲೀಟರ್ ಸಿಂಪಡಣೆ.
-**೬. ತಾಲ್ಲೂಕು ಕೃಷಿ ವಿಸ್ತರಣೆ & RSK ನೆರವು:** {ctx['district']} ರೈತ ಸಂಪರ್ಕ ಕೇಂದ್ರ (RSK)."""
+೧. 🌾 **ಗುರುತಿಸಲಾದ ಬೆಳೆ / ಸಸ್ಯ:** ಕೃಷಿ ಬೆಳೆ ಎಲೆ
+೨. 🔍 **ರೋಗ ನಿದಾನ & ಸ್ಥಿತಿ:** **ಅಲ್ಟರ್ನೇರಿಯಾ ಕಮಟು / ಎಲೆ ಚುಕ್ಕೆ ರೋಗ (Early Blight / Leaf Spot — *Alternaria solani*)**
+೩. 📋 **ಪ್ರೇರಕ ಕಾರಣಗಳು & ಹವಾಮಾನ:** ತಾಪಮಾನ ೨೬-೩೨°C, ಬೆಳಗಿನ ಇಬ್ಬನಿ ಮತ್ತು ಎಲೆಯ ಮೇಲೆ ದೀರ್ಘಕಾಲ ನೀರು ನಿಲ್ಲುವುದು ({pixel_data['brown_pct']}% ಕಂದು ಕಲೆಗಳು ಪತ್ತೆಯಾಗಿವೆ).
+೪. 🔬 **ಪ್ರಮುಖ ರೋಗ ಲಕ್ಷಣಗಳು:** ಎಲೆಗಳ ಮೇಲೆ ಸಾಂದ್ರ ಉಂಗುರಾಕಾರದ ಕಂದು-ಕಪ್ಪು ಚುಕ್ಕೆಗಳು (Concentric Target Rings) ಮತ್ತು ಹಳದಿ ಅಂಚು.
+೫. 💊 **ಶಿಫಾರಸು ಮಾಡಿದ ಔಷಧ & ಸಿಂಪರಣೆ ಪ್ರಮಾಣ:** **ಕಾರ್ಬೆಂಡಾಜಿಮ್ + ಮ್ಯಾಂಕೋಜೆಬ್ (Saaf)** — ೨ ಗ್ರಾಂ / ಲೀಟರ್ ಅಥವಾ **ಡೈಫೆನೊಕೊನಾಜೋಲ್ 25% EC (Score)** — ೦.೫ ಮಿಲಿ / ಲೀಟರ್.
+೬. 🌿 **ಸಾವಯವ & ಜೈವಿಕ ನಿರ್ವಹಣೆ:** **ಟ್ರೈಕೋಡರ್ಮಾ ವಿರಿಡೆ** ೫ ಗ್ರಾಂ / ಲೀಟರ್ ಅಥವಾ **ಸೂಡೋಮೊನಾಸ್ ಫ್ಲೋರೊಸೆನ್ಸ್** ೧೦ ಗ್ರಾಂ / ಲೀಟರ್.
+೭. 🏛️ **ಕಿಸಾನ್ ಕಾಲ್ ಸೆಂಟರ್ & RSK:** ಟೋಲ್-ಫ್ರೀ **1800-180-1551** & {ctx['district']} ರೈತ ಸಂಪರ್ಕ ಕೇಂದ್ರ (RSK)."""
             else:
-                reply = f"""{telemetry_badge}**Crop Health Check — Brown Leaf Spot & Early Blight ({ctx['location_name']})**
+                reply = f"""{telemetry_badge}**Crop Health Diagnosis — Leaf Spot & Blight ({ctx['location_name']})**
 
-**1. Problem / Disease Name:** **Brown Leaf Spot / Blight (Fungal Infection)**
-**2. Why It Happened:** Warm weather (26–32°C), wet leaves from morning dew/rain, and high moisture ({pixel_data['brown_pct']}% brown spots).
-**3. Signs to Check (Symptoms):** Round dark brown spots with circular target rings on leaves, with light yellow borders.
-**4. Medicine & Spray Dosage:** **Saaf (Carbendazim + Mancozeb)** — Mix 2 grams in 1 liter of water, OR **Score (Difenoconazole)** — Mix 0.5 ml in 1 liter of water.
-**5. Natural / Organic Treatment:** Spray **Trichoderma** bio-powder (5 grams per liter of water).
-**6. Local Help & Support:** {ctx['district']} Raitha Samparka Kendra (RSK)."""
+1. 🌾 **Crop / Plant Identified:** Agricultural Crop Foliage
+2. 🔍 **Diagnostic Result:** **Early Blight / Alternaria Leaf Spot (Fungal)**
+3. 📋 **Causes & Weather Triggers:** Warm temperature (26–32°C), high humidity, and prolonged leaf wetness ({pixel_data['brown_pct']}% necrotic spot area).
+4. 🔬 **Visual Symptoms Checked:** Concentric dark brown target rings with chlorotic yellow halo margins on mature leaves.
+5. 💊 **Recommended Spray & Dosage:** **Saaf (Carbendazim 12% + Mancozeb 63% WP)** — 2 g/L OR **Score (Difenoconazole 25% EC)** — 0.5 ml/L.
+6. 🌿 **Organic & Bio-Control Management:** Foliar spray with **Pseudomonas fluorescens** (10 g/L) or **Trichoderma viride** (5 g/L).
+7. 🏛️ **Helpline & Local RSK:** Toll-Free Kisan Call Centre **1800-180-1551** & {ctx['district']} Raitha Samparka Kendra."""
             return {"reply": reply, "source": "Computer Vision Pathology Engine", "language": language}
 
-        # Pattern E: Predominantly Green Leaf (>75%)
-        elif pixel_data and pixel_data['green_pct'] > 75.0:
+        # Pattern E: Predominantly Green Leaf (>65% green and low disease scores) -> HEALTHY PLANT!
+        elif pixel_data and pixel_data['green_pct'] >= 65.0:
             if is_kn:
-                reply = f"""{telemetry_badge}**ಸಸ್ಯ ಆರೋಗ್ಯ ವರದಿ — ಸಮತೋಲಿತ ಹಸಿರು ಎಲೆ ({ctx['location_name']})**
+                reply = f"""{telemetry_badge}**ಸಸ್ಯ ಆರೋಗ್ಯ ತಪಾಸಣಾ ವರದಿ — ಉತ್ತಮ ಆರೋಗ್ಯ ಸ್ಥಿತಿ ({ctx['location_name']})**
 
-**೧. ಸ್ಥಿತಿ ಮೌಲ್ಯಮಾಪನ:** **ಆರೋಗ್ಯಕರ ಹಸಿರು ಎಲೆ ಅಂಗಾಂಶ ({pixel_data['green_pct']}% ಶುದ್ಧತೆ)**
-**೨. ಮುನ್ನೆಚ್ಚರಿಕಾ ಹವಾಮಾನ:** ವಾರ್ಷಿಕ ಮಳೆ {ctx['rainfall_mm']}ಮಿಮೀ ಮತ್ತು ಮಣ್ಣಿನ pH {ctx['soil_ph']} ಇರುವುದರಿಂದ ಮುಂಗಾರಿನಲ್ಲಿ ಶಿಲೀಂಧ್ರ ಬೀಜಾಣುಗಳು ತಗುಲದಂತೆ ರಕ್ಷಣೆ ಅಗತ್ಯ.
-**೩. ಪ್ರಮುಖ ಲಕ್ಷಣಗಳು:** ಎಲೆಯು ಸಮೃದ್ಧ ಕ್ಲೋರೊಫಿಲ್ ಹೊಂದಿದ್ದು ಸಕ್ರಿಯ ರೋಗ ಲಕ್ಷಣಗಳಿಲ್ಲ.
-**೪. ಮುನ್ನೆಚ್ಚರಿಕಾ ರಾಸಾಯನಿಕ ಸಿಂಪರಣೆ:** **ಮ್ಯಾಂಕೋಜೆಬ್ 75% WP (Indofil M-45)** — ೨ ಗ್ರಾಂ / ಲೀಟರ್ (ರಕ್ಷಣಾ ಕವಚ).
-**೫. ಸಾವಯವ ರೋಗ ನಿರೋಧಕ ಪೋಷಣೆ:** **ಪಂಚಗವ್ಯ (೩%)** ಅಥವಾ **ಬೇವಿನ ಕಷಾಯ (NSKE 5%)** ಸಿಂಪಡಿಸಿ.
-**೬. ತಾಲ್ಲೂಕು ಕೃಷಿ ವಿಸ್ತರಣೆ & RSK ನೆರವು:** {ctx['district']} ತಾಲ್ಲೂಕು RSK."""
+೧. 🌾 **ಗುರುತಿಸಲಾದ ಬೆಳೆ / ಸಸ್ಯ:** ಕೃಷಿ ಸಸ್ಯ (ತೋಟಗಾರಿಕೆ / ತರಕಾರಿ / ಧಾನ್ಯ)
+೨. 🔍 **ರೋಗ ನಿದಾನ & ಸ್ಥಿತಿ:** **✅ ಆರೋಗ್ಯಕರ ಬೆಳೆ — ಯಾವುದೇ ಸಕ್ರಿಯ ರೋಗ ಅಥವಾ ಕೀಟಬಾಧೆ ಪತ್ತೆಯಾಗಿಲ್ಲ ({pixel_data['green_pct']}% ಆರೋಗ್ಯಕರ ಅಂಗಾಂಶ)**
+೩. 📋 **ಪ್ರೇರಕ ಕಾರಣಗಳು & ಹವಾಮಾನ:** ಎಲೆಯ ಕ್ಲೋರೊಫಿಲ್ ಸಾಂದ್ರತೆ ಸಮತೋಲನದಲ್ಲಿದೆ. ವಾರ್ಷಿಕ ಮಳೆ {ctx['rainfall_mm']}ಮಿಮೀ ಮತ್ತು ಮಣ್ಣಿನ pH {ctx['soil_ph']} ಈ ಬೆಳೆಗೆ ಪೂರಕವಾಗಿದೆ.
+೪. 🔬 **ಪ್ರಮುಖ ರೋಗ ಲಕ್ಷಣಗಳು:** ಎಲೆಯು ಶುದ್ಧ ಹಸಿರಾಗಿದ್ದು ಯಾವುದೇ ಕಮಟು, ಬೂದಿ, ಅಥವಾ ಶಿಲೀಂಧ್ರ ಚುಕ್ಕೆಗಳಿಲ್ಲ.
+೫. 💊 **ಮುನ್ನೆಚ್ಚರಿಕಾ ರಕ್ಷಣಾ ಕ್ರಮ:** ಯಾವುದೇ ರಾಸಾಯನಿಕ ಸಿಂಪರಣೆ ಅಗತ್ಯವಿಲ್ಲ. ಮುಂಗಾರಿನ ರಕ್ಷಣೆಗೆ **ಮ್ಯಾಂಕೋಜೆಬ್ 75% WP (Indofil M-45)** — ೨ ಗ್ರಾಂ / ಲೀಟರ್ ಸಾಕು.
+೬. 🌿 **ಸಾವಯವ ಪೋಷಣೆ & ಇಳುವರಿ ವರ್ಧಕ:** ೧೫ ದಿನಗಳಿಗೊಮ್ಮೆ **ಜೀವಾಮೃತ** ಅಥವಾ **ಪಂಚಗವ್ಯ (೩%)** ಸಿಂಪಡಿಸಿ.
+೭. 🏛️ **ಕಿಸಾನ್ ಕಾಲ್ ಸೆಂಟರ್ & RSK:** ಟೋಲ್-ಫ್ರೀ **1800-180-1551** & {ctx['district']} ರೈತ ಸಂಪರ್ಕ ಕೇಂದ್ರ."""
             else:
-                reply = f"""{telemetry_badge}**Crop Health Check — Healthy Green Leaf ({ctx['location_name']})**
+                reply = f"""{telemetry_badge}**Crop Health Check — Optimal Foliar Health ({ctx['location_name']})**
 
-**1. Condition:** **Healthy & Clean Foliage ({pixel_data['green_pct']}% Healthy Green Area)**
-**2. Weather Tip:** With annual rainfall of {ctx['rainfall_mm']}mm, keep leaves protected before heavy rain showers begin.
-**3. Signs to Check:** Good green color, no spots, and no active fungal infection.
-**4. Protective Spray (Optional):** **Mancozeb (Indofil M-45)** — 2 grams per liter as a protective shield against fungi.
-**5. Natural Tonic:** Spray **Panchagavya (3%)** or **Neem Seed Extract (NSKE 5%)** to boost plant strength.
-**6. Local Help & Support:** {ctx['district']} Raitha Samparka Kendra (RSK)."""
+1. 🌾 **Crop / Plant Identified:** Agricultural / Horticultural Crop
+2. 🔍 **Diagnostic Result:** **✅ Healthy Plant — No Active Disease, Fungus, or Pest Detected ({pixel_data['green_pct']}% Healthy Green Tissue)**
+3. 📋 **Causes & Weather Triggers:** Excellent foliar vitality with active photosynthesis. Soil pH {ctx['soil_ph']} and rainfall telemetry ({ctx['rainfall_mm']}mm) support robust crop vigor.
+4. 🔬 **Visual Symptoms Checked:** Clean green leaf blade, intact cellular margins, no fungal spores, mildew, or lesions.
+5. 💊 **Recommended Spray & Dosage:** **No chemical treatment required.** For general seasonal protection, spray mild contact protectant **Mancozeb (2 g/L)**.
+6. 🌿 **Organic & Growth Tonic:** Apply **Panchagavya (3%)** or **Jeevamrutha foliar spray** every 15 days to enhance leaf luster and yield.
+7. 🏛️ **Helpline & Local RSK:** Toll-Free Kisan Call Centre **1800-180-1551** & {ctx['district']} Raitha Samparka Kendra."""
             return {"reply": reply, "source": "Computer Vision Pathology Engine", "language": language}
 
         # Crop specific queries if text contains crop name

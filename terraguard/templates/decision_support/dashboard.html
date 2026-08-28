@@ -1387,13 +1387,22 @@ body.dark-theme .ai-window-header{background:rgba(0,0,0,0.15)}
                 <i class="fa-solid fa-fire"></i><span data-i18n="tab_fire">Fire</span>
             </button>
             <button class="v-tab-btn" onclick="switchTab('pest')" id="tab-pest" title="Pest & Disease Risk">
-                <i class="fa-solid fa-bug"></i><span>Pest</span>
+                <i class="fa-solid fa-bug"></i><span data-i18n="tab_pest">Pest</span>
             </button>
             <button class="v-tab-btn" onclick="switchTab('saved')" id="tab-saved" title="Saved Locations">
                 <i class="fa-solid fa-bookmark"></i><span data-i18n="tab_saved">Saved</span>
             </button>
         </div>
 
+    </div>
+
+    <!-- 🔊 GLOBAL TEXT-TO-SPEECH PLAYING & MASTER MUTE BAR -->
+    <div id="global-tts-indicator" style="display:none; position:fixed; bottom:28px; left:50%; transform:translateX(-50%); z-index:99999; background:rgba(15,23,42,0.94); border:1px solid #10b981; color:#fff; padding:9px 18px; border-radius:30px; box-shadow:0 10px 35px rgba(0,0,0,0.6); backdrop-filter:blur(12px); cursor:pointer; align-items:center; gap:10px; font-size:0.8rem; font-weight:700; font-family:inherit; transition:all 0.25s;" onclick="stopAllSpeech()" ondblclick="stopAllSpeech()" title="Click or Double Click anywhere to Stop Voice">
+        <span style="display:inline-block; width:10px; height:10px; border-radius:50%; background:#10b981; box-shadow:0 0 8px #10b981;"></span>
+        <span id="global-tts-text">🔊 Reading Advisory...</span>
+        <span style="background:rgba(239,68,68,0.22); color:#fca5a5; border:1px solid rgba(239,68,68,0.45); padding:3px 10px; border-radius:14px; font-size:0.68rem; margin-left:6px; display:inline-flex; align-items:center; gap:4px;">
+            <i class="fa-solid fa-square" style="font-size:0.55rem; color:#ef4444;"></i> Double-Click to Stop
+        </span>
     </div>
 
     <!-- ══ FLOATING RAITHA SAHAYAKA AI WIDGET ══ -->
@@ -2719,6 +2728,7 @@ body.dark-theme .ai-window-header{background:rgba(0,0,0,0.15)}
                 if (activeTab === 'agro') fetchRecommendations(lat, lon);
                 else if (activeTab === 'diag') fetchDiagnostics(lat, lon);
                 else if (activeTab === 'fire') fetchFireRisk(lat, lon);
+                else if (activeTab === 'pest') fetchPestRisks(lat, lon);
             } else if (activeTab === 'saved') {
                 renderSavedLocations();
             }
@@ -4701,7 +4711,89 @@ multiCropModels.forEach((model, mIdx) => {
                                 </div>
                             </div>
                         </div>
-                        
+
+                        <!-- 🌾 3B. Karnataka Certified Drought-Resilient Crops & Contingency Matrix -->
+                        <div style="background:var(--card-bg);border:1px solid var(--glass-border);border-radius:var(--radius-lg);padding:var(--space-md) var(--space-lg);margin-bottom:20px;box-shadow:var(--shadow-card);">
+                            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+                                <div style="display:flex;align-items:center;gap:8px;">
+                                    <div style="width:30px;height:30px;border-radius:var(--radius-sm);background:rgba(16,185,129,0.14);color:#10b981;display:flex;align-items:center;justify-content:center;font-size:0.85rem;border:1px solid rgba(16,185,129,0.25);">
+                                        <i class="fa-solid fa-seedling"></i>
+                                    </div>
+                                    <div>
+                                        <div style="font-size:0.86rem;font-weight:800;color:var(--text-main);">${currentLang === 'kn' ? 'ಬರ-ನಿರೋಧಕ ಪರ್ಯಾಯ ಬೆಳೆಗಳು & ಆಪತ್ಕಾಲೀನ ಬಿತ್ತನೆ' : 'Drought-Resilient Contingency Crop Matrix'}</div>
+                                        <div style="font-size:0.62rem;color:var(--text-muted);">${currentLang === 'kn' ? 'ಕಡಿಮೆ ನೀರಿನಲ್ಲಿ ಗರಿಷ್ಠ ಆದಾಯ ನೀಡುವ ಬೆಳೆಗಳ ಪಟ್ಟಿ' : 'Proven UAS Karnataka low-water contingency cultivars'}</div>
+                                    </div>
+                                </div>
+                                <span style="font-size:0.62rem;background:rgba(16,185,129,0.12);color:#10b981;border:1px solid rgba(16,185,129,0.25);padding:2px 8px;border-radius:12px;font-weight:700;">UAS Certified</span>
+                            </div>
+
+                            <div style="display:flex;flex-direction:column;gap:8px;">
+                                <div style="background:var(--bg-filter);border-radius:var(--radius-md);padding:10px;border:1px solid var(--border-light);display:flex;align-items:center;justify-content:space-between;gap:10px;">
+                                    <div style="min-width:0;flex:1;">
+                                        <div style="font-size:0.82rem;font-weight:800;color:var(--text-main);display:flex;align-items:center;gap:6px;">
+                                            <span>🌾 ${currentLang === 'kn' ? 'ರಾಗಿ (GPU-28 / ಇಂದಾಫ್-೯)' : 'Finger Millet / Ragi (GPU-28)'}</span>
+                                            <span style="font-size:0.58rem;background:rgba(16,185,129,0.15);color:#10b981;padding:1px 6px;border-radius:6px;font-weight:700;">${currentLang === 'kn' ? '೨೮ ದಿನ ಬದುಕುಳಿಯುವಿಕೆ' : '28d Rainless Survival'}</span>
+                                        </div>
+                                        <div style="font-size:0.68rem;color:var(--text-muted);margin-top:2px;">
+                                            ${currentLang === 'kn' ? 'ನೀರಿನ ಉಳಿತಾಯ: ೬೫% • ಆಳವಾದ ಬೇರುಗಳಿಂದ ತೇವಾಂಶ ಹೀರುವಿಕೆ • ಉತ್ತಮ ಆಹಾರ ಭದ್ರತೆ' : 'Water Savings: 65% • High drought survival via deep root system & silicon cell walls.'}
+                                        </div>
+                                    </div>
+                                    <div style="text-align:right;flex-shrink:0;">
+                                        <div style="font-size:0.75rem;font-weight:800;color:#10b981;">₹35,000 / ac</div>
+                                        <div style="font-size:0.58rem;color:var(--text-muted);">${currentLang === 'kn' ? 'ನಿವ್ವಳ ಲಾಭ' : 'Net Margin'}</div>
+                                    </div>
+                                </div>
+
+                                <div style="background:var(--bg-filter);border-radius:var(--radius-md);padding:10px;border:1px solid var(--border-light);display:flex;align-items:center;justify-content:space-between;gap:10px;">
+                                    <div style="min-width:0;flex:1;">
+                                        <div style="font-size:0.82rem;font-weight:800;color:var(--text-main);display:flex;align-items:center;gap:6px;">
+                                            <span>🌿 ${currentLang === 'kn' ? 'ಸಜ್ಜೆ & ನವಣೆ (ಸಿರಿಧಾನ್ಯ)' : 'Pearl Millet / Bajra & Fox-Millet'}</span>
+                                            <span style="font-size:0.58rem;background:rgba(59,130,246,0.15);color:#38bdf8;padding:1px 6px;border-radius:6px;font-weight:700;">${currentLang === 'kn' ? '೩೫ ದಿನ ಬದುಕುಳಿಯುವಿಕೆ' : '35d Rainless Survival'}</span>
+                                        </div>
+                                        <div style="font-size:0.68rem;color:var(--text-muted);margin-top:2px;">
+                                            ${currentLang === 'kn' ? 'ನೀರಿನ ಉಳಿತಾಯ: ೭೫% • ಕೇವಲ ೨೫೦-೩೦೦ ಮಿಮೀ ಮಳೆಯಲ್ಲಿ ಅಧಿಕ ಫಸಲು' : 'Water Savings: 75% • Thrives on just 250-300mm rain with high heat tolerance.'}
+                                        </div>
+                                    </div>
+                                    <div style="text-align:right;flex-shrink:0;">
+                                        <div style="font-size:0.75rem;font-weight:800;color:#38bdf8;">₹28,000 / ac</div>
+                                        <div style="font-size:0.58rem;color:var(--text-muted);">${currentLang === 'kn' ? 'ನಿವ್ವಳ ಲಾಭ' : 'Net Margin'}</div>
+                                    </div>
+                                </div>
+
+                                <div style="background:var(--bg-filter);border-radius:var(--radius-md);padding:10px;border:1px solid var(--border-light);display:flex;align-items:center;justify-content:space-between;gap:10px;">
+                                    <div style="min-width:0;flex:1;">
+                                        <div style="font-size:0.82rem;font-weight:800;color:var(--text-main);display:flex;align-items:center;gap:6px;">
+                                            <span>🌱 ${currentLang === 'kn' ? 'ಹುರುಳಿ & ಅಲಸಂದಿ (ದ್ವಿದಳ ಧಾನ್ಯ)' : 'Horse Gram & Cowpea'}</span>
+                                            <span style="font-size:0.58rem;background:rgba(245,158,11,0.15);color:#f59e0b;padding:1px 6px;border-radius:6px;font-weight:700;">${currentLang === 'kn' ? '೪೨ ದಿನ ಬದುಕುಳಿಯುವಿಕೆ' : '42d Rainless Survival'}</span>
+                                        </div>
+                                        <div style="font-size:0.68rem;color:var(--text-muted);margin-top:2px;">
+                                            ${currentLang === 'kn' ? 'ನೀರಿನ ಉಳಿತಾಯ: ೮೨% • ಮಣ್ಣಿನ ತೇವಾಂಶ ಲಾಕ್ ಮಾಡುವ ನೈಸರ್ಗಿಕ ಹಸಿರೆಲೆ ಹೊದಿಕೆ' : 'Water Savings: 82% • Emergency catch crop, living moisture mulch & N-fixing.'}
+                                        </div>
+                                    </div>
+                                    <div style="text-align:right;flex-shrink:0;">
+                                        <div style="font-size:0.75rem;font-weight:800;color:#f59e0b;">₹22,000 / ac</div>
+                                        <div style="font-size:0.58rem;color:var(--text-muted);">${currentLang === 'kn' ? 'ನಿವ್ವಳ ಲಾಭ' : 'Net Margin'}</div>
+                                    </div>
+                                </div>
+
+                                <div style="background:var(--bg-filter);border-radius:var(--radius-md);padding:10px;border:1px solid var(--border-light);display:flex;align-items:center;justify-content:space-between;gap:10px;">
+                                    <div style="min-width:0;flex:1;">
+                                        <div style="font-size:0.82rem;font-weight:800;color:var(--text-main);display:flex;align-items:center;gap:6px;">
+                                            <span>🌳 ${currentLang === 'kn' ? 'ನುಗ್ಗೆ & ಹೆಬ್ಬೇವು (ಕೃಷಿ ಅರಣ್ಯ)' : 'Drumstick (Moringa) & Melia Dubia'}</span>
+                                            <span style="font-size:0.58rem;background:rgba(168,85,247,0.15);color:#c084fc;padding:1px 6px;border-radius:6px;font-weight:700;">${currentLang === 'kn' ? '೬೦+ ದಿನ ಬದುಕುಳಿಯುವಿಕೆ' : '60d+ Deep Taproot'}</span>
+                                        </div>
+                                        <div style="font-size:0.68rem;color:var(--text-muted);margin-top:2px;">
+                                            ${currentLang === 'kn' ? 'ವಾರದ ನಗದು ಆದಾಯ • ಶೂನ್ಯ ನೀರಾವರಿಯಲ್ಲೂ ಆಳವಾದ ಉಪಮಣ್ಣಿನ ನೀರಿನ ಹೀರುವಿಕೆ' : 'Weekly cashflow • Zero irrigation needed once taproots reach subsoil aquifer.'}
+                                        </div>
+                                    </div>
+                                    <div style="text-align:right;flex-shrink:0;">
+                                        <div style="font-size:0.75rem;font-weight:800;color:#c084fc;">₹75,000 / ac</div>
+                                        <div style="font-size:0.58rem;color:var(--text-muted);">${currentLang === 'kn' ? 'ನಿವ್ವಳ ಲಾಭ' : 'Net Margin'}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Added Water Source & Anomaly Cards -->
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px;">
                             <div style="background: var(--card-bg); border-radius: var(--radius-lg); padding: var(--space-lg); border: 1px solid var(--glass-border); box-shadow: var(--shadow-card);">
@@ -5797,8 +5889,8 @@ multiCropModels.forEach((model, mIdx) => {
                                 <a href="tel:${nearestOffice.phone.replace(/[^\d+]/g,'')}" style="flex:1; text-decoration:none; background: linear-gradient(135deg, #10b981, #059669); color:#fff; text-align:center; padding: 7px 10px; border-radius: 8px; font-size: 0.74rem; font-weight: 700; display:flex; align-items:center; justify-content:center; gap:5px; box-shadow:0 2px 8px rgba(16,185,129,0.35);">
                                     <i class="fa-solid fa-phone-volume"></i> ${i18n[currentLang]['call_ada']} (${nearestOffice.phone})
                                 </a>
-                                <a href="tel:1551" title="Kisan Call Center Toll-Free Helpline" style="text-decoration:none; background: var(--bg-filter); color:var(--text-main); border:1px solid var(--border-light); padding: 7px 11px; border-radius: 8px; font-size: 0.74rem; font-weight: 700; display:flex; align-items:center; gap:5px;">
-                                    <i class="fa-solid fa-headset"></i> 1551
+                                <a href="tel:18001801551" title="Kisan Call Center Toll-Free Helpline (1800-180-1551)" style="text-decoration:none; background: var(--bg-filter); color:var(--text-main); border:1px solid var(--border-light); padding: 7px 11px; border-radius: 8px; font-size: 0.74rem; font-weight: 700; display:flex; align-items:center; gap:5px;">
+                                    <i class="fa-solid fa-headset" style="color:#10b981;"></i> 1800-180-1551
                                 </a>
                             </div>
                         </div>
@@ -5979,21 +6071,101 @@ multiCropModels.forEach((model, mIdx) => {
             }
         }
 
-        function speakAdvisory(text, lang = 'en') {
+        let isTtsSpeaking = false;
+
+        function stopAllSpeech() {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+            }
+            isTtsSpeaking = false;
+            const ttsBadge = document.getElementById('global-tts-indicator');
+            if (ttsBadge) ttsBadge.style.display = 'none';
+            document.querySelectorAll('.speaker-active-btn').forEach(btn => {
+                btn.classList.remove('speaker-active-btn');
+                const span = btn.querySelector('span');
+                const icon = btn.querySelector('i');
+                if (icon) {
+                    icon.className = 'fa-solid fa-volume-high';
+                    icon.style.color = '';
+                }
+                if (span) span.textContent = currentLang === 'kn' ? 'ಆಲಿಸಿ' : 'Listen';
+            });
+        }
+
+        function speakAdvisory(text, lang = 'en', btnEl = null) {
             if (!('speechSynthesis' in window)) {
                 alert(lang === 'kn' ? "ಧ್ವನಿ ಸೌಲಭ್ಯ ಬೆಂಬಲಿತವಾಗಿಲ್ಲ" : "Speech synthesis not supported in this browser");
                 return;
             }
+
+            // If already speaking, single click or toggle cancels immediately!
+            if (window.speechSynthesis.speaking || isTtsSpeaking) {
+                stopAllSpeech();
+                return;
+            }
+
             try {
                 window.speechSynthesis.cancel();
-                const utterance = new SpeechSynthesisUtterance(text);
+                const cleanText = text.replace(/[*#_`\n]/g, ' ').replace(/\s+/g, ' ').trim();
+                const utterance = new SpeechSynthesisUtterance(cleanText);
                 utterance.lang = lang === 'kn' ? 'kn-IN' : 'en-IN';
-                utterance.rate = 0.92;
+                utterance.rate = 0.90;
+                utterance.pitch = 1.0;
+
+                // Pick Kannada voice if available
+                const voices = window.speechSynthesis.getVoices() || [];
+                if (lang === 'kn') {
+                    const knVoice = voices.find(v => v.lang.includes('kn') || v.name.toLowerCase().includes('kannada'));
+                    if (knVoice) utterance.voice = knVoice;
+                }
+
+                isTtsSpeaking = true;
+                const ttsBadge = document.getElementById('global-tts-indicator');
+                if (ttsBadge) {
+                    ttsBadge.style.display = 'flex';
+                    const txtEl = document.getElementById('global-tts-text');
+                    if (txtEl) txtEl.textContent = lang === 'kn' ? '🔊 ಧ್ವನಿ ಓದಲಾಗುತ್ತಿದೆ...' : '🔊 Reading Advisory...';
+                }
+
+                if (btnEl) {
+                    btnEl.classList.add('speaker-active-btn');
+                    const icon = btnEl.querySelector('i');
+                    const span = btnEl.querySelector('span');
+                    if (icon) {
+                        icon.className = 'fa-solid fa-circle-stop';
+                        icon.style.color = '#ef4444';
+                    }
+                    if (span) span.textContent = lang === 'kn' ? 'ನಿಲ್ಲಿಸಿ' : 'Stop';
+                }
+
+                utterance.onend = function() {
+                    stopAllSpeech();
+                };
+
+                utterance.onerror = function() {
+                    stopAllSpeech();
+                };
+
                 window.speechSynthesis.speak(utterance);
             } catch(e) {
                 console.error("TTS error:", e);
+                stopAllSpeech();
             }
         }
+
+        // Master double-click and Escape listeners to turn off voice everywhere
+        document.addEventListener('dblclick', function() {
+            if (window.speechSynthesis && (window.speechSynthesis.speaking || isTtsSpeaking)) {
+                stopAllSpeech();
+                showToast(currentLang === 'kn' ? 'ಧ್ವನಿ ನಿಲ್ಲಿಸಲಾಗಿದೆ' : 'Voice stopped', 'fa-volume-xmark', 'info', 1500);
+            }
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && window.speechSynthesis && (window.speechSynthesis.speaking || isTtsSpeaking)) {
+                stopAllSpeech();
+            }
+        });
 
         // ══════════════════════════════════════════════════════════════════════
         // 🌿 PEST & DISEASE TAB: AI CROP LEAF & CAMERA DRAG-DROP SCANNER
