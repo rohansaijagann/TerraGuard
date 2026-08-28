@@ -227,7 +227,14 @@ def generate_agronomist_reply(query, chat_history=None, farm_context=None, langu
                 }
             }
 
-            models_to_try = ['gemini-3.5-flash', 'gemini-3.6-flash', 'gemini-3.7-flash']
+            models_to_try = [
+                'gemini-3.5-flash-lite',
+                'gemini-3.1-flash-lite',
+                'gemini-flash-lite-latest',
+                'gemini-3.5-flash',
+                'gemini-3.6-flash',
+                'gemini-flash-latest'
+            ]
             for m in models_to_try:
                 try:
                     url = f"https://generativelanguage.googleapis.com/v1beta/models/{m}:generateContent?key={gemini_key}"

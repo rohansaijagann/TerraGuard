@@ -14,9 +14,9 @@ class RecommendationAPI(APIView):
     permission_classes = []
     
     def post(self, request):
-        # Extract coordinates
-        lat = float(request.data.get('latitude', 13.0))
-        lon = float(request.data.get('longitude', 77.0))
+        # Extract coordinates (support both lat/latitude and lon/longitude)
+        lat = float(request.data.get('latitude') or request.data.get('lat') or 13.0)
+        lon = float(request.data.get('longitude') or request.data.get('lon') or 77.0)
 
         # Check if the coordinate is over land or water / outside Karnataka
         from .ml_utils.geo_validator import check_karnataka_location

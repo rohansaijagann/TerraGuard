@@ -60,9 +60,16 @@ def _extract_json_array(text):
             
     return objects
 
-def _call_gemini_api(payload, gemini_key, timeout=3.5):
+def _call_gemini_api(payload, gemini_key, timeout=4.5):
     """Tries active Gemini models in sequence with swift fallback."""
-    models = ['gemini-3.5-flash', 'gemini-3.6-flash']
+    models = [
+        'gemini-3.5-flash-lite',
+        'gemini-3.1-flash-lite',
+        'gemini-flash-lite-latest',
+        'gemini-3.5-flash',
+        'gemini-3.6-flash',
+        'gemini-flash-latest'
+    ]
     for m in models:
         try:
             url = f"https://generativelanguage.googleapis.com/v1beta/models/{m}:generateContent?key={gemini_key}"
@@ -98,32 +105,22 @@ def generate_ai_crop_recommendations(crop_ctx, custom_gemini_key=None, timeout=6
     cgwb_depth = crop_ctx.get("aquifer_depth", 15.0)
     cgwb_status = crop_ctx.get("aquifer_status", "Safe")
 
-    # Determine authentic physiological zone guidance
-    if elevation >= 750 or rainfall >= 1600:
-        terrain_guide = "High-Altitude Western Ghats / Hilly Malenadu (Recommend: Arabica Coffee, Robusta Coffee, Cardamom, Black Pepper, Silver Oak, Coorg Mandarin Orange, Avocado, Tea, Nutmeg, Cinnamon, Ginger, Teak, Rosewood. DO NOT recommend plains/dryland crops like Mango, Ragi, Cotton, Bajra, Sorghum)."
-    elif elevation <= 300 and rainfall >= 2200:
-        terrain_guide = "Coastal Karavali Belt (Recommend: Arecanut, Coconut, Cashew, Paddy, Black Pepper, Kokum, Rubber, Nutmeg)."
-    elif rainfall <= 700:
-        terrain_guide = "Arid / Semi-Arid Northern Drylands (Recommend: Toor Dal, Cotton, Jowar/Sorghum, Bengal Gram, Pomegranate, Sunflower, Safflower, Neem, Ber)."
-    else:
-        terrain_guide = "Southern Plains / Transition Zone (Recommend: Ragi, Mulberry, Mango, Coconut, Red Gram, Tomato, Tamarind, Sandalwood, Melia Dubia)."
-
-    prompt = f"""You are a senior agronomist at UAS Bangalore and College of Forestry Ponnampet.
-Land Telemetry in Karnataka:
-- Location: {loc_name} ({district} District)
+    prompt = f"""You are a senior agronomist at UAS Bangalore, UAS Dharwad, and ICAR Karnataka.
+Farm Telemetry in Karnataka:
+- Location: {loc_name} ({district} District, Karnataka)
 - Annual Rainfall: {rainfall} mm | Elevation: {elevation} m | Soil pH: {ph}
 - CGWB Groundwater Depth: {cgwb_depth} m ({cgwb_status})
-- Zone Agro-Climatic Rule: {terrain_guide}
 
-Recommend 6 to 8 physiologically authentic and optimal commercial crops & trees for this exact terrain and climate.
+Based on the actual agricultural, horticultural, and agroforestry reality of {district} District in Karnataka, dynamically recommend 6 to 8 optimal commercial crops and agroforestry trees that real local farmers cultivate with high profit, high market demand, and climate resilience.
+
 Return ONLY a valid JSON array of objects with this schema:
 [
   {{
-    "species": "Common and Botanical Name (e.g. Arabica Coffee, Black Pepper, Silver Oak)",
+    "species": "Common & Botanical Name (e.g. specific to {district})",
     "type": "Crop" or "Tree",
     "score": 85 to 99,
     "commercial_value": "Very High" or "High" or "Medium",
-    "commercial_explanation": "Brief 1-line reason for market value in Karnataka.",
+    "commercial_explanation": "Specific market and industrial demand in {district} and Karnataka.",
     "carbon_rating": 1 to 10,
     "breakdown": {{"rainfall": 90.0, "elevation": 88.0, "ph": 92.0, "carbon": 70.0}},
     "requirements": {{"rain_min": 600, "rain_max": 2000, "elev_min": 200, "elev_max": 1000, "ph_min": 5.5, "ph_max": 7.5}},
@@ -135,7 +132,7 @@ Return RAW JSON ARRAY only."""
     payload = {
         "contents": [{"role": "user", "parts": [{"text": prompt}]}],
         "generationConfig": {
-            "temperature": 0.2,
+            "temperature": 0.25,
             "maxOutputTokens": 1800,
             "responseMimeType": "application/json"
         }
