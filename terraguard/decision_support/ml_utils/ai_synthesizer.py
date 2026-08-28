@@ -63,10 +63,12 @@ def _extract_json_array(text):
 def _call_gemini_api(payload, gemini_key, timeout=4.5):
     """Tries active Gemini models in sequence with swift fallback."""
     models = [
-        'gemini-2.0-flash',
-        'gemini-1.5-flash-latest',
-        'gemini-1.5-flash',
-        'gemini-2.0-flash-lite',
+        'gemini-3.5-flash-lite',
+        'gemini-3.1-flash-lite',
+        'gemini-flash-lite-latest',
+        'gemini-3.5-flash',
+        'gemini-3.6-flash',
+        'gemini-flash-latest'
     ]
     for m in models:
         try:
