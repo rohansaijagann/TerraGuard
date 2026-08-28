@@ -25,10 +25,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-568=lp-$(pwno4u+^00+gay%k^eizhy3&q)i8eso(o)q9b22yf')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# Set DEBUG=False in Render environment variables for production.
+# Set DEBUG=True in env for local development only.
 DEBUG = os.environ.get('DEBUG', 'False').strip().lower() in ('true', '1', 'yes')
 
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
+# ALLOWED_HOSTS: auto-detect Render deployment, else use env var or localhost
+if os.environ.get('RENDER'):
+    # Running on Render — allow the .onrender.com domain and any custom domain
+    ALLOWED_HOSTS = ['*']
+else:
+    ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
+
 
 # Gemini AI API Key — used by Raitha Sahayaka chatbot (read from env)
 GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY', '')
